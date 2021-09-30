@@ -45,7 +45,7 @@ resource "polaris_aws_account" "default" {
   regions = [
     "us-east-2",
   ]
-  
+
   exocompute {
     regions = [
       "us-east-2",
