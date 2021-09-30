@@ -30,8 +30,8 @@ variable "project" {
 
 # Initalize the Google provider from the shell environment.
 provider "google" {
-  region  = "us-west1"
-  zone    = "us-west1-a"
+  region = "us-west1"
+  zone   = "us-west1-a"
 }
 
 # Points the Polaris provider to the Polaris service account to use.
