@@ -58,7 +58,7 @@ resource "polaris_azure_subscription" "default" {
   regions = [
     "eastus2",
   ]
-  
+
   exocompute {
     regions = [
       "eastus2",
