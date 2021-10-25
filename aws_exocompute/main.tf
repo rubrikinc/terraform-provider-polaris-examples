@@ -42,9 +42,11 @@ provider "polaris" {
 resource "polaris_aws_account" "default" {
   profile = var.profile
 
-  regions = [
-    "us-east-2",
-  ]
+  cloud_native_protection {
+    regions = [
+      "us-east-2",
+    ]
+  }
 
   exocompute {
     regions = [

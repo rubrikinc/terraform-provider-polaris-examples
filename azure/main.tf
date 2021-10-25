@@ -51,9 +51,11 @@ resource "polaris_azure_subscription" "default" {
   subscription_name = var.subscription_name
   tenant_domain     = var.tenant_domain
 
-  regions = [
-    "eastus2"
-  ]
+  cloud_native_protection {
+    regions = [
+      "eastus2"
+    ]
+  }
 
   depends_on = [
     polaris_azure_service_principal.default
