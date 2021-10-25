@@ -35,7 +35,7 @@ provider "google" {
   zone    = "us-west1-a"
 }
 
-# Points the Polaris provider to the Polaris service account to use.
+# Point the provider to the Polaris service account to use.
 provider "polaris" {
   credentials = var.polaris_credentials
 }
@@ -60,14 +60,10 @@ resource "google_project_iam_member" "default" {
   member = "serviceAccount:${var.service_account_email}"
 }
 
-# Add the GCP project to Polaris.
-resource "polaris_gcp_project" "default" {
+# Add the GCP service account key file to Polaris.
+resource "polaris_gcp_service_account" "default" {
   credentials      = var.gcp_credentials
   permissions_hash = data.polaris_gcp_permissions.default.hash
-  project          = var.project
-
-  cloud_native_protection {
-  }
 
   depends_on = [
     google_project_iam_custom_role.default,
