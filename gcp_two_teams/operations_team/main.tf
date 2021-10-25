@@ -2,8 +2,8 @@
 terraform {
   required_providers {
     polaris = {
-      source  = "rubrikinc/polaris"
-      version = "~>0.2.0"
+      source  = "terraform.rubrik.com/rubrikinc/polaris"
+      version = "~>0.3.0"
     }
   }
 }
@@ -45,4 +45,7 @@ resource "polaris_gcp_project" "default" {
   project           = var.project
   project_name      = var.project_name
   project_number    = var.project_number
+
+  cloud_native_protection {
+  }
 }
