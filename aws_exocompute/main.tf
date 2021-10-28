@@ -3,7 +3,7 @@ terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "~>0.2.0"
+      version = "~>0.3.0"
     }
   }
 }
@@ -42,9 +42,11 @@ provider "polaris" {
 resource "polaris_aws_account" "default" {
   profile = var.profile
 
-  regions = [
-    "us-east-2",
-  ]
+  cloud_native_protection {
+    regions = [
+      "us-east-2",
+    ]
+  }
 
   exocompute {
     regions = [

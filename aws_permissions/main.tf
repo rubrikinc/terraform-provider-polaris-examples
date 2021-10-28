@@ -29,6 +29,10 @@ provider "polaris" {
 resource "polaris_aws_account" "default" {
   profile = var.profile
 
+  # Set the permissions resource argument to update to have Terraform generate
+  # a diff on permissions changes.
+  permissions = "update"
+
   cloud_native_protection {
     regions = [
       "us-east-2",

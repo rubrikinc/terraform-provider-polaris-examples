@@ -3,7 +3,7 @@ terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "~>0.2.0"
+      version = "~>0.3.0"
     }
   }
 }
@@ -32,4 +32,7 @@ provider "polaris" {
 resource "polaris_gcp_project" "default" {
   credentials = var.gcp_credentials
   project     = var.project
+
+  cloud_native_protection {
+  }
 }

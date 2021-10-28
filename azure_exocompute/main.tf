@@ -3,7 +3,7 @@ terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "~>0.2.0"
+      version = "~>0.3.0"
     }
   }
 }
@@ -55,9 +55,11 @@ resource "polaris_azure_subscription" "default" {
   subscription_name = var.subscription_name
   tenant_domain     = var.tenant_domain
 
-  regions = [
-    "eastus2",
-  ]
+  cloud_native_protection {
+    regions = [
+      "eastus2",
+    ]
+  }
 
   exocompute {
     regions = [
