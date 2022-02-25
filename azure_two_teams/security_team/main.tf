@@ -18,6 +18,11 @@ variable "azure_credentials" {
   description = "Path to the Azure service principal file."
 }
 
+variable "tenant_domain" {
+  type        = string
+  description = "Azure tenant domain."
+}
+
 # Point the provider to the Polaris service account to use.
 provider "polaris" {
   credentials = var.polaris_credentials
@@ -26,5 +31,6 @@ provider "polaris" {
 # Add the Azure service principal to Polaris. See the main README for an
 # explanation of this file.
 resource "polaris_azure_service_principal" "default" {
-  credentials = var.azure_credentials
+  credentials   = var.azure_credentials
+  tenant_domain = var.tenant_domain
 }

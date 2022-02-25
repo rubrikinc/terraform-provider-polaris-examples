@@ -99,15 +99,11 @@ resource "polaris_azure_service_principal" "default" {
 resource "polaris_azure_subscription" "default" {
   subscription_id   = var.subscription_id
   subscription_name = var.subscription_name
-  tenant_domain     = var.tenant_domain
+  tenant_domain     = polaris_azure_service_principal.default.tenant_domain
 
   cloud_native_protection {
     regions = [
       "eastus2",
     ]
   }
-
-  depends_on = [
-    polaris_azure_service_principal.default
-  ]
 }

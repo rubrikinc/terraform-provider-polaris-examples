@@ -41,23 +41,19 @@ provider "polaris" {
 # Add the Azure service principal to Polaris. See the main README for an
 # explanation of this file.
 resource "polaris_azure_service_principal" "default" {
-  credentials = var.azure_credentials
+  credentials   = var.azure_credentials
+  tenant_domain = var.tenant_domain
 }
 
-# Add the Azure subscription to Polaris. This resource depends on the service
-# principal resource.
+# Add the Azure subscription to Polaris.
 resource "polaris_azure_subscription" "default" {
   subscription_id   = var.subscription_id
   subscription_name = var.subscription_name
-  tenant_domain     = var.tenant_domain
+  tenant_domain     = polaris_azure_service_principal.default.tenant_domain
 
   cloud_native_protection {
     regions = [
       "eastus2"
     ]
   }
-
-  depends_on = [
-    polaris_azure_service_principal.default
-  ]
 }
