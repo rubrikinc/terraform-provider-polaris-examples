@@ -1,3 +1,5 @@
+# Example of how to manage Polaris GCP permissions.
+
 # Point Terraform to the Polaris provider.
 terraform {
   required_providers {
