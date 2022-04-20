@@ -28,7 +28,7 @@ variable "service_account_email" {
   description = "GCP service account client email."
 }
 
-# Initalize the Google provider from the shell environment.
+# Initialize the Google provider from the shell environment.
 provider "google" {
   project = var.project
   region  = "us-west1"
@@ -56,8 +56,9 @@ resource "google_project_iam_custom_role" "default" {
 
 # Assign the role to the service account used by Polaris.
 resource "google_project_iam_member" "default" {
-  role   = google_project_iam_custom_role.default.id
-  member = "serviceAccount:${var.service_account_email}"
+  project = var.project
+  role    = google_project_iam_custom_role.default.id
+  member  = "serviceAccount:${var.service_account_email}"
 }
 
 # Add the GCP project to Polaris.
