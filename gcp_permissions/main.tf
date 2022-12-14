@@ -1,6 +1,6 @@
 # Example of how to manage Polaris GCP permissions.
 
-# Point Terraform to the Polaris provider.
+# Point Terraform to the RSC provider.
 terraform {
   required_providers {
     polaris = {
@@ -12,7 +12,7 @@ terraform {
 
 variable "polaris_credentials" {
   type        = string
-  description = "Account name or path to the Polaris service account file."
+  description = "Path to the RSC service account file."
 }
 
 variable "gcp_credentials" {
@@ -37,7 +37,7 @@ provider "google" {
   zone    = "us-west1-a"
 }
 
-# Points the Polaris provider to the Polaris service account to use.
+# Points the provider to the RSC service account to use.
 provider "polaris" {
   credentials = var.polaris_credentials
 }
@@ -56,14 +56,14 @@ resource "google_project_iam_custom_role" "default" {
   permissions = data.polaris_gcp_permissions.default.permissions
 }
 
-# Assign the role to the service account used by Polaris.
+# Assign the role to the service account used by RSC.
 resource "google_project_iam_member" "default" {
   project = var.project
   role    = google_project_iam_custom_role.default.id
   member  = "serviceAccount:${var.service_account_email}"
 }
 
-# Add the GCP project to Polaris.
+# Add the GCP project to RSC.
 resource "polaris_gcp_project" "default" {
   credentials      = var.gcp_credentials
   permissions_hash = data.polaris_gcp_permissions.default.hash

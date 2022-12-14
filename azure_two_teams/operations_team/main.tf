@@ -1,4 +1,4 @@
-# Point Terraform to the Polaris provider.
+# Point Terraform to the RSC provider.
 terraform {
   required_providers {
     polaris = {
@@ -10,7 +10,7 @@ terraform {
 
 variable "polaris_credentials" {
   type        = string
-  description = "Account name or path to Polaris service account file."
+  description = "Path to the RSC service account file."
 }
 
 variable "subscription_id" {
@@ -28,12 +28,12 @@ variable "tenant_domain" {
   description = "Azure tenant domain."
 }
 
-# Point the provider to the Polaris service account to use.
+# Point the provider to the RSC service account to use.
 provider "polaris" {
   credentials = var.polaris_credentials
 }
 
-# Add the Azure subscription to Polaris. This resource depends on the service
+# Add the Azure subscription to RSC. This resource depends on the service
 # principal resource.
 resource "polaris_azure_subscription" "default" {
   subscription_id   = var.subscription_id
