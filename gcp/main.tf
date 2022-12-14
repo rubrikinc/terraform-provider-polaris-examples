@@ -1,4 +1,4 @@
-# Point Terraform to the Polaris provider.
+# Point Terraform to the RSC provider.
 terraform {
   required_providers {
     polaris = {
@@ -10,7 +10,7 @@ terraform {
 
 variable "polaris_credentials" {
   type        = string
-  description = "Account name or path to the Polaris service account file."
+  description = "Path to the RSC service account file."
 }
 
 variable "gcp_credentials" {
@@ -23,12 +23,12 @@ variable "project" {
   description = "GCP project id."
 }
 
-# Point the provider to the Polaris service account to use.
+# Point the provider to the RSC service account to use.
 provider "polaris" {
   credentials = var.polaris_credentials
 }
 
-# Add the GCP project to Polaris.
+# Add the GCP project to RSC.
 resource "polaris_gcp_project" "default" {
   credentials = var.gcp_credentials
   project     = var.project

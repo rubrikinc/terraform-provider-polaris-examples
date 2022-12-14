@@ -1,4 +1,4 @@
-# Point Terraform to the Polaris provider.
+# Point Terraform to the RSC provider.
 terraform {
   required_providers {
     polaris = {
@@ -10,7 +10,7 @@ terraform {
 
 variable "polaris_credentials" {
   type        = string
-  description = "Account name or path to the Polaris service account file."
+  description = "Path to the RSC service account file."
 }
 
 variable "profile" {
@@ -33,12 +33,12 @@ variable "subnet2" {
   description = "AWS subnet 2."
 }
 
-# Point the provider to the Polaris service account to use.
+# Point the provider to the RSC service account to use.
 provider "polaris" {
   credentials = var.polaris_credentials
 }
 
-# Add the AWS account to Polaris.
+# Add the AWS account to RSC.
 resource "polaris_aws_account" "default" {
   profile = var.profile
 

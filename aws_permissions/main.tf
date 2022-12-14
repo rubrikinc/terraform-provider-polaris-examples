@@ -1,4 +1,4 @@
-# Point Terraform to the Polaris provider.
+# Point Terraform to the RSC provider.
 terraform {
   required_providers {
     polaris = {
@@ -10,7 +10,7 @@ terraform {
 
 variable "polaris_credentials" {
   type        = string
-  description = "Account name or path to the Polaris service account file."
+  description = "Path to the RSC service account file."
 }
 
 variable "profile" {
@@ -18,14 +18,14 @@ variable "profile" {
   description = "AWS profile."
 }
 
-# Point the provider to the Polaris service account to use.
+# Point the provider to the RSC service account to use.
 provider "polaris" {
   credentials = var.polaris_credentials
 }
 
-# Add the AWS account to Polaris. Access key and secret key are read from
-# ~/.aws/credentials. The default region is read from ~/.aws/config. Polaris
-# will authenticate to AWS using an IAM role setup in a CloudFormation stack.
+# Add the AWS account to RSC. Access key and secret key are read from
+# ~/.aws/credentials. The default region is read from ~/.aws/config. RSC will
+# authenticate to AWS using an IAM role setup in a CloudFormation stack.
 resource "polaris_aws_account" "default" {
   profile = var.profile
 
