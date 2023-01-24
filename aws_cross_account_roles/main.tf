@@ -3,7 +3,7 @@ terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "~>0.3.0"
+      version = "~>0.4.0"
     }
   }
 }
@@ -13,18 +13,23 @@ variable "polaris_credentials" {
   description = "Path to the RSC service account file."
 }
 
+variable "role_arn" {
+  type        = string
+  description = "Role ARN for the cross account role."
+}
+
 # The accounts.csv file should contain all AWS accounts to add to RSC, using the
 # following format:
 #
-# profile,regions
-# "<profile-1>","<region-1>,<region-2>...<region-N>"
-# "<profile-2>","<region-1>,<region-2>...<region-N>"
+# role_arn,regions
+# "<role-arn-1>","<region-1>,<region-2>...<region-N>"
+# "<role-arn-2>","<region-1>,<region-2>...<region-N>"
 #
 # E.g:
 #
-# profile,regions
-# "admin","us-east-2,us-west-2"
-# "devops","us-west-2,eu-north-1"
+# role_arn,regions
+# "arn:aws:iam::123456789012:role/AdminRole","us-east-2"
+# "arn:aws:iam::567890123456:role/DevopsRole","us-west-2,eu-north-1"
 #
 # The header, the first line of the CSV file, must also be included in the CSV
 # file.
@@ -42,16 +47,15 @@ provider "polaris" {
   credentials = var.polaris_credentials
 }
 
-# Add the AWS accounts from the accounts.csv file to RSC. Access keys and secret
-# keys for profiles are read from ~/.aws/credentials. The default region for the
-# profiles are read from ~/.aws/config. RSC will authenticate to AWS using an
-# IAM role setup in a CloudFormation stack.
+# Add the AWS accounts from the accounts.csv file to RSC. The provider will
+# assume the role for each account and create a CloudFormation stack granting
+# RSC access to the account.
 resource "polaris_aws_account" "accounts" {
   for_each = {
-    for account in local.accounts : account.profile => account
+    for account in local.accounts : account.role_arn => account
   }
 
-  profile = each.key
+  assume_role = each.key
 
   cloud_native_protection {
     regions = split(",", each.value.regions)

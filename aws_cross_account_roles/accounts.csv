@@ -1,0 +1,3 @@
+role_arn,regions
+"arn:aws:iam::123456789012:role/AdminRole","us-east-2"
+"arn:aws:iam::567890123456:role/DevopsRole","us-west-2,eu-north-1"
