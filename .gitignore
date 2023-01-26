@@ -1,2 +1,6 @@
 # Prevent accidental commit of service accounts or service principals
 *.json
+
+.terraform
+.terraform.lock.hcl
+
