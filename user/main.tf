@@ -3,7 +3,7 @@ terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "~>0.5.0"
+      version = "~>0.6.0"
     }
   }
 }
@@ -23,12 +23,13 @@ provider "polaris" {
   credentials = var.polaris_credentials
 }
 
-data "polaris_role" "compliance_auditor" {
-  name = "Compliance Auditor Role"
+data "polaris_role" "admin" {
+  name = "Administrator"
 }
 
-# Assign the role to a user.
-resource "polaris_role_assignment" "compliance_auditor" {
-  role_id    = data.polaris_role.compliance_auditor.id
-  user_email = var.user_email
+resource "polaris_user" "admin" {
+  email    = var.user_email
+  role_ids = [
+    data.polaris_role.admin.id
+  ]
 }
