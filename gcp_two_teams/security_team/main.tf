@@ -2,8 +2,7 @@
 terraform {
   required_providers {
     polaris = {
-      source  = "rubrikinc/polaris"
-      version = "~>0.3.0"
+      source = "rubrikinc/polaris"
     }
   }
 }
