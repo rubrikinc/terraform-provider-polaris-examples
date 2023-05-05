@@ -1,0 +1,3 @@
+project,credentials
+"my-proj","my-proj-service-account.json"
+"another-proj","another-proj-service-account.json"
