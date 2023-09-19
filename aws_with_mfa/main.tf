@@ -1,9 +1,8 @@
-# Point Terraform to the RSC provider.
 terraform {
   required_providers {
     polaris = {
-      source  = "terraform.rubrik.com/rubrikinc/polaris"
-      version = "~>0.5.0"
+      source  = "rubrikinc/polaris"
+      version = ">=0.7.0"
     }
   }
 }

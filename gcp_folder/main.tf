@@ -1,10 +1,10 @@
 # Example of how to add all GCP projects under a specific GCP folder.
 
-# Point Terraform to the RSC provider.
 terraform {
   required_providers {
     polaris = {
-      source = "rubrikinc/polaris"
+      source  = "rubrikinc/polaris"
+      version = ">=0.7.0"
     }
   }
 }
