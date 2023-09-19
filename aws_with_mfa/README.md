@@ -1,21 +1,21 @@
 # Adding AWS account with MFA to RSC
 Use the [AWS CLI tool](https://aws.amazon.com/cli) to obtain a temporary set of credentials. Create a temporary profile
 in `~/.aws/credentials` from these credentials or export them as environment variables. Finally, set the profile in the
-Terraform configuration to either the previously created temporary profile or _default_ if the temporary credentials
+Terraform configuration to either the previously created temporary profile or _default_, if the temporary credentials
 have been exported as environment variables.
 
 ## Obtaining temporary credentials
 Use the [aws sts get-session-token](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/sts/get-session-token.html)
-command to obtain the set of temporary credentials. The basic command looks like this:
+command to obtain a set of temporary credentials. The basic command looks like this:
 ```bash
-aws sts get-session-token --serial-number arn-of-the-mfa-device --token-code code-from-token
+aws sts get-session-token --serial-number <arn-of-the-mfa-device> --token-code <code-from-token>
 ```
 Where `--serial-number` specifies the ARN of your MFA device and `--token-code` is the current token displayed on your
 MFA device.
 
-As an example, let's assume we have a local profile called `my-profile`, identifying a user with MFA within the
+As an example, let's assume we have a local profile called `my-profile`, identifying a user using MFA within the
 account we want to add to RSC, and the ARN of our MFA device is `arn:aws:iam::123456789012:mfa/my-authenticator` and the
-current MFA token code is `123456`. The following command would then be used to obtain the temporary credentials:
+current MFA token code is `123456`. The following command would then be used to obtain temporary credentials:
 ```bash
 aws sts get-session-token --profile my-profile --serial-number arn:aws:iam::123456789012:mfa/my-authenticator --token-code 123456
 ```
