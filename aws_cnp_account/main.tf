@@ -107,7 +107,7 @@ resource "aws_iam_role" "role" {
   for_each            = data.polaris_aws_cnp_artifacts.artifacts.role_keys
   assume_role_policy  = polaris_aws_cnp_account_trust_policy.trust_policy[each.key].policy
   managed_policy_arns = data.polaris_aws_cnp_permissions.permissions[each.key].managed_policies
-  name_prefix         = "rubrik-${lower(each.key)}_"
+  name_prefix         = "rubrik-${lower(each.key)}-"
   path                = var.role_path
 
   dynamic "inline_policy" {
@@ -122,7 +122,7 @@ resource "aws_iam_role" "role" {
 # Create the required IAM instance profiles.
 resource "aws_iam_instance_profile" "profile" {
   for_each    = data.polaris_aws_cnp_artifacts.artifacts.instance_profile_keys
-  name_prefix = "rubrik-${lower(each.key)}_"
+  name_prefix = "rubrik-${lower(each.key)}-"
   role        = aws_iam_role.role[each.value].name
 }
 
