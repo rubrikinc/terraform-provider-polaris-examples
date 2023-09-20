@@ -25,7 +25,7 @@ variable "cloud" {
 variable "ec2_recovery_role_path" {
   type        = string
   default     = ""
-  description = "EC2 recovery role path"
+  description = "EC2 recovery role path."
 }
 
 variable "external_id" {
