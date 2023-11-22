@@ -12,6 +12,8 @@ variable "profile" {
   description = "AWS profile."
 }
 
+# The RSC service account is read from the environment variable
+# RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS.
 provider "polaris" {}
 
 # Add the AWS account to RSC.
