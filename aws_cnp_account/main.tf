@@ -6,7 +6,7 @@ terraform {
     }
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "=v0.8.0-beta.9"
+      version = "=v0.8.0-beta.10"
     }
   }
 }
