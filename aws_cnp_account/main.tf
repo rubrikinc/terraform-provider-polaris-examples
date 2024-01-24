@@ -1,12 +1,12 @@
 terraform {
   required_providers {
     aws = {
-      source = "hashicorp/aws"
+      source  = "hashicorp/aws"
       version = "~>5.0"
     }
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "=v0.8.0-beta.10"
+      version = "=0.8.0-beta.10"
     }
   }
 }
