@@ -6,7 +6,7 @@ terraform {
     }
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "=0.8.0-beta.11"
+      version = "=0.8.0-beta.15"
     }
   }
 }
@@ -64,23 +64,37 @@ provider "polaris" {}
 
 # Lookup the instance profiles and roles needed for the specified RSC features.
 data "polaris_aws_cnp_artifacts" "artifacts" {
-  cloud    = var.cloud
-  features = var.features.*.name
+  cloud = var.cloud
+
+  dynamic "feature" {
+    for_each = var.features
+    content {
+      name              = feature.value["name"]
+      permission_groups = feature.value["permission_groups"]
+    }
+  }
 }
 
 # Lookup the permission set, customer managed policies and managed policies,
 # for each role given the current set of features.
 data "polaris_aws_cnp_permissions" "permissions" {
   for_each               = data.polaris_aws_cnp_artifacts.artifacts.role_keys
-  cloud                  = data.polaris_aws_cnp_artifacts.artifacts.cloud
+  cloud                  = var.cloud
   ec2_recovery_role_path = var.ec2_recovery_role_path
-  features               = data.polaris_aws_cnp_artifacts.artifacts.features
   role_key               = each.key
+
+  dynamic "feature" {
+    for_each = var.features
+    content {
+      name              = feature.value["name"]
+      permission_groups = feature.value["permission_groups"]
+    }
+  }
 }
 
 # Create the RSC AWS cloud account.
 resource "polaris_aws_cnp_account" "account" {
-  cloud       = data.polaris_aws_cnp_artifacts.artifacts.cloud
+  cloud       = var.cloud
   external_id = var.external_id
   name        = var.name
   native_id   = var.native_id
@@ -99,7 +113,7 @@ resource "polaris_aws_cnp_account" "account" {
 resource "polaris_aws_cnp_account_trust_policy" "trust_policy" {
   for_each    = data.polaris_aws_cnp_artifacts.artifacts.role_keys
   account_id  = polaris_aws_cnp_account.account.id
-  features    = polaris_aws_cnp_account.account.feature.*.name
+  features    = var.features.*.name
   external_id = polaris_aws_cnp_account.account.external_id
   role_key    = each.key
 }
@@ -131,7 +145,7 @@ resource "aws_iam_instance_profile" "profile" {
 # Attach the instance profiles and the roles to the RSC cloud account.
 resource "polaris_aws_cnp_account_attachments" "attachments" {
   account_id = polaris_aws_cnp_account.account.id
-  features   = polaris_aws_cnp_account.account.feature.*.name
+  features   = var.features.*.name
 
   dynamic "instance_profile" {
     for_each = aws_iam_instance_profile.profile
