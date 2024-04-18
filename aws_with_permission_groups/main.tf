@@ -1,5 +1,6 @@
-# Example showing how to onboard a new AWS account to RSC. The RSC provider will
-# create a CloudFormation stack granting RSC access to the AWS account.
+# Example showing how to onboard a new AWS account with granular permissions to
+# RSC. The RSC provider will create a CloudFormation stack granting RSC access
+# to the AWS account.
 #
 # The AWS profile and the profile's default region are read from the standard
 # ~/.aws/credentials and ~/.aws/config files. The RSC service account is read
@@ -25,6 +26,19 @@ resource "polaris_aws_account" "account" {
   profile = var.profile
 
   cloud_native_protection {
+    permission_groups = [
+      "BASIC"
+    ]
+    regions = [
+      "us-east-2",
+    ]
+  }
+
+  exocompute {
+    permission_groups = [
+      "BASIC",
+      "RSC_MANAGED_CLUSTER"
+    ]
     regions = [
       "us-east-2",
     ]

@@ -1,36 +1,53 @@
+# Example showing how to onboard an Azure service principal to RSC, independent
+# of an Azure subscription.
+#
+# The credentials for Azure are read from the shell environment. The RSC service
+# account is read from the RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS environment
+# variable.
+
 terraform {
   required_providers {
+    azuread = {
+      source  = "hashicorp/azuread"
+      version = "~>2.4.8"
+    }
     polaris = {
       source  = "rubrikinc/polaris"
-      version = ">=0.7.0"
+      version = ">=0.8.0"
     }
   }
 }
 
-variable "polaris_credentials" {
+variable "application_id" {
   type        = string
-  description = "Path to the RSC service account file."
+  description = "Azure application ID. Also known as client ID."
 }
 
-# See the README in https://github.com/rubrikinc/rubrik-polaris-sdk-for-go for
-# an explanation of the service principal file.
-variable "azure_credentials" {
+variable "application_secret" {
   type        = string
-  description = "Path to the Azure service principal file."
+  description = "Azure application secret. Also known as client secret."
 }
 
-variable "tenant_domain" {
-  type        = string
-  description = "Azure tenant domain."
+provider "azuread" {}
+
+provider "polaris" {}
+
+data "azuread_domains" "aad_domains" {
+  only_initial = true
 }
 
-# Point the provider to the RSC service account to use.
-provider "polaris" {
-  credentials = var.polaris_credentials
+data "azuread_application" "application" {
+  client_id = var.application_id
 }
 
-# Add the Azure service principal to RSC.
-resource "polaris_azure_service_principal" "default" {
-  credentials   = var.azure_credentials
-  tenant_domain = var.tenant_domain
+data "azuread_service_principal" "service_principal" {
+  client_id = var.application_id
+}
+
+resource "polaris_azure_service_principal" "service_principal" {
+  app_id        = data.azuread_application.application.client_id
+  app_name      = data.azuread_application.application.display_name
+  app_secret    = var.application_secret
+  tenant_domain = data.azuread_domains.aad_domains.domains.0.domain_name
+  tenant_id     = data.azuread_service_principal.service_principal.application_tenant_id
 }

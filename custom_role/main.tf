@@ -1,25 +1,21 @@
+# Example showing how to add a custom role to RSC.
+#
+# The RSC service account is read from the
+# RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS environment variable.
+
 terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = ">=0.7.0"
+      version = ">=0.8.0"
     }
   }
 }
 
-variable "polaris_credentials" {
-  type        = string
-  description = "Path to the RSC service account file."
-}
+provider "polaris" {}
 
-# Point the provider to the RSC service account to use.
-provider "polaris" {
-  credentials = var.polaris_credentials
-}
-
-# Add custom role to RSC.
 resource "polaris_custom_role" "compliance_auditor" {
-  name = "Compliance Auditor Role"
+  name        = "Compliance Auditor Role"
   description = "Compliance Auditor"
 
   permission {

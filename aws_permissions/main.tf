@@ -1,15 +1,18 @@
+# Example showing how to onboard a new AWS account to RSC and have Terraform
+# generate a diff on permissions changes. The RSC provider will create a
+# CloudFormation stack granting RSC access to the AWS account.
+#
+# The AWS profile and the profile's default region are read from the standard
+# ~/.aws/credentials and ~/.aws/config files. The RSC service account is read
+# from the RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS environment variable.
+
 terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = ">=0.7.0"
+      version = ">=0.8.0"
     }
   }
-}
-
-variable "polaris_credentials" {
-  type        = string
-  description = "Path to the RSC service account file."
 }
 
 variable "profile" {
@@ -17,15 +20,9 @@ variable "profile" {
   description = "AWS profile."
 }
 
-# Point the provider to the RSC service account to use.
-provider "polaris" {
-  credentials = var.polaris_credentials
-}
+provider "polaris" {}
 
-# Add the AWS account to RSC. Access key and secret key are read from
-# ~/.aws/credentials. The default region is read from ~/.aws/config. RSC will
-# authenticate to AWS using an IAM role setup in a CloudFormation stack.
-resource "polaris_aws_account" "default" {
+resource "polaris_aws_account" "account" {
   profile = var.profile
 
   # Set the permissions resource argument to update to have Terraform generate

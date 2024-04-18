@@ -1,15 +1,16 @@
+# Example showing how to onboard the GCP service account to RSC, independent
+# of a GCP project.
+#
+# The RSC service account is read from the
+# RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS environment variable.
+
 terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = ">=0.7.0"
+      version = ">=0.8.0"
     }
   }
-}
-
-variable "polaris_credentials" {
-  type        = string
-  description = "Path to the RSC service account file."
 }
 
 variable "gcp_credentials" {
@@ -17,12 +18,8 @@ variable "gcp_credentials" {
   description = "Path to the GCP service account key file."
 }
 
-# Point the provider to the RSC service account to use.
-provider "polaris" {
-  credentials = var.polaris_credentials
-}
+provider "polaris" {}
 
-# Add the GCP service account key file to RSC.
 resource "polaris_gcp_service_account" "default" {
   credentials = var.gcp_credentials
 }

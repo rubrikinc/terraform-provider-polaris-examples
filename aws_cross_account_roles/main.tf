@@ -1,22 +1,12 @@
-terraform {
-  required_providers {
-    polaris = {
-      source  = "rubrikinc/polaris"
-      version = ">=0.7.0"
-    }
-  }
-}
-
-variable "polaris_credentials" {
-  type        = string
-  description = "Path to the RSC service account file."
-}
-
-variable "role_arn" {
-  type        = string
-  description = "Role ARN for the cross account role."
-}
-
+# Example showing how to onboard multiple AWS accounts, identified by role ARNs,
+# to RSC using a CSV file. The provider will assume each role and create a
+# CloudFormation stack granting RSC access to the account.
+#
+# The AWS default profile and the profile's default region are read from the
+# standard ~/.aws/credentials and ~/.aws/config files. The RSC service account
+# is read from the RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS environment
+# variable.
+#
 # The accounts.csv file should contain all AWS accounts to add to RSC, using the
 # following format:
 #
@@ -37,18 +27,22 @@ variable "role_arn" {
 # Removing an account from the CSV file followed by running terraform apply will
 # remove the account from RSC. Changing the regions for an account followed by
 # running terraform apply will update the regions in RSC.
+
+terraform {
+  required_providers {
+    polaris = {
+      source  = "rubrikinc/polaris"
+      version = ">=0.8.0"
+    }
+  }
+}
+
 locals {
   accounts = csvdecode(file("accounts.csv"))
 }
 
-# Point the provider to the RSC service account to use.
-provider "polaris" {
-  credentials = var.polaris_credentials
-}
+provider "polaris" {}
 
-# Add the AWS accounts from the accounts.csv file to RSC. The provider will
-# assume the role for each account and create a CloudFormation stack granting
-# RSC access to the account.
 resource "polaris_aws_account" "accounts" {
   for_each = {
     for account in local.accounts : account.role_arn => account
