@@ -1,15 +1,16 @@
+# Example showing how to onboard a GCP project with an already onboarded GCP
+# service account.
+#
+# The RSC service account is read from the
+# RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS environment variable.
+
 terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = ">=0.7.0"
+      version = ">=0.8.0"
     }
   }
-}
-
-variable "polaris_credentials" {
-  type        = string
-  description = "Path to the RSC service account file."
 }
 
 variable "organization_name" {
@@ -32,19 +33,13 @@ variable "project_number" {
   description = "GCP project number."
 }
 
-# Point the provider to the RSC service account to use.
-provider "polaris" {
-  credentials = var.polaris_credentials
-}
+provider "polaris" {}
 
-# Add the GCP project to RSC. RSC will authenticate to GCP using the previously
-# added GCP service account.
 resource "polaris_gcp_project" "default" {
   organization_name = var.organization_name
   project           = var.project
   project_name      = var.project_name
   project_number    = var.project_number
 
-  cloud_native_protection {
-  }
+  cloud_native_protection {}
 }

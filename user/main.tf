@@ -1,15 +1,15 @@
+# Example showing how to create a new RSC user.
+#
+# The RSC service account is read from the
+# RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS environment variable.
+
 terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = ">=0.7.0"
+      version = ">=0.8.0"
     }
   }
-}
-
-variable "polaris_credentials" {
-  type        = string
-  description = "Path to the RSC service account file."
 }
 
 variable "user_email" {
@@ -17,17 +17,14 @@ variable "user_email" {
   description = "User email address."
 }
 
-# Point the provider to the RSC service account to use.
-provider "polaris" {
-  credentials = var.polaris_credentials
-}
+provider "polaris" {}
 
 data "polaris_role" "admin" {
   name = "Administrator"
 }
 
 resource "polaris_user" "admin" {
-  email    = var.user_email
+  email = var.user_email
   role_ids = [
     data.polaris_role.admin.id
   ]

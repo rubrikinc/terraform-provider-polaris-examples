@@ -1,17 +1,16 @@
-# Example of how to add all GCP projects under a specific GCP folder.
+# Example showing how to onboard all GCP projects under a specific GCP folder
+# to RSC.
+#
+# The RSC service account is read from the
+# RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS environment variable.
 
 terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = ">=0.7.0"
+      version = ">=0.8.0"
     }
   }
-}
-
-variable "polaris_credentials" {
-  type        = string
-  description = "Path to the RSC service account file."
 }
 
 variable "gcp_credentials" {
@@ -24,21 +23,19 @@ variable "gcp_folder" {
   description = "GCP folder id."
 }
 
-# Point the provider to the RSC service account to use.
-provider "polaris" {
-  credentials = var.polaris_credentials
-}
+provider "polaris" {}
 
 data "google_projects" "default" {
   filter = "parent.id:${var.gcp_folder}"
 }
 
-# Add the GCP project to RSC.
 resource "polaris_gcp_project" "default" {
-  for_each    = toset([for v in data.google_projects.default.projects : v.project_id])
+  for_each = toset([
+    for v in data.google_projects.default.projects : v.project_id
+  ])
+
   credentials = var.gcp_credentials
   project     = each.key
 
-  cloud_native_protection {
-  }
+  cloud_native_protection {}
 }

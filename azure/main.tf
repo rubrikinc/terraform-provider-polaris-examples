@@ -1,27 +1,37 @@
+# Example showing how to onboard an Azure service principal, also referred to
+# as app registration or tenant, and an Azure subscription to RSC.
+#
+# The RSC service account is read from the
+# RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS environment variable.
+
 terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = ">=0.7.0"
+      version = ">=0.8.0"
     }
   }
 }
 
-variable "polaris_credentials" {
+variable "app_id" {
   type        = string
-  description = "Path to the RSC service account file."
+  description = "Azure app registration application ID. Also known as the client ID."
 }
 
-# See the README in https://github.com/rubrikinc/rubrik-polaris-sdk-for-go for
-# an explanation of the service principal file.
-variable "azure_credentials" {
+variable "app_name" {
   type        = string
-  description = "Path to the Azure service principal file."
+  description = "Azure app registration display name."
+}
+
+variable "app_secret" {
+  type        = string
+  sensitive   = true
+  description = "Azure app registration client secret."
 }
 
 variable "subscription_id" {
   type        = string
-  description = "Azure subscription id."
+  description = "Azure subscription ID."
 }
 
 variable "subscription_name" {
@@ -29,27 +39,30 @@ variable "subscription_name" {
   description = "Azure subscription name."
 }
 
+variable "tenant_id" {
+  type        = string
+  description = "Azure tenant ID. Also known as the directory ID."
+}
+
 variable "tenant_domain" {
   type        = string
-  description = "Azure tenant domain."
+  description = "Azure tenant primary domain."
 }
 
-# Point the provider to the RSC service account to use.
-provider "polaris" {
-  credentials = var.polaris_credentials
-}
+provider "polaris" {}
 
-# Add the Azure service principal to RSC.
-resource "polaris_azure_service_principal" "default" {
-  credentials   = var.azure_credentials
+resource "polaris_azure_service_principal" "tenant" {
+  app_id        = var.app_id
+  app_name      = var.app_name
+  app_secret    = var.app_secret
+  tenant_id     = var.tenant_id
   tenant_domain = var.tenant_domain
 }
 
-# Add the Azure subscription to RSC.
-resource "polaris_azure_subscription" "default" {
+resource "polaris_azure_subscription" "subscription" {
   subscription_id   = var.subscription_id
   subscription_name = var.subscription_name
-  tenant_domain     = polaris_azure_service_principal.default.tenant_domain
+  tenant_domain     = polaris_azure_service_principal.tenant.tenant_domain
 
   cloud_native_protection {
     regions = [

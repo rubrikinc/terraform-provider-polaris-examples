@@ -1,15 +1,18 @@
+# Example showing how to onboard an AWS account and create an Exocompute
+# configuration for the account. The RSC provider will create a CloudFormation
+# stack granting RSC access to the AWS account.
+#
+# The AWS profile and the profile's default region are read from the standard
+# ~/.aws/credentials and ~/.aws/config files. The RSC service account is read
+# from the RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS environment variable.
+
 terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = ">=0.7.0"
+      version = ">=0.8.0"
     }
   }
-}
-
-variable "polaris_credentials" {
-  type        = string
-  description = "Path to the RSC service account file."
 }
 
 variable "profile" {
@@ -32,13 +35,9 @@ variable "subnet2" {
   description = "AWS subnet 2."
 }
 
-# Point the provider to the RSC service account to use.
-provider "polaris" {
-  credentials = var.polaris_credentials
-}
+provider "polaris" {}
 
-# Add the AWS account to RSC.
-resource "polaris_aws_account" "default" {
+resource "polaris_aws_account" "account" {
   profile = var.profile
 
   cloud_native_protection {
@@ -54,9 +53,8 @@ resource "polaris_aws_account" "default" {
   }
 }
 
-# Create an excompute configuration using the specified VPC and subnets.
-resource "polaris_aws_exocompute" "default" {
-  account_id = polaris_aws_account.default.id
+resource "polaris_aws_exocompute" "exocompute" {
+  account_id = polaris_aws_account.account.id
   region     = "us-east-2"
   vpc_id     = var.vpc_id
 

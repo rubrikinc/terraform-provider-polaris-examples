@@ -1,17 +1,8 @@
-terraform {
-  required_providers {
-    polaris = {
-      source  = "rubrikinc/polaris"
-      version = ">=0.7.0"
-    }
-  }
-}
-
-variable "polaris_credentials" {
-  type        = string
-  description = "Path to the RSC service account file."
-}
-
+# Example showing how to onboard multiple GCP projects to RSC using a CSV file.
+#
+# The RSC service account is read from the
+# RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS environment variable.
+#
 # The projects.csv file should contain all GCP projects to add to RSC, using the
 # following format:
 #
@@ -32,16 +23,22 @@ variable "polaris_credentials" {
 # After the projects have been added they can be managed through the CSV file.
 # Removing a project from the CSV file followed by running terraform apply will
 # remove the project from RSC.
+
+terraform {
+  required_providers {
+    polaris = {
+      source  = "rubrikinc/polaris"
+      version = ">=0.8.0"
+    }
+  }
+}
+
 locals {
   projects = csvdecode(file("projects.csv"))
 }
 
-# Point the provider to the RSC service account to use.
-provider "polaris" {
-  credentials = var.polaris_credentials
-}
+provider "polaris" {}
 
-# Add the GCP projects from the projects.csv file to RSC.
 resource "polaris_gcp_project" "projects" {
   for_each = {
     for project in local.projects : project.project => project

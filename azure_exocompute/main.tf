@@ -1,27 +1,30 @@
+# Example showing how to onboard an Azure subscription and create an Exocompute
+# configuration for the subscription.
+#
+# The RSC service account is read from the
+# RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS environment variable.
+#
+# The Azure credentials is expected to be passed in using a custom service
+# principal file. For an explanation of the custom file format, see:
+# https://github.com/rubrikinc/rubrik-polaris-sdk-for-go?tab=readme-ov-file#azure-credentials
+
 terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = ">=0.7.0"
+      version = ">=0.8.0"
     }
   }
 }
 
-variable "polaris_credentials" {
-  type        = string
-  description = "Path to the RSC service account file."
-}
-
-# See the README in https://github.com/rubrikinc/rubrik-polaris-sdk-for-go for
-# an explanation of the service principal file.
 variable "azure_credentials" {
   type        = string
-  description = "Path to the Azure service principal file."
+  description = "Path to the custom service principal file."
 }
 
 variable "subscription_id" {
   type        = string
-  description = "Azure subscription id."
+  description = "Azure subscription ID."
 }
 
 variable "subscription_name" {
@@ -39,22 +42,17 @@ variable "subnet" {
   description = "Azure subnet."
 }
 
-# Point the provider to the RSC service account to use.
-provider "polaris" {
-  credentials = var.polaris_credentials
-}
+provider "polaris" {}
 
-# Add the Azure service principal to RSC.
-resource "polaris_azure_service_principal" "default" {
+resource "polaris_azure_service_principal" "tenant" {
   credentials   = var.azure_credentials
   tenant_domain = var.tenant_domain
 }
 
-# Add the Azure subscription to RSC.
-resource "polaris_azure_subscription" "default" {
+resource "polaris_azure_subscription" "subscription" {
   subscription_id   = var.subscription_id
   subscription_name = var.subscription_name
-  tenant_domain     = polaris_azure_service_principal.default.tenant_domain
+  tenant_domain     = polaris_azure_service_principal.tenant.tenant_domain
 
   cloud_native_protection {
     regions = [
@@ -69,9 +67,8 @@ resource "polaris_azure_subscription" "default" {
   }
 }
 
-# Create an excompute configuration using the specified subnet.
-resource "polaris_azure_exocompute" "default" {
-  subscription_id = polaris_azure_subscription.default.id
+resource "polaris_azure_exocompute" "exocompute" {
+  subscription_id = polaris_azure_subscription.subscription.id
   region          = "eastus2"
   subnet          = var.subnet
 }
