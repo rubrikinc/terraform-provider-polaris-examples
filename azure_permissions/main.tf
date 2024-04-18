@@ -9,7 +9,7 @@ terraform {
   required_providers {
     azuread = {
       source  = "hashicorp/azuread"
-      version = "~>2.4.8"
+      version = "~>2.48.0"
     }
     azurerm = {
       source  = "hashicorp/azurerm"
@@ -20,16 +20,6 @@ terraform {
       version = ">=0.8.0"
     }
   }
-}
-
-variable "application_id" {
-  type        = string
-  description = "Azure application ID. Also known as client ID."
-}
-
-variable "application_secret" {
-  type        = string
-  description = "Azure application secret. Also known as client secret."
 }
 
 provider "azuread" {}
@@ -44,15 +34,9 @@ data "azuread_domains" "aad_domains" {
   only_initial = true
 }
 
-data "azuread_application" "application" {
-  client_id = var.application_id
-}
-
-data "azuread_service_principal" "service_principal" {
-  client_id = var.application_id
-}
-
 data "azurerm_subscription" "subscription" {}
+
+data "polaris_account" "account" {}
 
 data "polaris_azure_permissions" "permissions" {
   features = [
@@ -60,8 +44,28 @@ data "polaris_azure_permissions" "permissions" {
   ]
 }
 
-resource "azurerm_role_definition" "default" {
-  name  = "Terraform"
+resource "azuread_application" "application" {
+  display_name = "RSC application - ${data.polaris_account.account.name}"
+  web {
+    homepage_url = "https://${data.polaris_account.account.fqdn}/setup_azure"
+  }
+}
+
+resource "azuread_service_principal" "service_principal" {
+  client_id = azuread_application.application.client_id
+}
+
+resource "azuread_service_principal_password" "service_principal_secret" {
+  service_principal_id = azuread_service_principal.service_principal.object_id
+}
+
+resource "azurerm_resource_group" "resource_group" {
+  name     = "rsc-resource-group"
+  location = "eastus2"
+}
+
+resource "azurerm_role_definition" "role_definition" {
+  name  = "RSC role definition - ${data.polaris_account.account.name}"
   scope = data.azurerm_subscription.subscription.id
 
   permissions {
@@ -73,25 +77,25 @@ resource "azurerm_role_definition" "default" {
 }
 
 # Note that the principal_id is the object id of the service principal.
-resource "azurerm_role_assignment" "default" {
-  principal_id       = data.azuread_service_principal.service_principal.object_id
-  role_definition_id = azurerm_role_definition.default.role_definition_resource_id
+resource "azurerm_role_assignment" "role_assignment" {
+  principal_id       = azuread_service_principal.service_principal.object_id
+  role_definition_id = azurerm_role_definition.role_definition.role_definition_resource_id
   scope              = data.azurerm_subscription.subscription.id
 }
 
 resource "polaris_azure_service_principal" "service_principal" {
-  app_id        = data.azuread_application.application.client_id
-  app_name      = data.azuread_application.application.display_name
-  app_secret    = var.application_secret
+  app_id        = azuread_application.application.client_id
+  app_name      = azuread_application.application.display_name
+  app_secret    = azuread_service_principal_password.service_principal_secret.value
   tenant_domain = data.azuread_domains.aad_domains.domains.0.domain_name
-  tenant_id     = data.azuread_service_principal.service_principal.application_tenant_id
+  tenant_id     = azuread_service_principal.service_principal.application_tenant_id
   permissions   = data.polaris_azure_permissions.permissions.id
 
   # This resource must explicitly depend on the role definition and the role
   # assignment so that the role is updated before RSC is notified.
   depends_on = [
-    azurerm_role_definition.default,
-    azurerm_role_assignment.default,
+    azurerm_role_definition.role_definition,
+    azurerm_role_assignment.role_assignment,
   ]
 }
 
@@ -104,5 +108,7 @@ resource "polaris_azure_subscription" "default" {
     regions = [
       "eastus2",
     ]
+    resource_group_name   = azurerm_resource_group.resource_group.name
+    resource_group_region = azurerm_resource_group.resource_group.location
   }
 }

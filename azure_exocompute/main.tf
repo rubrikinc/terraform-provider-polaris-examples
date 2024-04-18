@@ -1,5 +1,6 @@
 # Example showing how to onboard an Azure subscription and create an Exocompute
-# configuration for the subscription.
+# configuration for the subscription. Note that the same resource group is used
+# for both RSC features, this is not a requirement.
 #
 # The RSC service account is read from the
 # RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS environment variable.
@@ -20,6 +21,16 @@ terraform {
 variable "azure_credentials" {
   type        = string
   description = "Path to the custom service principal file."
+}
+
+variable "resource_group_name" {
+  type        = string
+  description = "Azure resource group name."
+}
+
+variable "resource_group_region" {
+  type        = string
+  description = "Azure resource group region."
 }
 
 variable "subscription_id" {
@@ -58,17 +69,21 @@ resource "polaris_azure_subscription" "subscription" {
     regions = [
       "eastus2",
     ]
+    resource_group_name   = var.resource_group_name
+    resource_group_region = var.resource_group_region
   }
 
   exocompute {
     regions = [
       "eastus2",
     ]
+    resource_group_name   = var.resource_group_name
+    resource_group_region = var.resource_group_region
   }
 }
 
 resource "polaris_azure_exocompute" "exocompute" {
-  subscription_id = polaris_azure_subscription.subscription.id
-  region          = "eastus2"
-  subnet          = var.subnet
+  cloud_account_id = polaris_azure_subscription.subscription.id
+  region           = "eastus2"
+  subnet           = var.subnet
 }

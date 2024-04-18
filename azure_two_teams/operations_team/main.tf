@@ -7,10 +7,6 @@
 
 terraform {
   required_providers {
-    azuread = {
-      source  = "hashicorp/azuread"
-      version = "~>2.4.8"
-    }
     azurerm = {
       source  = "hashicorp/azurerm"
       version = "~>3.99.0"
@@ -22,7 +18,10 @@ terraform {
   }
 }
 
-provider "azuread" {}
+variable "tenant_domain" {
+  type        = string
+  description = "Azure tenant primary domain."
+}
 
 provider "azurerm" {
   features {}
@@ -30,20 +29,23 @@ provider "azurerm" {
 
 provider "polaris" {}
 
-data "azuread_domains" "aad_domains" {
-  only_initial = true
-}
-
 data "azurerm_subscription" "subscription" {}
 
-resource "polaris_azure_subscription" "default" {
+resource "azurerm_resource_group" "resource_group" {
+  name     = "rsc-resource-group"
+  location = "eastus2"
+}
+
+resource "polaris_azure_subscription" "subscription" {
   subscription_id   = data.azurerm_subscription.subscription.subscription_id
   subscription_name = data.azurerm_subscription.subscription.display_name
-  tenant_domain     = data.azuread_domains.aad_domains.domains.0.domain_name
+  tenant_domain     = var.tenant_domain
 
   cloud_native_protection {
     regions = [
       "eastus2"
     ]
+    resource_group_name   = azurerm_resource_group.resource_group.name
+    resource_group_region = azurerm_resource_group.resource_group.location
   }
 }
