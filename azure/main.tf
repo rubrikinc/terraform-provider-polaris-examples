@@ -29,6 +29,16 @@ variable "app_secret" {
   description = "Azure app registration client secret."
 }
 
+variable "resource_group_name" {
+  type        = string
+  description = "Azure resource group name."
+}
+
+variable "resource_group_region" {
+  type        = string
+  description = "Azure resource group region."
+}
+
 variable "subscription_id" {
   type        = string
   description = "Azure subscription ID."
@@ -68,5 +78,7 @@ resource "polaris_azure_subscription" "subscription" {
     regions = [
       "eastus2"
     ]
+    resource_group_name   = var.resource_group_name
+    resource_group_region = var.resource_group_region
   }
 }
