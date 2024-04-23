@@ -9,7 +9,7 @@ terraform {
   required_providers {
     azuread = {
       source  = "hashicorp/azuread"
-      version = "~>2.4.8"
+      version = "~>2.48.0"
     }
     azurerm = {
       source  = "hashicorp/azurerm"
@@ -60,7 +60,7 @@ data "polaris_azure_permissions" "permissions" {
   ]
 }
 
-resource "azurerm_role_definition" "default" {
+resource "azurerm_role_definition" "role_definition" {
   name  = "Terraform"
   scope = data.azurerm_subscription.subscription.id
 
@@ -73,29 +73,29 @@ resource "azurerm_role_definition" "default" {
 }
 
 # Note that the principal_id is the object id of the service principal.
-resource "azurerm_role_assignment" "default" {
+resource "azurerm_role_assignment" "role_assignment" {
   principal_id       = data.azuread_service_principal.service_principal.object_id
-  role_definition_id = azurerm_role_definition.default.role_definition_resource_id
+  role_definition_id = azurerm_role_definition.role_definition.role_definition_resource_id
   scope              = data.azurerm_subscription.subscription.id
 }
 
 resource "polaris_azure_service_principal" "service_principal" {
-  app_id        = data.azuread_application.application.client_id
-  app_name      = data.azuread_application.application.display_name
-  app_secret    = var.application_secret
-  tenant_domain = data.azuread_domains.aad_domains.domains.0.domain_name
-  tenant_id     = data.azuread_service_principal.service_principal.application_tenant_id
-  permissions   = data.polaris_azure_permissions.permissions.id
+  app_id           = data.azuread_application.application.client_id
+  app_name         = data.azuread_application.application.display_name
+  app_secret       = var.application_secret
+  tenant_domain    = data.azuread_domains.aad_domains.domains.0.domain_name
+  tenant_id        = data.azuread_service_principal.service_principal.application_tenant_id
+  permissions_hash = data.polaris_azure_permissions.permissions.hash
 
   # This resource must explicitly depend on the role definition and the role
   # assignment so that the role is updated before RSC is notified.
   depends_on = [
-    azurerm_role_definition.default,
-    azurerm_role_assignment.default,
+    azurerm_role_definition.role_definition,
+    azurerm_role_assignment.role_assignment,
   ]
 }
 
-resource "polaris_azure_subscription" "default" {
+resource "polaris_azure_subscription" "subscription" {
   subscription_id   = data.azurerm_subscription.subscription.subscription_id
   subscription_name = data.azurerm_subscription.subscription.display_name
   tenant_domain     = polaris_azure_service_principal.service_principal.tenant_domain
