@@ -8,7 +8,7 @@ terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = ">=0.8.0"
+      version = "=0.9.0-beta.2"
     }
   }
 }
@@ -75,10 +75,12 @@ resource "polaris_azure_subscription" "subscription" {
   tenant_domain     = polaris_azure_service_principal.tenant.tenant_domain
 
   cloud_native_protection {
-    regions = [
-      "eastus2"
-    ]
     resource_group_name   = var.resource_group_name
     resource_group_region = var.resource_group_region
+
+    regions = [
+      "eastus2",
+      "westus2"
+    ]
   }
 }
