@@ -1,13 +1,6 @@
 # Example showing how to onboard an Azure subscription and create an Exocompute
-# configuration for the subscription. Note that the same resource group is used
-# for both RSC features, this is not a requirement.
-#
-# The RSC service account is read from the
-# RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS environment variable.
-#
-# The Azure credentials is expected to be passed in using a custom service
-# principal file. For an explanation of the custom file format, see:
-# https://github.com/rubrikinc/rubrik-polaris-sdk-for-go?tab=readme-ov-file#azure-credentials
+# configuration for the subscription using an existing subscription and its
+# Exocompute resources.
 
 terraform {
   required_providers {
@@ -18,14 +11,25 @@ terraform {
   }
 }
 
-variable "azure_credentials" {
+variable "app_id" {
   type        = string
-  description = "Path to the custom service principal file."
+  description = "Azure app registration application ID. Also known as the client ID."
 }
 
-variable "pod_overlay_network_cidr" {
+variable "app_name" {
   type        = string
-  description = "CIDR address for the pod overlay network."
+  description = "Azure app registration display name."
+}
+
+variable "app_secret" {
+  type        = string
+  sensitive   = true
+  description = "Azure app registration client secret."
+}
+
+variable "host_cloud_account_id" {
+  type        = string
+  description = "Shared exocompute host RSC cloud account id."
 }
 
 variable "resource_group_name" {
@@ -38,11 +42,6 @@ variable "resource_group_region" {
   description = "Azure resource group region."
 }
 
-variable "subnet" {
-  type        = string
-  description = "Azure subnet."
-}
-
 variable "subscription_id" {
   type        = string
   description = "Azure subscription ID."
@@ -53,15 +52,23 @@ variable "subscription_name" {
   description = "Azure subscription name."
 }
 
+variable "tenant_id" {
+  type        = string
+  description = "Azure tenant ID. Also known as the directory ID."
+}
+
 variable "tenant_domain" {
   type        = string
-  description = "Azure tenant domain."
+  description = "Azure tenant primary domain."
 }
 
 provider "polaris" {}
 
 resource "polaris_azure_service_principal" "tenant" {
-  credentials   = var.azure_credentials
+  app_id        = var.app_id
+  app_name      = var.app_name
+  app_secret    = var.app_secret
+  tenant_id     = var.tenant_id
   tenant_domain = var.tenant_domain
 }
 
@@ -70,19 +77,17 @@ resource "polaris_azure_subscription" "subscription" {
   subscription_name = var.subscription_name
   tenant_domain     = polaris_azure_service_principal.tenant.tenant_domain
 
-  exocompute {
+  cloud_native_protection {
     resource_group_name   = var.resource_group_name
     resource_group_region = var.resource_group_region
 
     regions = [
-      "eastus2",
+      "eastus2"
     ]
   }
 }
 
-resource "polaris_azure_exocompute" "exocompute" {
-  cloud_account_id         = polaris_azure_subscription.subscription.id
-  pod_overlay_network_cidr = var.pod_overlay_network_cidr
-  region                   = "eastus2"
-  subnet                   = var.subnet
+resource "polaris_azure_exocompute" "shared_exocompute" {
+  cloud_account_id      = polaris_azure_subscription.subscription.id
+  host_cloud_account_id = var.host_cloud_account_id
 }
