@@ -15,6 +15,18 @@ terraform {
   }
 }
 
+variable "cluster_security_group_id" {
+  type        = string
+  description = "AWS cluster security group ID."
+  default     = null
+}
+
+variable "node_security_group_id" {
+  type        = string
+  description = "AWS node secruity group ID."
+  default     = null
+}
+
 variable "profile" {
   type        = string
   description = "AWS profile."
@@ -27,12 +39,12 @@ variable "vpc_id" {
 
 variable "subnet1" {
   type        = string
-  description = "AWS subnet 1."
+  description = "AWS subnet 1 ID."
 }
 
 variable "subnet2" {
   type        = string
-  description = "AWS subnet 2."
+  description = "AWS subnet 2 ID."
 }
 
 provider "polaris" {}
@@ -54,9 +66,11 @@ resource "polaris_aws_account" "account" {
 }
 
 resource "polaris_aws_exocompute" "exocompute" {
-  account_id = polaris_aws_account.account.id
-  region     = "us-east-2"
-  vpc_id     = var.vpc_id
+  account_id                = polaris_aws_account.account.id
+  cluster_security_group_id = var.cluster_security_group_id
+  node_security_group_id    = var.node_security_group_id
+  region                    = "us-east-2"
+  vpc_id                    = var.vpc_id
 
   subnets = [
     var.subnet1,
