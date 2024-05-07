@@ -22,14 +22,21 @@ terraform {
   }
 }
 
+variable "features" {
+  type        = set(string)
+  description = "List of features to enable."
+}
+
 variable "resource_group_name" {
   type        = string
   description = "Azure resource group name."
+  default     = "terraform-azure-permissions-example"
 }
 
 variable "resource_group_region" {
   type        = string
   description = "Azure resource group region."
+  default     = "eastus2"
 }
 
 provider "azuread" {}
@@ -48,8 +55,9 @@ data "azurerm_subscription" "subscription" {}
 
 data "polaris_account" "account" {}
 
-data "polaris_azure_permissions" "cloud_native_protection" {
-  feature = "CLOUD_NATIVE_PROTECTION"
+data "polaris_azure_permissions" "features" {
+  for_each = var.features
+  feature  = each.key
 }
 
 resource "azuread_application" "application" {
@@ -69,47 +77,57 @@ resource "azuread_service_principal_password" "service_principal_secret" {
 
 # Create the resource group where all artifacts from the Cloud Native Protection
 # feature will be stored.
-resource "azurerm_resource_group" "cloud_native_protection" {
+resource "azurerm_resource_group" "default" {
   name     = var.resource_group_name
   location = var.resource_group_region
 }
 
 # Create and assign the subscription level role definition.
 resource "azurerm_role_definition" "subscription" {
-  name  = "Terraform - ${data.polaris_account.account.name} - Subscription Level"
-  scope = data.azurerm_subscription.subscription.id
+  for_each = data.polaris_azure_permissions.features
+  name     = "Terraform ${data.polaris_account.account.name} ${each.value.feature} Subscription Level"
+  scope    = data.azurerm_subscription.subscription.id
 
-  permissions {
-    actions          = data.polaris_azure_permissions.cloud_native_protection.subscription_actions
-    data_actions     = data.polaris_azure_permissions.cloud_native_protection.subscription_data_actions
-    not_actions      = data.polaris_azure_permissions.cloud_native_protection.subscription_not_actions
-    not_data_actions = data.polaris_azure_permissions.cloud_native_protection.subscription_not_data_actions
+  dynamic "permissions" {
+    for_each = length(concat(each.value.subscription_actions, each.value.subscription_data_actions, each.value.subscription_not_actions, each.value.subscription_not_data_actions)) > 0 ? [1] : []
+    content {
+      actions          = each.value.subscription_actions
+      data_actions     = each.value.subscription_data_actions
+      not_actions      = each.value.subscription_not_actions
+      not_data_actions = each.value.subscription_not_data_actions
+    }
   }
 }
 
 resource "azurerm_role_assignment" "subscription" {
+  for_each           = data.polaris_azure_permissions.features
   principal_id       = azuread_service_principal.service_principal.object_id
-  role_definition_id = azurerm_role_definition.subscription.role_definition_resource_id
+  role_definition_id = azurerm_role_definition.subscription[each.key].role_definition_resource_id
   scope              = data.azurerm_subscription.subscription.id
 }
 
 # Create and assign the resource group level role definition.
 resource "azurerm_role_definition" "resource_group" {
-  name  = "Terraform - ${data.polaris_account.account.name} - Resource Group Level"
-  scope = azurerm_resource_group.cloud_native_protection.id
+  for_each = data.polaris_azure_permissions.features
+  name     = "Terraform ${data.polaris_account.account.name} ${each.value.feature} Resource Group Level"
+  scope    = azurerm_resource_group.default.id
 
-  permissions {
-    actions          = data.polaris_azure_permissions.cloud_native_protection.resource_group_actions
-    data_actions     = data.polaris_azure_permissions.cloud_native_protection.resource_group_data_actions
-    not_actions      = data.polaris_azure_permissions.cloud_native_protection.resource_group_not_actions
-    not_data_actions = data.polaris_azure_permissions.cloud_native_protection.resource_group_not_data_actions
+  dynamic "permissions" {
+    for_each = length(concat(each.value.resource_group_actions, each.value.resource_group_data_actions, each.value.resource_group_not_actions, each.value.resource_group_not_data_actions)) > 0 ? [1] : []
+    content {
+      actions          = each.value.resource_group_actions
+      data_actions     = each.value.resource_group_data_actions
+      not_actions      = each.value.resource_group_not_actions
+      not_data_actions = each.value.resource_group_not_data_actions
+    }
   }
 }
 
 resource "azurerm_role_assignment" "resource_group" {
+  for_each           = data.polaris_azure_permissions.features
   principal_id       = azuread_service_principal.service_principal.object_id
-  role_definition_id = azurerm_role_definition.resource_group.role_definition_resource_id
-  scope              = azurerm_resource_group.cloud_native_protection.id
+  role_definition_id = azurerm_role_definition.resource_group[each.key].role_definition_resource_id
+  scope              = azurerm_resource_group.default.id
 }
 
 # Onboard the service principal to RSC.
@@ -127,14 +145,30 @@ resource "polaris_azure_subscription" "subscription" {
   subscription_name = data.azurerm_subscription.subscription.display_name
   tenant_domain     = polaris_azure_service_principal.service_principal.tenant_domain
 
-  cloud_native_protection {
-    permissions           = data.polaris_azure_permissions.cloud_native_protection.id
-    resource_group_name   = azurerm_resource_group.cloud_native_protection.name
-    resource_group_region = azurerm_resource_group.cloud_native_protection.location
+  dynamic "cloud_native_protection" {
+    for_each = contains(var.features, "CLOUD_NATIVE_PROTECTION") ? [1] : []
+    content {
+      permissions           = data.polaris_azure_permissions.features["CLOUD_NATIVE_PROTECTION"].id
+      resource_group_name   = var.resource_group_name
+      resource_group_region = var.resource_group_region
+      regions               = ["eastus2"]
+    }
+  }
 
-    regions = [
-      "eastus2",
-    ]
+  dynamic "sql_db_protection" {
+    for_each = contains(var.features, "AZURE_SQL_DB_PROTECTION") ? [1] : []
+    content {
+      permissions = data.polaris_azure_permissions.features["AZURE_SQL_DB_PROTECTION"].id
+      regions     = ["eastus2"]
+    }
+  }
+
+  dynamic "sql_mi_protection" {
+    for_each = contains(var.features, "AZURE_SQL_MI_PROTECTION") ? [1] : []
+    content {
+      permissions = data.polaris_azure_permissions.features["AZURE_SQL_MI_PROTECTION"].id
+      regions     = ["eastus2"]
+    }
   }
 
   # This resource must explicitly depend on the role definition and the role
