@@ -17,7 +17,7 @@ terraform {
     }
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "=0.9.0-beta.2"
+      version = "=0.9.0-beta.7"
     }
   }
 }
@@ -25,6 +25,12 @@ terraform {
 variable "features" {
   type        = set(string)
   description = "List of features to enable."
+}
+
+variable "managed_identity_name" {
+  type        = string
+  description = "Azure user assigned managed identity name."
+  default     = "terraform-managed-identity"
 }
 
 variable "resource_group_name" {
@@ -60,6 +66,7 @@ data "polaris_azure_permissions" "features" {
   feature  = each.key
 }
 
+# Create an Azure AD application and service principal with a secret.
 resource "azuread_application" "application" {
   display_name = "RSC application - ${data.polaris_account.account.name}"
   web {
@@ -75,17 +82,22 @@ resource "azuread_service_principal_password" "service_principal_secret" {
   service_principal_id = azuread_service_principal.service_principal.object_id
 }
 
-# Create the resource group where all artifacts from the Cloud Native Protection
-# feature will be stored.
-resource "azurerm_resource_group" "default" {
+# Create the resource group where all RSC artifacts will be stored.
+resource "azurerm_resource_group" "resource_group" {
   name     = var.resource_group_name
   location = var.resource_group_region
+}
+
+resource "azurerm_user_assigned_identity" "managed_identity" {
+  location            = azurerm_resource_group.resource_group.location
+  name                = var.managed_identity_name
+  resource_group_name = azurerm_resource_group.resource_group.name
 }
 
 # Create and assign the subscription level role definition.
 resource "azurerm_role_definition" "subscription" {
   for_each = data.polaris_azure_permissions.features
-  name     = "Terraform ${data.polaris_account.account.name} ${each.value.feature} Subscription Level"
+  name     = "Terraform - Azure Permissions Example Subscription Level - ${each.value.feature}"
   scope    = data.azurerm_subscription.subscription.id
 
   dynamic "permissions" {
@@ -109,8 +121,8 @@ resource "azurerm_role_assignment" "subscription" {
 # Create and assign the resource group level role definition.
 resource "azurerm_role_definition" "resource_group" {
   for_each = data.polaris_azure_permissions.features
-  name     = "Terraform ${data.polaris_account.account.name} ${each.value.feature} Resource Group Level"
-  scope    = azurerm_resource_group.default.id
+  name     = "Terraform - Azure Permissions Example Resource Group Level - ${each.value.feature}"
+  scope    = azurerm_resource_group.resource_group.id
 
   dynamic "permissions" {
     for_each = length(concat(each.value.resource_group_actions, each.value.resource_group_data_actions, each.value.resource_group_not_actions, each.value.resource_group_not_data_actions)) > 0 ? [1] : []
@@ -127,7 +139,7 @@ resource "azurerm_role_assignment" "resource_group" {
   for_each           = data.polaris_azure_permissions.features
   principal_id       = azuread_service_principal.service_principal.object_id
   role_definition_id = azurerm_role_definition.resource_group[each.key].role_definition_resource_id
-  scope              = azurerm_resource_group.default.id
+  scope              = azurerm_resource_group.resource_group.id
 }
 
 # Onboard the service principal to RSC.
@@ -149,6 +161,40 @@ resource "polaris_azure_subscription" "subscription" {
     for_each = contains(var.features, "CLOUD_NATIVE_PROTECTION") ? [1] : []
     content {
       permissions           = data.polaris_azure_permissions.features["CLOUD_NATIVE_PROTECTION"].id
+      resource_group_name   = var.resource_group_name
+      resource_group_region = var.resource_group_region
+      regions               = ["eastus2"]
+    }
+  }
+
+  dynamic "cloud_native_archival" {
+    for_each = contains(var.features, "CLOUD_NATIVE_ARCHIVAL") ? [1] : []
+    content {
+      permissions           = data.polaris_azure_permissions.features["CLOUD_NATIVE_ARCHIVAL"].id
+      resource_group_name   = var.resource_group_name
+      resource_group_region = var.resource_group_region
+      regions               = ["eastus2"]
+    }
+  }
+
+  dynamic "cloud_native_archival_encryption" {
+    for_each = contains(var.features, "CLOUD_NATIVE_ARCHIVAL_ENCRYPTION") ? [1] : []
+    content {
+      permissions                                        = data.polaris_azure_permissions.features["CLOUD_NATIVE_ARCHIVAL_ENCRYPTION"].id
+      resource_group_name                                = var.resource_group_name
+      resource_group_region                              = var.resource_group_region
+      regions                                            = ["eastus2"]
+      user_assigned_managed_identity_name                = azurerm_user_assigned_identity.managed_identity.name
+      user_assigned_managed_identity_principal_id        = azurerm_user_assigned_identity.managed_identity.principal_id
+      user_assigned_managed_identity_region              = azurerm_user_assigned_identity.managed_identity.location
+      user_assigned_managed_identity_resource_group_name = azurerm_user_assigned_identity.managed_identity.resource_group_name
+    }
+  }
+
+  dynamic "exocompute" {
+    for_each = contains(var.features, "EXOCOMPUTE") ? [1] : []
+    content {
+      permissions           = data.polaris_azure_permissions.features["EXOCOMPUTE"].id
       resource_group_name   = var.resource_group_name
       resource_group_region = var.resource_group_region
       regions               = ["eastus2"]

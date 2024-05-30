@@ -161,7 +161,7 @@ resource "polaris_aws_cnp_account_attachments" "attachments" {
     for_each = aws_iam_instance_profile.profile
     content {
       key  = instance_profile.key
-      name = instance_profile.value["name"]
+      name = instance_profile.value["arn"]
     }
   }
 
