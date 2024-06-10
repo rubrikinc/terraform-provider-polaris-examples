@@ -13,7 +13,7 @@ terraform {
     }
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "=0.9.0-beta.2"
+      version = "=0.9.0-beta.7"
     }
   }
 }
@@ -61,7 +61,7 @@ resource "azurerm_resource_group" "cloud_native_protection" {
 
 # Create and assign the subscription level role definition.
 resource "azurerm_role_definition" "subscription" {
-  name  = "Terraform - ${data.polaris_account.account.name} - Subscription Level"
+  name  = "Terraform - Azure Two Teams Example Subscription Level - Cloud Native Protection"
   scope = data.azurerm_subscription.subscription.id
 
   permissions {
@@ -80,7 +80,7 @@ resource "azurerm_role_assignment" "subscription" {
 
 # Create and assign the resource group level role definition.
 resource "azurerm_role_definition" "resource_group" {
-  name  = "Terraform - ${data.polaris_account.account.name} - Resource Group Level"
+  name  = "Terraform - Azure Two Teams Example Resource Group Level - Cloud Native Protection"
   scope = azurerm_resource_group.cloud_native_protection.id
 
   permissions {

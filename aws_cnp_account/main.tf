@@ -73,8 +73,15 @@ provider "polaris" {}
 
 # Lookup the instance profiles and roles needed for the specified RSC features.
 data "polaris_aws_cnp_artifacts" "artifacts" {
-  cloud    = var.cloud
-  features = var.features.*.name
+  cloud = var.cloud
+
+  dynamic "feature" {
+    for_each = var.features
+    content {
+      name              = feature.value["name"]
+      permission_groups = feature.value["permission_groups"]
+    }
+  }
 }
 
 # Lookup the permission set, customer managed policies and managed policies,
@@ -83,8 +90,16 @@ data "polaris_aws_cnp_permissions" "permissions" {
   for_each               = data.polaris_aws_cnp_artifacts.artifacts.role_keys
   cloud                  = data.polaris_aws_cnp_artifacts.artifacts.cloud
   ec2_recovery_role_path = var.ec2_recovery_role_path
-  features               = data.polaris_aws_cnp_artifacts.artifacts.features
   role_key               = each.key
+
+  dynamic "feature" {
+    for_each = var.features
+    content {
+      name              = feature.value["name"]
+      permission_groups = feature.value["permission_groups"]
+    }
+  }
+
 }
 
 # Create the RSC AWS cloud account.
@@ -146,7 +161,7 @@ resource "polaris_aws_cnp_account_attachments" "attachments" {
     for_each = aws_iam_instance_profile.profile
     content {
       key  = instance_profile.key
-      name = instance_profile.value["name"]
+      name = instance_profile.value["arn"]
     }
   }
 
