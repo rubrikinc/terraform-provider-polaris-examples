@@ -50,6 +50,10 @@ resource "polaris_aws_account" "accounts" {
   profile = each.key
 
   cloud_native_protection {
+    permission_groups = [
+      "BASIC",
+    ]
+
     regions = split(",", each.value.regions)
   }
 }
