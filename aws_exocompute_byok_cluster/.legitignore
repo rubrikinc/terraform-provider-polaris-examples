@@ -1,4 +1,6 @@
-# The following two secrets was accidentally included in a commit, they have
+# The following two secrets were accidentally included in a commit, they have
 # both been revoked.
 instance_DD75F76975D4B5E86400331C192E98A3
 instance_4C5D9F865BDF2DB3863DFA81D3C20FFF
+
+value_C2207F7377CFCEB513334378F625F535
