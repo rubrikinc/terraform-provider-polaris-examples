@@ -27,6 +27,10 @@ resource "polaris_aws_account" "account" {
   assume_role = var.role_arn
 
   cloud_native_protection {
+    permission_groups = [
+      "BASIC",
+    ]
+
     regions = [
       "us-east-2",
     ]
