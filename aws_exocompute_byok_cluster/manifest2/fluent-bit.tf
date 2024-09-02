@@ -20,6 +20,11 @@ locals {
 resource "kubernetes_manifest" "serviceaccount_fluent_bit" {
   manifest = one([for v in local.manifests_fluent_bit : v if v.kind == "ServiceAccount"])
 
+  computed_fields = [
+    "metadata.annotations",
+    "metadata.labels",
+  ]
+
   depends_on = [
     kubernetes_manifest.namespace,
   ]
@@ -28,6 +33,11 @@ resource "kubernetes_manifest" "serviceaccount_fluent_bit" {
 resource "kubernetes_manifest" "clusterrole_fluent_bit" {
   manifest = one([for v in local.manifests_fluent_bit : v if v.kind == "ClusterRole"])
 
+  computed_fields = [
+    "metadata.annotations",
+    "metadata.labels",
+  ]
+
   depends_on = [
     kubernetes_manifest.namespace,
   ]
@@ -35,6 +45,11 @@ resource "kubernetes_manifest" "clusterrole_fluent_bit" {
 
 resource "kubernetes_manifest" "clusterrolebinding_fluent_bit" {
   manifest = one([for v in local.manifests_fluent_bit : v if v.kind == "ClusterRoleBinding"])
+
+  computed_fields = [
+    "metadata.annotations",
+    "metadata.labels",
+  ]
 
   depends_on = [
     kubernetes_manifest.serviceaccount_fluent_bit,
@@ -49,6 +64,11 @@ resource "kubernetes_manifest" "configmap_fluent_bit" {
 
   manifest = each.value
 
+  computed_fields = [
+    "metadata.annotations",
+    "metadata.labels",
+  ]
+
   depends_on = [
     kubernetes_manifest.namespace,
   ]
@@ -57,9 +77,10 @@ resource "kubernetes_manifest" "configmap_fluent_bit" {
 resource "kubernetes_manifest" "daemonset_fluent_bit" {
   manifest = one([for v in local.manifests_fluent_bit : v if v.kind == "DaemonSet"])
 
-  wait {
-    rollout = true
-  }
+  computed_fields = [
+    "metadata.annotations",
+    "metadata.labels",
+  ]
 
   depends_on = [
     kubernetes_manifest.clusterrolebinding_fluent_bit,

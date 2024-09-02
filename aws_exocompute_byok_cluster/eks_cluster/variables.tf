@@ -17,7 +17,7 @@ variable "aws_eks_enable_private_endpoint_access" {
 variable "aws_eks_kubernetes_version" {
   description = "Kubernetes version."
   type        = string
-  default     = "1.27"
+  default     = "1.29"
 }
 
 variable "aws_eks_master_node_role_arn" {
@@ -47,12 +47,6 @@ variable "aws_eks_worker_node_instance_type" {
   default     = "m5.xlarge"
 }
 
-#Remove
-variable "aws_eks_worker_node_role_arn" {
-  description = "AWS EKS worker node role ARN."
-  type        = string
-}
-
 variable "aws_exocompute_public_subnet_cidr" {
   type        = string
   description = "Public subnet CIDR for the AWS account hosting Exocompute."
@@ -71,12 +65,6 @@ variable "aws_exocompute_subnet_2_cidr" {
 variable "aws_exocompute_vpc_cidr" {
   type        = string
   description = "VPC CIDR for the AWS account hosting Exocompute."
-}
-
-#Remove
-variable "aws_iam_cross_account_role_arn" {
-  description = "AWS IAM cross account role ARN."
-  type        = string
 }
 
 variable "aws_name_prefix" {

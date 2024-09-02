@@ -4,7 +4,7 @@ terraform {
       source = "hashicorp/aws"
     }
     polaris = {
-      source = "terraform.rubrik.com/rubrikinc/polaris"
+      source = "rubrikinc/polaris"
     }
   }
 }
