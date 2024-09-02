@@ -41,12 +41,21 @@ resource "polaris_aws_account" "account" {
   profile = var.profile
 
   cloud_native_protection {
+    permission_groups = [
+      "BASIC",
+    ]
+
     regions = [
       "us-east-2",
     ]
   }
 
   exocompute {
+    permission_groups = [
+      "BASIC",
+      "RSC_MANAGED_CLUSTER",
+    ]
+
     regions = [
       "us-east-2",
     ]
