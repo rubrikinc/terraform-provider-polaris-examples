@@ -80,7 +80,7 @@ data "azurerm_subscription" "subscription" {}
 resource "azuread_service_principal_password" "service_principal_secret" {
   display_name         = var.app_secret_name
   service_principal_id = data.azuread_service_principal.service_principal.object_id
-  end_date_relative    = "7d"
+  end_date_relative    = "168h"
 }
 
 # Create the resource group where all RSC Cloud Native Protection artifacts
