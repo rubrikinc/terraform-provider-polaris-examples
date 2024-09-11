@@ -9,6 +9,6 @@ To use the `kubectl` command manually on the jumpbox, use the provided
 kubectl --kubeconfig=kubeconfig get pods -A
 ```
 
-> [INFO]
+> [!INFO]
 > The Terraform state for the configuration is stored in an AWS S3 bucket so it
 > survives if the EC2 instance gets recreated.
