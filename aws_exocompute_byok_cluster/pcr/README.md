@@ -25,9 +25,10 @@ Options:
 -r, --registry          URL of ECR registry where repositories will be created (e.g. 123456789012.dkr.ecr.us-east-1.amazonaws.com) [REQUIRED]
 -n, --namespace         Namespace of ECR repositories (e.g. rsc) [REQUIRED]
 -e, --eks-version       Version of the EKS cluster using the ECR registry (e.g. 1.29) [REQUIRED]
+-t, --tag               Override the tag specified in the image bundle [OPTIONAL]
 ```
 The `-s`, `-r`, `-n` and `-e` command line options are all required when running the tool.
 
 > [TIP]
-> Pulling images from the RSC container registry sometimes time out. If this
-> happens, it should be possible to simply restart the tool.
+> Pulling and pushing images sometimes time out. If this happens it's safe to
+> simply restart the tool.
