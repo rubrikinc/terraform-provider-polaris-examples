@@ -1,0 +1,22 @@
+terraform {
+  backend "s3" {
+    access_key = "${aws_access_key}"
+    secret_key = "${aws_secret_key}"
+    region     = "${aws_region}"
+    bucket     = "${jumpbox_data}"
+    key        = "jumpbox-terraform-state"
+  }
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~>5.26.0"
+    }
+  }
+}
+
+provider "aws" {
+    access_key = "${aws_access_key}"
+    secret_key = "${aws_secret_key}"
+    region     = "${aws_region}"
+}
