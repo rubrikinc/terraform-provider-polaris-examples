@@ -29,6 +29,6 @@ Options:
 ```
 The `-s`, `-r`, `-n` and `-e` command line options are all required when running the tool.
 
-> [TIP]
+> [!TIP]
 > Pulling and pushing images sometimes time out. If this happens it's safe to
 > simply restart the tool.
