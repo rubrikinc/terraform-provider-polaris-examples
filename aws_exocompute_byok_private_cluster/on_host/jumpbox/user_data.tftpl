@@ -1,0 +1,40 @@
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="==MYBOUNDARY=="
+
+--==MYBOUNDARY==
+Content-Type: text/x-shellscript; charset="us-ascii"
+
+#!/bin/bash
+set -o xtrace
+
+# Install unzip.
+sudo apt-get upgrade -y
+sudo apt-get install unzip -y
+
+# Install AWS CLI
+curl -O https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+unzip awscli-exe-linux-x86_64.zip
+sudo ./aws/install
+
+# Install kubectl
+curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.23.17/2024-01-04/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin/kubectl
+
+# Install IAM authenticator
+curl -O https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/aws-iam-authenticator
+chmod +x ./aws-iam-authenticator
+sudo mv ./aws-iam-authenticator /usr/local/bin
+
+# Install Terraform
+curl -O https://releases.hashicorp.com/terraform/1.9.5/terraform_1.9.5_linux_amd64.zip
+unzip terraform_1.9.5_linux_amd64.zip
+chmod +x ./terraform
+sudo mv ./terraform /usr/local/bin
+
+# Unzip the on on_jumpbox TF configuration
+echo "${on_jumpbox_zip}" | base64 -d > /home/ubuntu/on_jumpbox.zip
+chown -R ubuntu:ubuntu /home/ubuntu/on_jumpbox.zip
+unzip  -o /home/ubuntu/on_jumpbox.zip -d /home/ubuntu/on_jumpbox
+chown -R ubuntu:ubuntu /home/ubuntu/on_jumpbox
+--==MYBOUNDARY==--

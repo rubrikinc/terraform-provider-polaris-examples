@@ -74,14 +74,14 @@ resource "polaris_aws_exocompute_cluster_attachment" "cluster" {
 # Select one of the two modules below to deploy the K8s resources from the RSC
 # K8s manifest to the EKS cluster.
 
-# # Deploy K8s resource from the manifest using kubectl.
-# module "manifest" {
-#   source = "./manifest1"
-#
-#   eks_cluster_name   = module.cluster.aws_eks_cluster_name
-#   eks_cluster_region = data.aws_region.current.name
-#   manifest           = polaris_aws_exocompute_cluster_attachment.cluster.manifest
-# }
+# Deploy K8s resource from the manifest using kubectl.
+module "manifest" {
+  source = "./manifest1"
+
+  eks_cluster_name   = module.cluster.aws_eks_cluster_name
+  eks_cluster_region = data.aws_region.current.name
+  manifest           = polaris_aws_exocompute_cluster_attachment.cluster.manifest
+}
 
 # # Deploy K8s resource from the manifest using the Kubernetes TF provider.
 # module "manifest" {
