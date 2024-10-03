@@ -1,8 +1,11 @@
+# Example showing how to add an AWS data center cloud account and create an
+# Amazon S3 data center archival location.
+
 terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "=0.10.0-beta.3"
+      version = "=0.10.0-beta.4"
     }
     random = {
       source  = "hashicorp/random"
@@ -54,7 +57,6 @@ variable "cluster_id" {
   type        = string
 }
 
-# The RSA key should be a PEM encoded private RSA key.
 variable "rsa_key" {
   description = "RSA encryption key."
   type        = string

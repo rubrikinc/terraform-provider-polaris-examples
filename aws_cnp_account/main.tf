@@ -15,7 +15,7 @@ terraform {
     }
     polaris = {
       source  = "rubrikinc/polaris"
-      version = ">=0.8.0"
+      version = "=0.10.0-beta.4"
     }
   }
 }
@@ -172,4 +172,8 @@ resource "polaris_aws_cnp_account_attachments" "attachments" {
       arn = role.value["arn"]
     }
   }
+}
+
+output "cloud_account_id" {
+  value = polaris_aws_cnp_account.account.id
 }
