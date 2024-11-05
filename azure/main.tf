@@ -17,7 +17,7 @@ terraform {
     }
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "=0.10.0-beta.4"
+      version = "=0.10.0-beta.6"
     }
   }
 }
@@ -31,6 +31,12 @@ variable "managed_identity_name" {
   type        = string
   description = "Azure user assigned managed identity name."
   default     = "terraform-managed-identity"
+}
+
+variable "regions" {
+  type        = set(string)
+  description = "Azure regions to the RSC features for."
+  default     = ["eastus2"]
 }
 
 variable "resource_group_name" {
@@ -157,13 +163,21 @@ resource "polaris_azure_subscription" "subscription" {
   subscription_name = data.azurerm_subscription.subscription.display_name
   tenant_domain     = polaris_azure_service_principal.service_principal.tenant_domain
 
+  dynamic "cloud_native_blob_protection" {
+    for_each = contains(var.features, "CLOUD_NATIVE_BLOB_PROTECTION") ? [1] : []
+    content {
+      permissions           = data.polaris_azure_permissions.features["CLOUD_NATIVE_BLOB_PROTECTION"].id
+      regions               = var.regions
+    }
+  }
+
   dynamic "cloud_native_protection" {
     for_each = contains(var.features, "CLOUD_NATIVE_PROTECTION") ? [1] : []
     content {
       permissions           = data.polaris_azure_permissions.features["CLOUD_NATIVE_PROTECTION"].id
       resource_group_name   = var.resource_group_name
       resource_group_region = var.resource_group_region
-      regions               = ["eastus2"]
+      regions               = var.regions
     }
   }
 
@@ -173,7 +187,7 @@ resource "polaris_azure_subscription" "subscription" {
       permissions           = data.polaris_azure_permissions.features["CLOUD_NATIVE_ARCHIVAL"].id
       resource_group_name   = var.resource_group_name
       resource_group_region = var.resource_group_region
-      regions               = ["eastus2"]
+      regions               = var.regions
     }
   }
 
@@ -183,7 +197,7 @@ resource "polaris_azure_subscription" "subscription" {
       permissions                                        = data.polaris_azure_permissions.features["CLOUD_NATIVE_ARCHIVAL_ENCRYPTION"].id
       resource_group_name                                = var.resource_group_name
       resource_group_region                              = var.resource_group_region
-      regions                                            = ["eastus2"]
+      regions                                            = var.regions
       user_assigned_managed_identity_name                = azurerm_user_assigned_identity.managed_identity.name
       user_assigned_managed_identity_principal_id        = azurerm_user_assigned_identity.managed_identity.principal_id
       user_assigned_managed_identity_region              = azurerm_user_assigned_identity.managed_identity.location
@@ -197,7 +211,7 @@ resource "polaris_azure_subscription" "subscription" {
       permissions           = data.polaris_azure_permissions.features["EXOCOMPUTE"].id
       resource_group_name   = var.resource_group_name
       resource_group_region = var.resource_group_region
-      regions               = ["eastus2"]
+      regions               = var.regions
     }
   }
 
@@ -205,7 +219,7 @@ resource "polaris_azure_subscription" "subscription" {
     for_each = contains(var.features, "AZURE_SQL_DB_PROTECTION") ? [1] : []
     content {
       permissions = data.polaris_azure_permissions.features["AZURE_SQL_DB_PROTECTION"].id
-      regions     = ["eastus2"]
+      regions     = var.regions
     }
   }
 
@@ -213,7 +227,7 @@ resource "polaris_azure_subscription" "subscription" {
     for_each = contains(var.features, "AZURE_SQL_MI_PROTECTION") ? [1] : []
     content {
       permissions = data.polaris_azure_permissions.features["AZURE_SQL_MI_PROTECTION"].id
-      regions     = ["eastus2"]
+      regions     = var.regions
     }
   }
 
@@ -223,8 +237,4 @@ resource "polaris_azure_subscription" "subscription" {
     azurerm_role_definition.subscription,
     azurerm_role_definition.resource_group,
   ]
-}
-
-output "cloud_account_id" {
-  value = polaris_azure_subscription.subscription.id
 }
