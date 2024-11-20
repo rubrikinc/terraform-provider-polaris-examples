@@ -1,34 +1,27 @@
-# Example showing how to onboard an Azure subscription with a specific feature
-# and Terraform permissions management.
-
-# Example showing how to onboard multiple AWS accounts to RSC using a CSV file.
-# The RSC provider will create a CloudFormation stack in each account granting
-# RSC access.
+# Example showing how to onboard multiple Azure subscriptions to RSC using a CSV
+# file.
 #
-# Each AWS profile and the profile's default region are read from the standard
-# ~/.aws/credentials and ~/.aws/config files. The RSC service account is read
-# from the RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS environment variable.
+# The subscriptions.csv file should contain all Azure subscriptions to onboard
+# to RSC, using the following format:
 #
-# The accounts.csv file should contain all AWS accounts to onboard to RSC, using
-# the following format:
-#
-# profile,regions
-# "<profile-1>","<region-1>,<region-2>...<region-N>"
-# "<profile-2>","<region-1>,<region-2>...<region-N>"
+# subscription_id,features,regions,resource_group_name,resource_group_region
+# "<subscription-id-1>","<feature-1>,...,<feature-N>","<region-1>,...,<region-N>","<resource-group-name>","<resource-group-region>"
+# "<subscription-id-2>","<feature-1>,...,<feature-N>","<region-1>,...,<region-N>","<resource-group-name>","<resource-group-region>"
 #
 # E.g:
 #
-# profile,regions
-# "admin","us-east-2,us-west-2"
-# "devops","us-west-2,eu-north-1"
+# subscription_id,features,regions,resource_group_name,resource_group_region
+# "9fd78c2f-d502-4c56-8187-87526083bfa2","CLOUD_NATIVE_PROTECTION","eastus2","rsc-rg","eastus2"
+# "76a49db1-f241-4936-838f-dd39dbd429d1","CLOUD_NATIVE_PROTECTION,EXOCOMPUTE","eastus2,westus2","rsc-rg","eastus2"
 #
 # The header, the first line of the CSV file, must also be included in the CSV
 # file.
 #
-# After the accounts have been added they can be managed through the CSV file.
-# Removing an account from the CSV file followed by running terraform apply will
-# remove the account from RSC. Changing the regions for an account followed by
-# running terraform apply will update the regions in RSC.
+# After the subscriptions have been onboarded they can be managed through the
+# CSV file. Removing a subscription from the CSV file followed by running
+# terraform apply will remove the subscription from RSC. Changing the regions
+# for a subscription followed by running terraform apply will update the regions
+# in RSC.
 
 locals {
   subscriptions = csvdecode(file("subscriptions.csv"))
