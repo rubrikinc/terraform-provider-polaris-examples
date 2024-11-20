@@ -1,0 +1,3 @@
+subscription_id,features,regions,resource_group_name,resource_group_region
+"9fd78c2f-d502-4c56-8187-87526083bfa2","CLOUD_NATIVE_PROTECTION","eastus2","rsc-rg","eastus2"
+"76a49db1-f241-4936-838f-dd39dbd429d1","CLOUD_NATIVE_PROTECTION,EXOCOMPUTE","eastus2,westus2","rsc-rg","eastus2"
