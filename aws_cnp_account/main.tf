@@ -15,7 +15,7 @@ terraform {
     }
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "=0.10.0-beta.4"
+      version = "=0.10.0-beta.8"
     }
   }
 }
@@ -88,7 +88,7 @@ data "polaris_aws_cnp_artifacts" "artifacts" {
 # for each role given the current set of features.
 data "polaris_aws_cnp_permissions" "permissions" {
   for_each               = data.polaris_aws_cnp_artifacts.artifacts.role_keys
-  cloud                  = data.polaris_aws_cnp_artifacts.artifacts.cloud
+  cloud                  = var.cloud
   ec2_recovery_role_path = var.ec2_recovery_role_path
   role_key               = each.key
 
@@ -104,7 +104,7 @@ data "polaris_aws_cnp_permissions" "permissions" {
 
 # Create the RSC AWS cloud account.
 resource "polaris_aws_cnp_account" "account" {
-  cloud       = data.polaris_aws_cnp_artifacts.artifacts.cloud
+  cloud       = var.cloud
   external_id = var.external_id
   name        = var.name
   native_id   = var.native_id
@@ -123,8 +123,8 @@ resource "polaris_aws_cnp_account" "account" {
 resource "polaris_aws_cnp_account_trust_policy" "trust_policy" {
   for_each    = data.polaris_aws_cnp_artifacts.artifacts.role_keys
   account_id  = polaris_aws_cnp_account.account.id
-  features    = polaris_aws_cnp_account.account.feature.*.name
-  external_id = polaris_aws_cnp_account.account.external_id
+  features    = var.features.*.name
+  external_id = var.external_id
   role_key    = each.key
 }
 
@@ -155,7 +155,7 @@ resource "aws_iam_instance_profile" "profile" {
 # Attach the instance profiles and the roles to the RSC cloud account.
 resource "polaris_aws_cnp_account_attachments" "attachments" {
   account_id = polaris_aws_cnp_account.account.id
-  features   = polaris_aws_cnp_account.account.feature.*.name
+  features   = var.features.*.name
 
   dynamic "instance_profile" {
     for_each = aws_iam_instance_profile.profile
@@ -168,8 +168,9 @@ resource "polaris_aws_cnp_account_attachments" "attachments" {
   dynamic "role" {
     for_each = aws_iam_role.role
     content {
-      key = role.key
-      arn = role.value["arn"]
+      key         = role.key
+      arn         = role.value["arn"]
+      permissions = data.polaris_aws_cnp_permissions.permissions[role.key].id
     }
   }
 }
