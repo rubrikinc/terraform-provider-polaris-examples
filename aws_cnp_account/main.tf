@@ -15,7 +15,7 @@ terraform {
     }
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "=0.10.0-beta.8"
+      version = "=0.10.0-beta.9"
     }
   }
 }
@@ -99,7 +99,6 @@ data "polaris_aws_cnp_permissions" "permissions" {
       permission_groups = feature.value["permission_groups"]
     }
   }
-
 }
 
 # Create the RSC AWS cloud account.
