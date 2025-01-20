@@ -106,7 +106,7 @@ resource "azurerm_user_assigned_identity" "managed_identity" {
 # Create and assign the subscription level role definition.
 resource "azurerm_role_definition" "subscription" {
   for_each = data.polaris_azure_permissions.features
-  name     = "Terraform2 - Azure Permissions Example Subscription Level - ${each.value.feature}"
+  name     = "Terraform - Azure Permissions Example Subscription Level - ${each.value.feature}"
   scope    = data.azurerm_subscription.subscription.id
 
   dynamic "permissions" {
@@ -130,7 +130,7 @@ resource "azurerm_role_assignment" "subscription" {
 # Create and assign the resource group level role definition.
 resource "azurerm_role_definition" "resource_group" {
   for_each = data.polaris_azure_permissions.features
-  name     = "Terraform2 - Azure Permissions Example Resource Group Level - ${each.value.feature}"
+  name     = "Terraform - Azure Permissions Example Resource Group Level - ${each.value.feature}"
   scope    = azurerm_resource_group.resource_group.id
 
   dynamic "permissions" {
