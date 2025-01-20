@@ -17,7 +17,7 @@ terraform {
     }
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "=0.10.0-beta.4"
+      version = "=0.10.0-beta.10"
     }
   }
 }
@@ -31,6 +31,16 @@ variable "app_secret_name" {
   type        = string
   description = "Azure app registration client secret name."
   default     = "terraform-azure-example"
+}
+
+variable "permission_groups" {
+  type        = set(string)
+  description = "Permission groups for the Cloud Native Protection RSC feature."
+  default = [
+    "BASIC",
+    "EXPORT_AND_RESTORE",
+    "FILE_LEVEL_RECOVERY",
+  ]
 }
 
 variable "resource_group_name" {
@@ -85,7 +95,8 @@ resource "azurerm_resource_group" "cloud_native_protection" {
 }
 
 data "polaris_azure_permissions" "cloud_native_protection" {
-  feature = "CLOUD_NATIVE_PROTECTION"
+  feature           = "CLOUD_NATIVE_PROTECTION"
+  permission_groups = var.permission_groups
 }
 
 # Create and assign the subscription level role definition.
@@ -140,6 +151,7 @@ resource "polaris_azure_subscription" "subscription" {
   tenant_domain     = polaris_azure_service_principal.tenant.tenant_domain
 
   cloud_native_protection {
+    permission_groups     = var.permission_groups
     resource_group_name   = var.resource_group_name
     resource_group_region = var.resource_group_region
     regions               = var.regions_to_protect

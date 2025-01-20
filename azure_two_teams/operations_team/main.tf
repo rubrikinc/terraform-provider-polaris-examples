@@ -13,24 +13,36 @@ terraform {
     }
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "=0.9.0-beta.7"
+      version = "=0.10.0-beta.10"
     }
   }
 }
 
-variable "service_principal_object_id" {
-  type        = string
-  description = "Azure service principal object ID."
+variable "permission_groups" {
+  type        = set(string)
+  description = "Permission groups for the Cloud Native Protection RSC feature."
+  default = [
+    "BASIC",
+    "EXPORT_AND_RESTORE",
+    "FILE_LEVEL_RECOVERY",
+  ]
 }
 
 variable "resource_group_name" {
   type        = string
   description = "Azure resource group name."
+  default     = "terraform-azure-permissions-example"
 }
 
 variable "resource_group_region" {
   type        = string
   description = "Azure resource group region."
+  default     = "eastus2"
+}
+
+variable "service_principal_object_id" {
+  type        = string
+  description = "Azure service principal object ID."
 }
 
 variable "tenant_domain" {
@@ -49,7 +61,8 @@ data "azurerm_subscription" "subscription" {}
 data "polaris_account" "account" {}
 
 data "polaris_azure_permissions" "cloud_native_protection" {
-  feature = "CLOUD_NATIVE_PROTECTION"
+  feature           = "CLOUD_NATIVE_PROTECTION"
+  permission_groups = var.permission_groups
 }
 
 # Create the resource group where all artifacts from the Cloud Native Protection
@@ -103,12 +116,10 @@ resource "polaris_azure_subscription" "subscription" {
   tenant_domain     = var.tenant_domain
 
   cloud_native_protection {
+    permission_groups     = var.permission_groups
     resource_group_name   = azurerm_resource_group.cloud_native_protection.name
     resource_group_region = azurerm_resource_group.cloud_native_protection.location
-
-    regions = [
-      "eastus2"
-    ]
+    regions               = ["eastus2"]
   }
 
   # This resource must explicitly depend on the role definition and the role
