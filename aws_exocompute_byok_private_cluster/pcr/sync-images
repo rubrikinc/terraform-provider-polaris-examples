@@ -1,0 +1,194 @@
+#!/bin/bash
+
+# Check that all required commands are installed.
+commands="aws cut docker jq sed"
+for cmd in $commands; do
+  if ! command -v "$cmd" &> /dev/null; then
+    echo "The $cmd command must be installed"
+    exit 1
+  fi
+done
+
+# Parse command line options.
+POSITIONAL_ARGS=()
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -a|--abort-on-ecr-error)
+      ABORT_ON_ECR_ERROR="YES"
+      shift
+      ;;
+    -e|--eks-version)
+      EKS_VERSION="$2"
+      shift
+      shift
+      ;;
+    -h|--help)
+      HELP="YES"
+      shift
+      ;;
+    -n|--namespace)
+      NAMESPACE="$2"
+      shift
+      shift
+      ;;
+    -r|--registry)
+      REGISTRY="$2"
+      shift
+      shift
+      ;;
+    -s|--service-account)
+      SERVICE_ACCOUNT="$2"
+      shift
+      shift
+      ;;
+    -t|--tag)
+      TAG="$2"
+      shift
+      shift
+      ;;
+    -*)
+      echo "Unknown command line option: $1"
+      exit 1
+      ;;
+    *)
+      POSITIONAL_ARGS+=("$1")
+      shift
+      ;;
+  esac
+done
+set -- "${POSITIONAL_ARGS[@]}"
+
+# Show help message and exit if required.
+if [ "$ABORT_ON_ECR_ERROR" = "" ] && [ "$EKS_VERSION" = "" ] && [ "$NAMESPACE" = "" ] && [ "$REGISTRY" = "" ] && [ "$SERVICE_ACCOUNT" = "" ] && [ "$TAG" = "" ]; then
+  HELP="YES"
+fi
+if [ "$HELP" = "YES" ]; then
+  echo "usage: sync-images [OPTIONS]"
+  echo
+  echo "Synchronize an AWS ECR registry with the latest RSC Exocompute image bundle"
+  echo
+  echo "Options:"
+  echo "-a, --abort-on-error    Abort when creating an ECR repository fails, ignored by default to allow for existing repositories [OPTIONAL]"
+  echo "-h, --help              Shows this help message"
+  echo "-s, --service-account   RSC service account file [REQUIRED]"
+  echo "-r, --registry          URL of ECR registry where repositories will be created (e.g. 123456789012.dkr.ecr.us-east-1.amazonaws.com) [REQUIRED]"
+  echo "-n, --namespace         Namespace of ECR repositories (e.g. rsc) [REQUIRED]"
+  echo "-e, --eks-version       Version of the EKS cluster using the ECR registry (e.g. 1.29) [REQUIRED]"
+  echo "-t, --tag               Override the tag specified in the image bundle [OPTIONAL]"
+  echo
+  exit 0
+fi
+
+# Check that all required command line options have been specified.
+if [ "$SERVICE_ACCOUNT" = "" ]; then
+    echo "The -s|--service-account command line option must be specified"
+    exit 1
+elif [ "$REGISTRY" = "" ]; then
+  echo "The -r|--registry command line option must be specified"
+  exit 1
+elif [ "$NAMESPACE" = "" ]; then
+  echo "The -n|--namespace command line option must be specified"
+  exit 1
+elif [ "$EKS_VERSION" = "" ]; then
+  echo "The -e|--eks-version command line option must be specified"
+  exit 1
+fi
+
+# Fetch registry, version tag and images from RSC.
+echo "Reading image bundle from RSC"
+
+rsc_url="$(jq -r '.access_token_uri' "$SERVICE_ACCOUNT")"
+if ! result=$(curl "$rsc_url" --no-progress-meter -H "Content-Type: application/json" \
+  -d "$(jq -r '{grant_type: "client_credentials", client_id: .client_id, client_secret: .client_secret}' "$SERVICE_ACCOUNT")" 2>&1); then
+  printf "Failed to fetch access token from RSC:\n%b\n" "$result"
+  exit 1
+fi
+
+token="$(echo "$result" | jq -r '.access_token')"
+query="query ExotaskImageBundle(\$eksVersion: String) { exotaskImageBundle(input: {eksVersion: \$eksVersion}) { bundleVersion repoUrl bundleImages {name sha tag} } }"
+if ! result=$(curl "${rsc_url/client_token/graphql}" --no-progress-meter -H "Content-Type: application/json" -H "Authorization: Bearer $token" \
+  -d "{\"query\":\"$query\",\"variables\":{\"eksVersion\": \"$EKS_VERSION\"}}" 2>&1); then
+  printf "Failed to fetch container image list from RSC:\n%b\n" "$result"
+  exit 1
+fi
+
+if ! registry=$(printf "%s" "$result" | jq -r '.data.exotaskImageBundle.repoUrl' 2>&1); then
+  printf "Failed to extract the RSC registry URL from the GraphqQL result:\n%b\n" "$registry"
+  exit 1
+elif ! tag=$(printf "%s" "$result" | jq -r '.data.exotaskImageBundle.bundleVersion' 2>&1); then
+  printf "Failed to extract the image bundle tag from the GraphqQL result:\n%b\n" "$tag"
+  exit 1
+elif ! images=$(printf "%s" "$result" | jq -r '.data.exotaskImageBundle.bundleImages.[] | if .sha == "" then (.name + ":" + .tag) else (.name + "@sha256:" + .sha) end' 2>&1); then
+  printf "Failed to extract the image bundle from the GraphqQL result:\n%b\n" "$images"
+  exit 1
+fi
+
+if [ "$TAG" == "" ]; then
+  TAG="$tag"
+  echo "Will read images from the $registry container registry and tag them as $TAG"
+else
+  echo "Will read images from the $registry container registry and tag them as $TAG (overriding the $tag bundle tag)"
+fi
+
+# Verify that we can access AWS.
+if ! output=$(aws sts get-caller-identity 2>&1); then
+  printf "Failed to access AWS:\n%b\n" "$output"
+  exit 1
+fi
+
+# Create an ECR repository for each image. Tags are set to be immutable.
+# Errors are ignored by default to not fail on existing repositories.
+echo "Creating repositories for images in the $REGISTRY container registry"
+while read -r image; do
+  name=$(echo "$image" | sed -e 's/:/ /g' -e 's/@/ /g' | cut -d ' ' -f1)
+  echo "Creating $NAMESPACE/$name"
+  if ! output=$(aws ecr create-repository --repository-name="$NAMESPACE/$name" --image-tag-mutability=IMMUTABLE 2>&1); then
+    if [ "$ABORT_ON_ECR_ERROR" = "YES" ]; then
+      printf "Failed to create the $NAMESPACE/$name repository:\n%b\n" "$output"
+      exit 1
+    fi
+  fi
+done <<< "$images"
+
+# Login to the RSC container registry.
+echo "Logging in to the $registry registry"
+region=$(echo "$registry" | sed -nE 's/[0-9]+.dkr.ecr.(.+).amazonaws.com/\1/p')
+if ! output=$(aws ecr get-login-password --region "$region" | docker login --username AWS --password-stdin "$registry" 2>&1); then
+  printf "Failed to login to the $registry container registry:\n%b\n" "$output"
+  exit 1
+fi
+
+# Pull and tag images from the RSC container registry.
+while read -r image; do
+  name=$(echo "$image" | sed -e 's/:/ /g' -e 's/@/ /g' | cut -d ' ' -f1)
+
+  echo "Pulling the $registry/$image image"
+  if ! output=$(docker pull "$registry/$image" 2>&1); then
+    printf "Failed to pull the $image image from the $registry container registry:\n%b\n" "$output"
+    exit 1
+  fi
+
+  if ! output=$(docker tag "$registry/$image" "$REGISTRY/$NAMESPACE/$name:$TAG" 2>&1); then
+    printf "Failed to tag the $registry/$image image as $REGISTRY/$NAMESPACE/$name:$TAG:\n%b\n" "$output"
+    exit 1
+  fi
+done <<< "$images"
+
+# Login to the specified container registry.
+echo "Logging in to the $REGISTRY registry"
+region=$(echo "$REGISTRY" | sed -nE 's/[0-9]+.dkr.ecr.(.+).amazonaws.com/\1/p')
+if ! output=$(aws ecr get-login-password --region "$region" | docker login --username AWS --password-stdin "$REGISTRY" 2>&1); then
+  printf "Failed to login to the $REGISTRY container registry:\n%b\n" "$output"
+  exit 1
+fi
+
+# Push images to the specified container registry.
+while read -r image; do
+  name=$(echo "$image" | sed -e 's/:/ /g' -e 's/@/ /g' | cut -d ' ' -f1)
+
+  echo "Pushing the $REGISTRY/$NAMESPACE/$name:$TAG image"
+  if ! output=$(docker push "$REGISTRY/$NAMESPACE/$name:$TAG" 2>&1); then
+    printf "Failed to push the $NAMESPACE/$name:$TAG image to the $REGISTRY container registry:\n%b\n" "$output"
+    exit 1
+  fi
+done <<< "$images"

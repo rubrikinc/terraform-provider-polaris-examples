@@ -27,8 +27,9 @@ resource "polaris_aws_account" "account" {
 
   cloud_native_protection {
     permission_groups = [
-      "BASIC"
+      "BASIC",
     ]
+
     regions = [
       "us-east-2",
     ]

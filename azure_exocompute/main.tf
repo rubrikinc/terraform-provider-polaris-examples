@@ -1,74 +1,43 @@
-# Example showing how to onboard an Azure subscription and create an Exocompute
-# configuration for the subscription.
+# Example showing how to create an exocompute configuration for a subscription
+# already onboarded.
 #
-# The RSC service account is read from the
-# RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS environment variable.
-#
-# The Azure credentials is expected to be passed in using a custom service
-# principal file. For an explanation of the custom file format, see:
-# https://github.com/rubrikinc/rubrik-polaris-sdk-for-go?tab=readme-ov-file#azure-credentials
+# Use the azure example to onboard a subscription with the EXOCOMPUTE feature.
 
 terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = ">=0.8.0"
+      version = "=0.10.0-beta.4"
     }
   }
 }
 
-variable "azure_credentials" {
+variable "cloud_account_id" {
   type        = string
-  description = "Path to the custom service principal file."
+  description = "RSC cloud account ID of the subscription."
 }
 
-variable "subscription_id" {
+variable "pod_overlay_network_cidr" {
   type        = string
-  description = "Azure subscription ID."
+  description = "CIDR block for the exocompute pod overlay network."
 }
 
-variable "subscription_name" {
+variable "region" {
   type        = string
-  description = "Azure subscription name."
+  description = "Azure exocompute region."
+  default     = "eastus2"
 }
 
-variable "tenant_domain" {
+variable "subnet_id" {
   type        = string
-  description = "Azure tenant domain."
-}
-
-variable "subnet" {
-  type        = string
-  description = "Azure subnet."
+  description = "Azure subnet ID."
 }
 
 provider "polaris" {}
 
-resource "polaris_azure_service_principal" "tenant" {
-  credentials   = var.azure_credentials
-  tenant_domain = var.tenant_domain
-}
-
-resource "polaris_azure_subscription" "subscription" {
-  subscription_id   = var.subscription_id
-  subscription_name = var.subscription_name
-  tenant_domain     = polaris_azure_service_principal.tenant.tenant_domain
-
-  cloud_native_protection {
-    regions = [
-      "eastus2",
-    ]
-  }
-
-  exocompute {
-    regions = [
-      "eastus2",
-    ]
-  }
-}
-
 resource "polaris_azure_exocompute" "exocompute" {
-  subscription_id = polaris_azure_subscription.subscription.id
-  region          = "eastus2"
-  subnet          = var.subnet
+  cloud_account_id         = var.cloud_account_id
+  pod_overlay_network_cidr = var.pod_overlay_network_cidr
+  region                   = var.region
+  subnet                   = var.subnet_id
 }

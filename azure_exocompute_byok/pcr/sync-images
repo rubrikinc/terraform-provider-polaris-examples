@@ -1,0 +1,203 @@
+#!/bin/bash
+
+# Check that all required commands are installed.
+commands="az cut docker jq sed"
+for cmd in $commands; do
+  if ! command -v "$cmd" &> /dev/null; then
+    echo "The $cmd command must be installed"
+    exit 1
+  fi
+done
+
+# Parse command line options.
+POSITIONAL_ARGS=()
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -h|--help)
+      HELP="YES"
+      shift
+      ;;
+    --azure-app-id)
+      APP_ID="$2"
+      shift
+      shift
+      ;;
+    --azure-app-secret)
+      APP_SECRET="$2"
+      shift
+      shift
+      ;;
+    --azure-tenant-id)
+      TENANT_ID="$2"
+      shift
+      shift
+      ;;
+    --azure-registry)
+      REGISTRY="$2"
+      shift
+      shift
+      ;;
+    --rsc-service-account)
+      SERVICE_ACCOUNT="$2"
+      shift
+      shift
+      ;;
+    --namespace)
+      NAMESPACE="$2"
+      shift
+      shift
+      ;;
+    --tag)
+      TAG="$2"
+      shift
+      shift
+      ;;
+    -*)
+      echo "Unknown command line option: $1"
+      exit 1
+      ;;
+    *)
+      POSITIONAL_ARGS+=("$1")
+      shift
+      ;;
+  esac
+done
+set -- "${POSITIONAL_ARGS[@]}"
+
+# Show help message and exit if required.
+if [ "$APP_ID" = "" ] &&[ "$APP_SECRET" = "" ] &&[ "$TENANT_ID" = "" ] &&[ "$REGISTRY" = "" ] &&[ "$SERVICE_ACCOUNT" = "" ] &&[ "$NAMESPACE" = "" ]; then
+  HELP="YES"
+fi
+if [ "$HELP" = "YES" ]; then
+  echo "usage: sync-images [OPTIONS]"
+  echo
+  echo "Synchronize an Azure ACR container registry with the latest RSC Exocompute image bundle"
+  echo
+  echo "The Azure application provided must be the application provided to RSC to access the"
+  echo "image bundles. The application also requires AcrPush access to the specified Azure ACR"
+  echo "registry."
+  echo
+  echo "Options:"
+  echo "-h, --help              Shows this help message"
+  echo "--azure-app-id          Azure application ID [REQUIRED]"
+  echo "--azure-app-secret      Azure application secret [REQUIRED]"
+  echo "--azure-tenant-id       Azure tenant ID [REQUIRED]"
+  echo "--azure-registry        URL (login server) of the Azure ACR registry [REQUIRED]"
+  echo "--rsc-service-account   RSC service account file [REQUIRED]"
+  echo "--namespace             Namespace in registry (e.g. rubrik) [REQUIRED]"
+  echo "--tag                   Override the tag specified in the image bundle [OPTIONAL]"
+  echo
+  exit 0
+fi
+
+# Check that all required command line options have been specified.
+if [ "$APP_ID" = "" ]; then
+    echo "The --azure-app-id command line option must be specified"
+    exit 1
+elif [ "$APP_SECRET" = "" ]; then
+  echo "The --azure-app-secret command line option must be specified"
+  exit 1
+elif [ "$TENANT_ID" = "" ]; then
+  echo "The --azure-tenant-id command line option must be specified"
+  exit 1
+elif [ "$REGISTRY" = "" ]; then
+  echo "The --azure-registry command line option must be specified"
+  exit 1
+elif [ "$SERVICE_ACCOUNT" = "" ]; then
+  echo "The --rsc-service-account command line option must be specified"
+  exit 1
+elif [ "$NAMESPACE" = "" ]; then
+  echo "The --namespace command line option must be specified"
+  exit 1
+fi
+
+# Fetch registry, version tag and images from RSC.
+echo "Reading image bundle from RSC"
+
+rsc_url="$(jq -r '.access_token_uri' "$SERVICE_ACCOUNT")"
+if ! result=$(curl "$rsc_url" --no-progress-meter -H "Content-Type: application/json" \
+  -d "$(jq -r '{grant_type: "client_credentials", client_id: .client_id, client_secret: .client_secret}' "$SERVICE_ACCOUNT")" 2>&1); then
+  printf "Failed to fetch access token from RSC:\n%b\n" "$result"
+  exit 1
+fi
+
+token="$(echo "$result" | jq -r '.access_token')"
+query="query ExotaskImageBundle { exotaskImageBundle { azureImages { bundleImages {name sha tag} bundleVersion repoUrl } } }"
+if ! result=$(curl "${rsc_url/client_token/graphql}" --no-progress-meter -H "Content-Type: application/json" -H "Authorization: Bearer $token" \
+  -d "{\"query\":\"$query\"}" 2>&1); then
+  printf "Failed to fetch container image list from RSC:\n%b\n" "$result"
+  exit 1
+fi
+
+if ! registry=$(printf "%s" "$result" | jq -r '.data.exotaskImageBundle.azureImages.repoUrl' 2>&1); then
+  printf "Failed to extract the RSC registry URL from the GraphqQL result:\n%b\n" "$registry"
+  exit 1
+elif ! tag=$(printf "%s" "$result" | jq -r '.data.exotaskImageBundle.azureImages.bundleVersion' 2>&1); then
+  printf "Failed to extract the image bundle tag from the GraphqQL result:\n%b\n" "$tag"
+  exit 1
+elif ! images=$(printf "%s" "$result" | jq -r '.data.exotaskImageBundle.azureImages.bundleImages.[] | if .sha == "" then (.name + ":" + .tag) else (.name + "@sha256:" + .sha) end' 2>&1); then
+  printf "Failed to extract the image bundle from the GraphqQL result:\n%b\n" "$images"
+  exit 1
+fi
+
+if [ "$TAG" == "" ]; then
+  TAG="$tag"
+  echo "Will read images from the $registry container registry and tag them as $TAG"
+else
+  echo "Will read images from the $registry container registry and tag them as $TAG (overriding the $tag bundle tag)"
+fi
+
+# Login to Azure using the provided app credentials.
+echo "Logging in to Azure using the provided application credentials"
+if ! output=$(az login --service-principal -u "$APP_ID" -p "$APP_SECRET" -t "$TENANT_ID" 2>&1); then
+  printf "Failed to login to Azure with the provided application credentials:\n%b\n" "$output"
+  exit 1
+fi
+
+# Login to the RSC container registry.
+echo "Logging in to the $registry registry"
+if ! output=$(az acr login --name "$registry" -u "$APP_ID" -p "$APP_SECRET" 2>&1); then
+  printf "Failed to login to the $registry container registry:\n%b\n" "$output"
+  exit 1
+fi
+
+# Pull and tag images from the RSC container registry.
+while read -r image; do
+  name=$(echo "$image" | sed -e 's/:/ /g' -e 's/@/ /g' | cut -d ' ' -f1)
+
+  echo "Pulling the $registry/$image image"
+  if ! output=$(docker pull "$registry/$image" 2>&1); then
+    printf "Failed to pull the $image image from the $registry container registry:\n%b\n" "$output"
+    exit 1
+  fi
+
+  if ! output=$(docker tag "$registry/$image" "$REGISTRY/$NAMESPACE/$name:$TAG" 2>&1); then
+    printf "Failed to tag the $registry/$image image as $REGISTRY/$NAMESPACE/$name:$TAG:\n%b\n" "$output"
+    exit 1
+  fi
+done <<< "$images"
+
+# Login to the specified container registry.
+echo "Logging in to the $REGISTRY registry"
+if ! output=$(az acr login --name "$REGISTRY" 2>&1); then
+  printf "Failed to login to the $REGISTRY container registry:\n%b\n" "$output"
+  exit 1
+fi
+
+# Push images to the specified container registry.
+while read -r image; do
+  name=$(echo "$image" | sed -e 's/:/ /g' -e 's/@/ /g' | cut -d ' ' -f1)
+
+  echo "Pushing the $REGISTRY/$NAMESPACE/$name:$TAG image"
+  if ! output=$(docker push "$REGISTRY/$NAMESPACE/$name:$TAG" 2>&1); then
+    printf "Failed to push the $NAMESPACE/$name:$TAG image to the $REGISTRY container registry:\n%b\n" "$output"
+    exit 1
+  fi
+done <<< "$images"
+
+# Logout from Azure.
+echo "Logging out from Azure"
+if ! output=$(az logout --username "$APP_ID" 2>&1); then
+  printf "Failed to logout from Azure:\n%b\n" "$output"
+  exit 1
+fi
