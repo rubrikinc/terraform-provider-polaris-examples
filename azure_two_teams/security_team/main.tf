@@ -13,19 +13,9 @@ terraform {
     }
     polaris = {
       source  = "rubrikinc/polaris"
-      version = ">=0.8.0"
+      version = "=0.10.0-beta.10"
     }
   }
-}
-
-variable "application_id" {
-  type        = string
-  description = "Azure application ID. Also known as client ID."
-}
-
-variable "application_secret" {
-  type        = string
-  description = "Azure application secret. Also known as client secret."
 }
 
 provider "azuread" {}
@@ -36,18 +26,31 @@ data "azuread_domains" "aad_domains" {
   only_initial = true
 }
 
-data "azuread_application" "application" {
-  client_id = var.application_id
+data "polaris_account" "account" {}
+
+resource "azuread_application" "application" {
+  display_name = "RSC application - ${data.polaris_account.account.name}"
+  web {
+    homepage_url = "https://${data.polaris_account.account.fqdn}/setup_azure"
+  }
 }
 
-data "azuread_service_principal" "service_principal" {
-  client_id = var.application_id
+resource "azuread_service_principal" "service_principal" {
+  client_id = azuread_application.application.client_id
+}
+
+resource "azuread_service_principal_password" "service_principal_secret" {
+  service_principal_id = azuread_service_principal.service_principal.object_id
 }
 
 resource "polaris_azure_service_principal" "service_principal" {
-  app_id        = data.azuread_application.application.client_id
-  app_name      = data.azuread_application.application.display_name
-  app_secret    = var.application_secret
+  app_id        = azuread_application.application.client_id
+  app_name      = azuread_application.application.display_name
+  app_secret    = azuread_service_principal_password.service_principal_secret.value
   tenant_domain = data.azuread_domains.aad_domains.domains.0.domain_name
-  tenant_id     = data.azuread_service_principal.service_principal.application_tenant_id
+  tenant_id     = azuread_service_principal.service_principal.application_tenant_id
+}
+
+output "service_principal_object_id" {
+  value = azuread_service_principal.service_principal.object_id
 }
