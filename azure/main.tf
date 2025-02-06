@@ -17,7 +17,7 @@ terraform {
     }
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "=0.10.0-beta.10"
+      version = "=1.1.0-beta.2"
     }
   }
 }
@@ -244,7 +244,7 @@ resource "polaris_azure_subscription" "subscription" {
   # This resource must explicitly depend on the role definition and the role
   # assignment so that the role is updated before RSC is notified.
   depends_on = [
-    azurerm_role_definition.subscription,
-    azurerm_role_definition.resource_group,
+    azurerm_role_assignment.subscription,
+    azurerm_role_assignment.resource_group,
   ]
 }
