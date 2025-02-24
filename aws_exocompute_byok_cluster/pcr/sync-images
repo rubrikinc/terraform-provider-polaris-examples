@@ -46,6 +46,11 @@ while [[ $# -gt 0 ]]; do
       shift
       shift
       ;;
+    -x|--skip-images)
+      SKIP_IMAGES="$2"
+      shift
+      shift
+      ;;
     -*)
       echo "Unknown command line option: $1"
       exit 1
@@ -75,6 +80,7 @@ if [ "$HELP" = "YES" ]; then
   echo "-n, --namespace         Namespace of ECR repositories (e.g. rsc) [REQUIRED]"
   echo "-e, --eks-version       Version of the EKS cluster using the ECR registry (e.g. 1.29) [REQUIRED]"
   echo "-t, --tag               Override the tag specified in the image bundle [OPTIONAL]"
+  echo "-x, --skip-images       Skip the named images (e.g. cloudnative-exo-snapshot-reader,cloudnative-exo-backup-vm,...) [OPTIONAL]"
   echo
   exit 0
 fi
@@ -130,6 +136,10 @@ else
   echo "Will read images from the $registry container registry and tag them as $TAG (overriding the $tag bundle tag)"
 fi
 
+if [ "$SKIP_IMAGES" != "" ]; then
+  IFS="," read -r -a skip_images <<< "$SKIP_IMAGES"
+fi
+
 # Verify that we can access AWS.
 if ! output=$(aws sts get-caller-identity 2>&1); then
   printf "Failed to access AWS:\n%b\n" "$output"
@@ -141,6 +151,11 @@ fi
 echo "Creating repositories for images in the $REGISTRY container registry"
 while read -r image; do
   name=$(echo "$image" | sed -e 's/:/ /g' -e 's/@/ /g' | cut -d ' ' -f1)
+  if [[ ${skip_images[*]} =~ $name ]]; then
+    echo "Skipping $name"
+    continue
+  fi
+
   echo "Creating $NAMESPACE/$name"
   if ! output=$(aws ecr create-repository --repository-name="$NAMESPACE/$name" --image-tag-mutability=IMMUTABLE 2>&1); then
     if [ "$ABORT_ON_ECR_ERROR" = "YES" ]; then
@@ -161,6 +176,10 @@ fi
 # Pull and tag images from the RSC container registry.
 while read -r image; do
   name=$(echo "$image" | sed -e 's/:/ /g' -e 's/@/ /g' | cut -d ' ' -f1)
+  if [[ ${skip_images[*]} =~ $name ]]; then
+    echo "Skipping $name"
+    continue
+  fi
 
   echo "Pulling the $registry/$image image"
   if ! output=$(docker pull "$registry/$image" 2>&1); then
@@ -185,6 +204,11 @@ fi
 # Push images to the specified container registry.
 while read -r image; do
   name=$(echo "$image" | sed -e 's/:/ /g' -e 's/@/ /g' | cut -d ' ' -f1)
+  if [[ ${skip_images[*]} =~ $name ]]; then
+    echo "Skipping $name"
+    continue
+  fi
+
 
   echo "Pushing the $REGISTRY/$NAMESPACE/$name:$TAG image"
   if ! output=$(docker push "$REGISTRY/$NAMESPACE/$name:$TAG" 2>&1); then
