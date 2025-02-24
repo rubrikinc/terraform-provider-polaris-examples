@@ -13,7 +13,7 @@ terraform {
     }
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "=0.10.0-beta.10"
+      version = "=1.1.0-beta.2"
     }
   }
 }
@@ -102,6 +102,8 @@ resource "azurerm_role_definition" "resource_group" {
     not_actions      = data.polaris_azure_permissions.cloud_native_protection.resource_group_not_actions
     not_data_actions = data.polaris_azure_permissions.cloud_native_protection.resource_group_not_data_actions
   }
+}
+
 resource "azurerm_role_assignment" "resource_group" {
   principal_id       = var.service_principal_object_id
   role_definition_id = azurerm_role_definition.resource_group.role_definition_resource_id
