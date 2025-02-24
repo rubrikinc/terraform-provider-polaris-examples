@@ -26,6 +26,7 @@ Options:
 -n, --namespace         Namespace of ECR repositories (e.g. rsc) [REQUIRED]
 -e, --eks-version       Version of the EKS cluster using the ECR registry (e.g. 1.29) [REQUIRED]
 -t, --tag               Override the tag specified in the image bundle [OPTIONAL]
+-x, --skip-images       Skip the named images (e.g. cloudnative-exo-snapshot-reader,cloudnative-exo-backup-vm,...) [OPTIONAL]
 ```
 The `-s`, `-r`, `-n` and `-e` command line options are all required when running the tool.
 
