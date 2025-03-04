@@ -1,3 +1,11 @@
+terraform {
+  required_providers {
+    null = {
+      source  = "hashicorp/null"
+    }
+  }
+}
+
 # Make sure the kubectl configuration file contains the EKS cluster credentials.
 resource "null_resource" "update_kubeconfig" {
   triggers = {

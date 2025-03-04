@@ -1,3 +1,11 @@
+terraform {
+  required_providers {
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+    }
+  }
+}
+
 locals {
   # Filter the provided manifest, removing all fluent-bit manifests.
   manifests = [

@@ -127,3 +127,9 @@ variable "rsc_private_registry_url" {
   type        = string
   description = "URL to customer provided private container registry."
 }
+
+variable "manifest_module" {
+  type        = string
+  default     = "none"
+  description = "Module to deploy the RSC Kubernetes manifest with. Valid values are none, manifest1 and manifest2."
+}
