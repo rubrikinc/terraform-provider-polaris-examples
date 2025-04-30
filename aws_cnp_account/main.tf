@@ -1,11 +1,6 @@
-# Example showing how to onboard an AWS account to RSC using the new non-CFT
-# onboarding workflow. RSC will authenticate to AWS using a cross-account role
-# created by this configuration.
-#
-# The AWS default profile and the profile's default region are read from the
-# standard ~/.aws/credentials and ~/.aws/config files. The RSC service account
-# is read from the RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS environment
-# variable.
+# Example showing how to onboard an AWS account to RSC without using a
+# CloudFormation stack. RSC will authenticate to AWS using a cross-account role
+# created by the configuration.
 
 terraform {
   required_providers {
@@ -15,7 +10,7 @@ terraform {
     }
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "=0.10.0-beta.9"
+      version = ">=1.0.0"
     }
   }
 }

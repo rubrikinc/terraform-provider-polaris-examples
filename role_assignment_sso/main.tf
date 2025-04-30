@@ -1,4 +1,4 @@
-# Example showing how to assign a role to an RSC user.
+# Example showing how to assign a role to an SSO group.
 #
 # Note, when using multiple polaris_role_assignment resources to assign roles
 # to the same user or SSO group, there is a risk for a race condition when the
@@ -25,21 +25,21 @@ variable "role_name" {
   default     = "administrator"
 }
 
-variable "user_email" {
+variable "sso_group_name" {
   type        = string
-  description = "Email address of the user to assign the role to."
+  description = "Name of the SSO group to assign the role to."
 }
 
 data "polaris_role" "role" {
   name = var.role_name
 }
 
-data "polaris_user" "user" {
-  email = var.user_email
+data "polaris_sso_group" "sso_group" {
+  name = var.sso_group_name
 }
 
-resource "polaris_role_assignment" "user" {
-  user_id = data.polaris_user.user.id
+resource "polaris_role_assignment" "sso_group" {
+  sso_group_id = data.polaris_sso_group.sso_group.id
 
   role_ids = [
     data.polaris_role.role.id,

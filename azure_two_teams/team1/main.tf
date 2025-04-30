@@ -1,9 +1,4 @@
-# Example showing how to onboard an Azure service principal to RSC, independent
-# of an Azure subscription.
-#
-# The credentials for Azure are read from the shell environment. The RSC service
-# account is read from the RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS environment
-# variable.
+# Example showing how to onboard an Azure service principal to RSC.
 
 terraform {
   required_providers {
@@ -13,7 +8,7 @@ terraform {
     }
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "=0.10.0-beta.10"
+      version = ">=1.0.0"
     }
   }
 }
@@ -29,24 +24,26 @@ data "azuread_domains" "aad_domains" {
 data "polaris_account" "account" {}
 
 resource "azuread_application" "application" {
-  display_name = "RSC application - ${data.polaris_account.account.name}"
+  display_name            = "RSC application - ${data.polaris_account.account.name}"
+  prevent_duplicate_names = true
+
   web {
     homepage_url = "https://${data.polaris_account.account.fqdn}/setup_azure"
   }
+}
+
+resource "azuread_application_password" "password" {
+  application_id = azuread_application.application.id
 }
 
 resource "azuread_service_principal" "service_principal" {
   client_id = azuread_application.application.client_id
 }
 
-resource "azuread_service_principal_password" "service_principal_secret" {
-  service_principal_id = azuread_service_principal.service_principal.object_id
-}
-
 resource "polaris_azure_service_principal" "service_principal" {
   app_id        = azuread_application.application.client_id
   app_name      = azuread_application.application.display_name
-  app_secret    = azuread_service_principal_password.service_principal_secret.value
+  app_secret    = azuread_application_password.password.value
   tenant_domain = data.azuread_domains.aad_domains.domains.0.domain_name
   tenant_id     = azuread_service_principal.service_principal.application_tenant_id
 }

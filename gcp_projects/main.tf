@@ -1,9 +1,6 @@
 # Example showing how to onboard multiple GCP projects to RSC using a CSV file.
 #
-# The RSC service account is read from the
-# RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS environment variable.
-#
-# The projects.csv file should contain all GCP projects to add to RSC, using the
+# The projects.csv file should contain all GCP projects to onboard, using the
 # following format:
 #
 # project,credentials
@@ -28,7 +25,7 @@ terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = ">=0.8.0"
+      version = ">=1.0.0"
     }
   }
 }

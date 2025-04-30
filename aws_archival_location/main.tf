@@ -1,21 +1,19 @@
 # Example showing how to create an AWS cloud native archival location for an
-# account already onboarded.
-#
-# Use the aws_cnp_account example to onboard an account with the
-# CLOUD_NATIVE_ARCHIVAL feature.
+# onboarded AWS account. See the aws_cnp_account example for how to onboard an
+# AWS account with the CLOUD_NATIVE_ARCHIVAL feature.
 
 terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "=0.10.0-beta.4"
+      version = ">=1.0.0"
     }
   }
 }
 
 variable "cloud_account_id" {
   type        = string
-  description = "RSC cloud account ID of the account."
+  description = "RSC cloud account ID of the AWS account."
 }
 
 variable "archival_location_name" {

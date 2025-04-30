@@ -1,12 +1,8 @@
-# Example showing how to onboard an Azure subscription to RSC and manage the
-# permissions for it in Azure.
+# Example showing how to onboard an Azure subscription with an already onboarded
+# Azure service principal.
 
 terraform {
   required_providers {
-    azuread = {
-      source  = "hashicorp/azuread"
-      version = "~>2.48.0"
-    }
     azurerm = {
       source  = "hashicorp/azurerm"
       version = "~>3.99.0"
@@ -49,17 +45,21 @@ variable "resource_group_region" {
   default     = "eastus2"
 }
 
-provider "azuread" {}
+variable "service_principal_object_id" {
+  type        = string
+  description = "Azure service principal object ID."
+}
+
+variable "tenant_domain" {
+  type        = string
+  description = "Azure tenant primary domain."
+}
 
 provider "azurerm" {
   features {}
 }
 
 provider "polaris" {}
-
-data "azuread_domains" "aad_domains" {
-  only_initial = true
-}
 
 data "azurerm_subscription" "subscription" {}
 
@@ -69,24 +69,6 @@ data "polaris_azure_permissions" "features" {
   for_each          = var.features
   feature           = each.key
   permission_groups = each.value.permission_groups
-}
-
-# Create an Azure AD application and service principal with a secret.
-resource "azuread_application" "application" {
-  display_name = "RSC application - ${data.polaris_account.account.name}"
-  prevent_duplicate_names = true
-
-  web {
-    homepage_url = "https://${data.polaris_account.account.fqdn}/setup_azure"
-  }
-}
-
-resource "azuread_application_password" "password" {
-  application_id = azuread_application.application.id
-}
-
-resource "azuread_service_principal" "service_principal" {
-  client_id = azuread_application.application.client_id
 }
 
 # Create the resource group where all RSC artifacts will be stored.
@@ -120,7 +102,7 @@ resource "azurerm_role_definition" "subscription" {
 
 resource "azurerm_role_assignment" "subscription" {
   for_each           = data.polaris_azure_permissions.features
-  principal_id       = azuread_service_principal.service_principal.object_id
+  principal_id       = var.service_principal_object_id
   role_definition_id = azurerm_role_definition.subscription[each.key].role_definition_resource_id
   scope              = data.azurerm_subscription.subscription.id
 }
@@ -144,25 +126,16 @@ resource "azurerm_role_definition" "resource_group" {
 
 resource "azurerm_role_assignment" "resource_group" {
   for_each           = data.polaris_azure_permissions.features
-  principal_id       = azuread_service_principal.service_principal.object_id
+  principal_id       = var.service_principal_object_id
   role_definition_id = azurerm_role_definition.resource_group[each.key].role_definition_resource_id
   scope              = azurerm_resource_group.resource_group.id
-}
-
-# Onboard the service principal to RSC.
-resource "polaris_azure_service_principal" "service_principal" {
-  app_id        = azuread_application.application.client_id
-  app_name      = azuread_application.application.display_name
-  app_secret    = azuread_application_password.password.value
-  tenant_domain = data.azuread_domains.aad_domains.domains.0.domain_name
-  tenant_id     = azuread_service_principal.service_principal.application_tenant_id
 }
 
 # Onboard the subscription to RSC.
 resource "polaris_azure_subscription" "subscription" {
   subscription_id   = data.azurerm_subscription.subscription.subscription_id
   subscription_name = data.azurerm_subscription.subscription.display_name
-  tenant_domain     = polaris_azure_service_principal.service_principal.tenant_domain
+  tenant_domain     = var.tenant_domain
 
   dynamic "cloud_native_blob_protection" {
     for_each = contains(keys(var.features), "CLOUD_NATIVE_BLOB_PROTECTION") ? [1] : []

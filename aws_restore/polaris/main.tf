@@ -1,15 +1,8 @@
-# Example showing how to onboard a new AWS account to RSC. The RSC provider will
-# create a CloudFormation stack granting RSC access to the AWS account.
-#
-# The AWS profile and the profile's default region are read from the standard
-# ~/.aws/credentials and ~/.aws/config files. The RSC service account is read
-# from the RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS environment variable.
-
 terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = ">=0.8.0"
+      version = ">=1.0.0"
     }
   }
 }

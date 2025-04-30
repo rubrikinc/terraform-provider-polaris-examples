@@ -1,14 +1,11 @@
-# Example showing how to onboard a GCP project with a specific feature
-# and Terraform permissions management.
-#
-# The RSC service account is read from the
-# RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS environment variable.
+# Example showing how to onboard a GCP project to RSC and manage the permissions
+# for it in GCP.
 
 terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = ">=0.8.0"
+      version = ">=1.0.0"
     }
   }
 }
