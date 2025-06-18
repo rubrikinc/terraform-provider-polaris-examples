@@ -1,3 +1,5 @@
+# Example showing how to register a CDM cluster with RSC.
+
 terraform {
   required_providers {
     polaris = {

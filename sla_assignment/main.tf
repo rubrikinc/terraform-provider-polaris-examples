@@ -1,4 +1,4 @@
-# Example showing how to assign a role to an RSC user.
+# Example showing how to assign an RSC global SLA domain to objects.
 
 terraform {
   required_providers {

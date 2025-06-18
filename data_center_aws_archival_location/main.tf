@@ -5,7 +5,7 @@ terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "=0.10.0-beta.5"
+      version = ">=1.0.0"
     }
     random = {
       source  = "hashicorp/random"
