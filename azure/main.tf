@@ -13,7 +13,7 @@ terraform {
     }
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "=1.1.0-beta.2"
+      version = ">=1.1.0"
     }
   }
 }
@@ -73,7 +73,7 @@ data "polaris_azure_permissions" "features" {
 
 # Create an Azure AD application and service principal with a secret.
 resource "azuread_application" "application" {
-  display_name = "RSC application - ${data.polaris_account.account.name}"
+  display_name            = "RSC application - ${data.polaris_account.account.name}"
   prevent_duplicate_names = true
 
   web {

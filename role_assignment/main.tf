@@ -12,7 +12,7 @@ terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "=1.1.0-beta.7"
+      version = ">=1.1.0"
     }
   }
 }
@@ -20,7 +20,7 @@ terraform {
 provider "polaris" {}
 
 variable "role_name" {
-  type        =  string
+  type        = string
   description = "Name of the role to assign to the user."
   default     = "administrator"
 }

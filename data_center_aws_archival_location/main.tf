@@ -71,9 +71,9 @@ resource "random_string" "account_suffix" {
 }
 
 resource "polaris_data_center_aws_account" "account" {
-  name        = "${var.account_name}-${random_string.account_suffix.result}"
-  access_key  = var.access_key
-  secret_key  = var.secret_key
+  name       = "${var.account_name}-${random_string.account_suffix.result}"
+  access_key = var.access_key
+  secret_key = var.secret_key
 }
 
 # We add an 8 character random suffix to the bucket name to allow for the
