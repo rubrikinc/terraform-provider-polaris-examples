@@ -1,13 +1,11 @@
-# Example showing how to access account specific information.
-#
-# The RSC service account is read from the
-# RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS environment variable.
+# Example showing how to access account specific information with the
+# polaris_account data source.
 
 terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = ">=0.8.0"
+      version = ">=1.0.0"
     }
   }
 }

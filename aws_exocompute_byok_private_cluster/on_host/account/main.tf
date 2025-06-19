@@ -1,14 +1,3 @@
-terraform {
-  required_providers {
-    aws = {
-      source = "hashicorp/aws"
-    }
-    polaris = {
-      source = "rubrikinc/polaris"
-    }
-  }
-}
-
 # Lookup the instance profiles and roles needed for the specified RSC features.
 data "polaris_aws_cnp_artifacts" "artifacts" {
   cloud = var.rsc_cloud_type

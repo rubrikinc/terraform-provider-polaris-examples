@@ -1,21 +1,20 @@
 # Example showing how to create an Azure cloud native archival location for a
-# subscription already onboarded.
-#
-# Use the azure example to onboard a subscription with the CLOUD_NATIVE_ARCHIVAL
-# and CLOUD_NATIVE_ARCHIVAL_ENCRYPTION feature.
+# onboarded Azure subscription. See the azure example for how to onboard an
+# Azure subscription with the CLOUD_NATIVE_ARCHIVAL and
+# CLOUD_NATIVE_ARCHIVAL_ENCRYPTION features.
 
 terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "=0.10.0-beta.4"
+      version = ">=1.0.0"
     }
   }
 }
 
 variable "cloud_account_id" {
   type        = string
-  description = "RSC cloud account ID of the subscription."
+  description = "RSC cloud account ID of the Azure subscription."
 }
 
 variable "archival_location_name" {

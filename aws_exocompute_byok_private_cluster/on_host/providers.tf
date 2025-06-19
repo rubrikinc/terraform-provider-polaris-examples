@@ -6,7 +6,7 @@ terraform {
     }
     aws = {
       source  = "hashicorp/aws"
-      version = "~>5.26.0"
+      version = "~>5.50.0"
     }
     local = {
       source  = "hashicorp/local"
@@ -14,7 +14,7 @@ terraform {
     }
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "=0.10.0-beta.2"
+      version = ">=1.0.0"
     }
     time = {
       source  = "hashicorp/time"
