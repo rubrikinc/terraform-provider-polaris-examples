@@ -1,13 +1,10 @@
-# Example showing how to add a custom role to RSC from a template.
-#
-# The RSC service account is read from the
-# RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS environment variable.
+# Example showing how to add a custom role to RSC from a role template.
 
 terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = ">=0.8.0"
+      version = ">=1.0.0"
     }
   }
 }

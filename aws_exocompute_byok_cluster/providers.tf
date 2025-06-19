@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~>5.26.0"
+      version = "~>5.50.0"
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
@@ -14,7 +14,7 @@ terraform {
     }
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "~>1.0.0"
+      version = ">=1.0.0"
     }
     time = {
       source  = "hashicorp/time"

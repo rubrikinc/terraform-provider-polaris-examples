@@ -1,9 +1,5 @@
-# Example showing how to onboard an Azure subscription with a specific feature
-# set and Terraform permissions management.
-#
-# The credentials for Azure are read from the shell environment. The RSC service
-# account is read from the RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS environment
-# variable.
+# Example showing how to onboard an Azure subscription to RSC and manage the
+# permissions for it in Azure.
 
 terraform {
   required_providers {
@@ -17,7 +13,7 @@ terraform {
     }
     polaris = {
       source  = "rubrikinc/polaris"
-      version = "=0.10.0-beta.10"
+      version = ">=1.1.0"
     }
   }
 }
@@ -77,18 +73,20 @@ data "polaris_azure_permissions" "features" {
 
 # Create an Azure AD application and service principal with a secret.
 resource "azuread_application" "application" {
-  display_name = "RSC application - ${data.polaris_account.account.name}"
+  display_name            = "RSC application - ${data.polaris_account.account.name}"
+  prevent_duplicate_names = true
+
   web {
     homepage_url = "https://${data.polaris_account.account.fqdn}/setup_azure"
   }
 }
 
-resource "azuread_service_principal" "service_principal" {
-  client_id = azuread_application.application.client_id
+resource "azuread_application_password" "password" {
+  application_id = azuread_application.application.id
 }
 
-resource "azuread_service_principal_password" "service_principal_secret" {
-  service_principal_id = azuread_service_principal.service_principal.object_id
+resource "azuread_service_principal" "service_principal" {
+  client_id = azuread_application.application.client_id
 }
 
 # Create the resource group where all RSC artifacts will be stored.
@@ -155,7 +153,7 @@ resource "azurerm_role_assignment" "resource_group" {
 resource "polaris_azure_service_principal" "service_principal" {
   app_id        = azuread_application.application.client_id
   app_name      = azuread_application.application.display_name
-  app_secret    = azuread_service_principal_password.service_principal_secret.value
+  app_secret    = azuread_application_password.password.value
   tenant_domain = data.azuread_domains.aad_domains.domains.0.domain_name
   tenant_id     = azuread_service_principal.service_principal.application_tenant_id
 }
@@ -244,7 +242,7 @@ resource "polaris_azure_subscription" "subscription" {
   # This resource must explicitly depend on the role definition and the role
   # assignment so that the role is updated before RSC is notified.
   depends_on = [
-    azurerm_role_definition.subscription,
-    azurerm_role_definition.resource_group,
+    azurerm_role_assignment.subscription,
+    azurerm_role_assignment.resource_group,
   ]
 }

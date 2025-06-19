@@ -1,13 +1,9 @@
-# Example showing how to onboard multiple AWS accounts to RSC using a CSV file.
+# Example showing how to onboard multiple AWS account to RSC using a CSV file.
 # The RSC provider will create a CloudFormation stack in each account granting
-# RSC access.
+# RSC access to the AWS accounts.
 #
-# Each AWS profile and the profile's default region are read from the standard
-# ~/.aws/credentials and ~/.aws/config files. The RSC service account is read
-# from the RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS environment variable.
-#
-# The accounts.csv file should contain all AWS accounts to onboard to RSC, using
-# the following format:
+# The accounts.csv file should contain all AWS accounts to onboard, using the
+# following format:
 #
 # profile,regions
 # "<profile-1>","<region-1>,<region-2>...<region-N>"
@@ -31,7 +27,7 @@ terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = ">=0.8.0"
+      version = ">=1.0.0"
     }
   }
 }
