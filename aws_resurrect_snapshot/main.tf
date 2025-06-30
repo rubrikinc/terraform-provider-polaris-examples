@@ -15,6 +15,16 @@ module "account" {
   regions   = var.regions
 }
 
+# Setup protection of EC2 instances using a tag rule and an already existing
+# SLA domain.
+module "sla_domain" {
+  source = "./sla_domain"
+
+  sla_domain_name = var.sla_domain_name
+  tag_rule_name   = var.tag_rule_name
+  tag_rule_tag    = var.tag_rule_tag
+}
+
 # Look up the EC2 instance ID. This workaround is needed to break a cyclic
 # dependency between the aws_instance and polaris_aws_snapshot resources.
 data "aws_instance" "instance" {
@@ -67,6 +77,7 @@ resource "aws_instance" "instance" {
   }
 
   tags = {
-    Name = var.aws_instance_name
+    Name               = var.aws_instance_name
+    (var.tag_rule_tag) = true
   }
 }

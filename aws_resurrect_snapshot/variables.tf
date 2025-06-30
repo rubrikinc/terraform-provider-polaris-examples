@@ -62,3 +62,23 @@ variable "regions" {
   type        = set(string)
   description = "AWS regions."
 }
+
+# For SLA domain module.
+
+variable "sla_domain_name" {
+  type        = string
+  description = "SLA domain name."
+  default     = "bronze"
+}
+
+variable "tag_rule_name" {
+  type        = string
+  description = "Tag rule name."
+  default     = "EC2 instances"
+}
+
+variable "tag_rule_tag" {
+  type        = string
+  description = "Tag rule tag."
+  default     = "backup"
+}
