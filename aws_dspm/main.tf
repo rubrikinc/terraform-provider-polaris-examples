@@ -6,7 +6,7 @@
 terraform {
   required_providers {
     polaris = {
-      source  = "terraform.rubrik.com/rubrikinc/polaris"
+      source  = "rubrikinc/polaris"
       version = ">=1.0.0"
     }
   }
@@ -16,6 +16,12 @@ variable "profile" {
   type        = string
   description = "AWS profile."
   default     = "default"
+}
+
+variable "outpost_account_id" {
+  type        = string
+  description = "value of the account id of the outpost account."
+  default     = "123456789101"
 }
 
 variable "outpost_profile" {
@@ -50,7 +56,7 @@ resource "polaris_aws_account" "account" {
   }
 
   outpost {
-    outpost_account_id      = "123456789101"
+    outpost_account_id      = var.outpost_account_id
     outpost_account_profile = var.outpost_profile
 
     permission_groups = [
