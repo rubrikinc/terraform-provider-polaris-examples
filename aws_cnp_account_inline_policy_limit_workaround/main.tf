@@ -1,6 +1,7 @@
 # Example showing how to onboard an AWS account to RSC without using a
 # CloudFormation stack. RSC will authenticate to AWS using a cross-account role
-# created by the configuration.
+# created by the configuration. This example does not use inline policies to
+# avoid the 10,240 bytes limit.
 
 terraform {
   required_providers {
