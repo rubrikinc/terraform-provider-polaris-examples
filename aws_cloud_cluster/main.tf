@@ -10,6 +10,7 @@ terraform {
 # Onboard the AWS account to RSC.
 module "account" {
   source = "../aws_cnp_account"
+
   features = {
     SERVERS_AND_APPS : {
       permission_groups = [
@@ -17,11 +18,15 @@ module "account" {
       ],
     }
   }
+
   name      = var.name
   native_id = var.native_id
+
   regions = [
     var.region,
   ]
+
+  tags = var.tags
 }
 
 # Wait 30 seconds for the RSC cloud account to be fully provisioned. 
@@ -36,9 +41,10 @@ resource "time_sleep" "wait_30_seconds" {
 
 # Create an AWS cloud cluster using RSC.
 resource "polaris_aws_cloud_cluster" "cces" {
-  cloud_account_id     = module.account.polaris_aws_cnp_account_id
+  cloud_account_id     = module.account.cloud_account_id
   region               = var.region
   use_placement_groups = true
+
   cluster_config {
     cluster_name            = var.cluster_name
     admin_email             = var.admin_email
@@ -51,6 +57,7 @@ resource "polaris_aws_cloud_cluster" "cces" {
     enable_immutability     = true
     keep_cluster_on_failure = false
   }
+
   # VM config items should already exist in AWS.
   vm_config {
     cdm_version           = "9.4.0-p2-30507"

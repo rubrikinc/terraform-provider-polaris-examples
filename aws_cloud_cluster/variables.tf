@@ -54,3 +54,13 @@ variable "security_group_ids" {
   type        = set(string)
   description = "AWS security group IDs."
 }
+
+variable "tags" {
+  description = "Tags to apply to AWS resources created."
+  type        = map(string)
+  default = {
+    Environment = "test"
+    Example     = "aws_cloud_cluster"
+    Module      = "github.com/rubrikinc/terraform-provider-polaris-examples"
+  }
+}
