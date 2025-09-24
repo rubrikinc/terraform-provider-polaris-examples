@@ -28,6 +28,7 @@ module "account" {
 # Without this delay, you may see an error if onboarding CCES too quickly.
 resource "time_sleep" "wait_30_seconds" {
   create_duration = "30s"
+
   depends_on = [
     module.account,
   ]
@@ -60,6 +61,7 @@ resource "polaris_aws_cloud_cluster" "cces" {
     security_group_ids    = var.security_group_ids
     vm_type               = "EXTRA_DENSE"
   }
+
   depends_on = [
     time_sleep.wait_30_seconds,
   ]
