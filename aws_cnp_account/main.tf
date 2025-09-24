@@ -61,10 +61,6 @@ variable "regions" {
   description = "AWS regions."
 }
 
-provider "aws" {}
-
-provider "polaris" {}
-
 # Lookup the instance profiles and roles needed for the specified RSC features.
 data "polaris_aws_cnp_artifacts" "artifacts" {
   cloud = var.cloud
