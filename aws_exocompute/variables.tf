@@ -1,19 +1,33 @@
-variable "name" {
-  description = "AWS account name."
+locals {
+  uuid_null  = "00000000-0000-0000-0000-000000000000"
+  uuid_regex = "^(?i)[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+}
+
+variable "cloud_account_id" {
+  description = "RSC cloud account ID of the AWS account hosting Exocompute."
+  type        = string
+
+  validation {
+    condition     = var.cloud_account_id != local.uuid_null
+    error_message = "The RSC cloud account ID cannot be the null UUID."
+  }
+  validation {
+    condition     = can(regex(local.uuid_regex, var.cloud_account_id))
+    error_message = "The RSC cloud account ID must be a valid UUID."
+  }
+}
+
+variable "region" {
+  description = "AWS region to run Exocompute in."
   type        = string
 }
 
-variable "native_id" {
-  description = "AWS account ID."
-  type        = string
-}
-
-variable "subnet1" {
+variable "subnet1_id" {
   description = "AWS subnet 1 ID."
   type        = string
 }
 
-variable "subnet2" {
+variable "subnet2_id" {
   description = "AWS subnet 2 ID."
   type        = string
 }
@@ -21,16 +35,6 @@ variable "subnet2" {
 variable "vpc_id" {
   description = "AWS VPC ID."
   type        = string
-}
-
-variable "tags" {
-  description = "Tags to apply to AWS resources created."
-  type        = map(string)
-  default = {
-    Environment = "test"
-    Example     = "aws_exocompute"
-    Module      = "github.com/rubrikinc/terraform-provider-polaris-examples"
-  }
 }
 
 # Note, if the module rubrikinc/polaris-cloud-native-exocompute-networking/aws
