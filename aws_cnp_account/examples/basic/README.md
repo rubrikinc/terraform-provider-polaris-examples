@@ -18,7 +18,7 @@ resources.
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >=5.70.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >=6.0.0 |
 | <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.2.0 |
 
 ## Modules

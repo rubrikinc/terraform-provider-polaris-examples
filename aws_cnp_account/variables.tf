@@ -45,13 +45,18 @@ variable "account_id" {
 
   validation {
     condition     = can(regex("^[0-9]{12}$", var.account_id))
-    error_message = "The AWS account ID must be a valid 12-digit AWS account ID."
+    error_message = "Account ID must be a valid 12-digit AWS account ID."
   }
 }
 
 variable "account_name" {
   description = "AWS account name."
   type        = string
+
+  validation {
+    condition     = var.account_name != null && var.account_name != ""
+    error_message = "Account name must be a non-empty string."
+  }
 }
 
 variable "cloud_type" {
@@ -75,6 +80,11 @@ variable "external_id" {
   description = "AWS external ID. If empty, RSC will automatically generate an external ID."
   type        = string
   default     = null
+
+  validation {
+    condition     = var.external_id == null || var.external_id != ""
+    error_message = "External ID must be a non-empty string."
+  }
 }
 
 variable "features" {
@@ -84,8 +94,8 @@ variable "features" {
   }))
 
   validation {
-    condition     = length(setsubtract(keys(var.features), local.features)) == 0
-    error_message = format("Invalid RSC feature. Allowed features are: %v.", local.features)
+    condition     = var.features != null && length(var.features) > 0 && length(setsubtract(keys(var.features), local.features)) == 0
+    error_message = format("Invalid RSC feature. Allowed features are: %v.", join(", ", local.features))
   }
   validation {
     condition     = length(setsubtract(try(var.features["CLOUD_NATIVE_ARCHIVAL"].permission_groups, []), local.cloud_native_archival)) == 0
@@ -123,7 +133,7 @@ variable "role_path" {
   default     = "/"
 
   validation {
-    condition     = startswith(var.role_path, "/") && endswith(var.role_path, "/")
+    condition     = var.role_path != null && startswith(var.role_path, "/") && endswith(var.role_path, "/")
     error_message = "Invalid AWS role path. The role path must start and end with '/'."
   }
 }
@@ -131,6 +141,11 @@ variable "role_path" {
 variable "regions" {
   description = "AWS regions to onboard."
   type        = set(string)
+
+  validation {
+    condition     = var.regions != null && length(var.regions) > 0 && length(setsubtract(var.regions, data.aws_regions.regions.names)) == 0
+    error_message = "Regions must be a non-empty set with valid AWS region names."
+  }
 }
 
 variable "role_type" {
@@ -139,7 +154,7 @@ variable "role_type" {
   default     = "managed"
 
   validation {
-    condition     = can(regex("legacy|inline|managed", lower(var.role_type)))
+    condition     = var.role_type != null && can(regex("legacy|inline|managed", lower(var.role_type)))
     error_message = "Invalid AWS IAM role type. Possible values: `managed`, `inline` and `legacy`."
   }
 }

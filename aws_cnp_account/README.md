@@ -1,7 +1,7 @@
 # AWS CNP Account
 
-The configuration in this directory onboards an AWS account to RSC using the IAM roles workflow. Sometimes this workflow
-is also referred to as the non-CFT (CloudFormation Template) workflow.
+This module onboards an AWS account to RSC using the IAM roles workflow. Sometimes this workflow is also referred to as
+the non-CFT (CloudFormation Template) workflow.
 
 ## Usage
 
@@ -58,7 +58,8 @@ module "aws_cnp_account" {
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >=5.70.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.11.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >=6.0.0 |
 | <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.2.0 |
 | <a name="requirement_time"></a> [time](#requirement\_time) | >=0.13.1 |
 
@@ -66,8 +67,8 @@ module "aws_cnp_account" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 6.15.0 |
-| <a name="provider_polaris"></a> [polaris](#provider\_polaris) | 1.2.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >=6.0.0 |
+| <a name="provider_polaris"></a> [polaris](#provider\_polaris) | >=1.2.0 |
 | <a name="provider_time"></a> [time](#provider\_time) | >=0.13.1 |
 
 ## Resources
@@ -86,6 +87,7 @@ module "aws_cnp_account" {
 | [polaris_aws_cnp_account.account](https://registry.terraform.io/providers/rubrikinc/polaris/latest/docs/resources/aws_cnp_account) | resource |
 | [polaris_aws_cnp_account_attachments.attachments](https://registry.terraform.io/providers/rubrikinc/polaris/latest/docs/resources/aws_cnp_account_attachments) | resource |
 | [time_sleep.wait_for_rsc](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
+| [aws_regions.regions](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/regions) | data source |
 | [polaris_aws_cnp_artifacts.artifacts](https://registry.terraform.io/providers/rubrikinc/polaris/latest/docs/data-sources/aws_cnp_artifacts) | data source |
 | [polaris_aws_cnp_permissions.permissions](https://registry.terraform.io/providers/rubrikinc/polaris/latest/docs/data-sources/aws_cnp_permissions) | data source |
 

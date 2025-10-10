@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">=5.70.0"
+      version = ">=6.0.0"
     }
     polaris = {
       source  = "rubrikinc/polaris"
@@ -35,7 +35,7 @@ data "aws_region" "current" {}
 
 # Create the VPC and subnets in AWS.
 module "vpc" {
-  source = "../../modules/vpc"
+  source = "../../modules/exocompute_vpc"
 
   name         = "aws_excompute"
   public_cidr  = "172.22.0.0/24"
@@ -63,7 +63,7 @@ module "aws_cnp_account" {
   }
 
   regions = [
-    data.aws_region.current.name,
+    data.aws_region.current.region,
   ]
 
   tags = var.tags
@@ -76,7 +76,7 @@ module "aws_exocompute" {
   cloud_account_id          = module.aws_cnp_account.cloud_account_id
   cluster_security_group_id = module.vpc.cluster_security_group_id
   node_security_group_id    = module.vpc.node_security_group_id
-  region                    = data.aws_region.current.name
+  region                    = data.aws_region.current.region
   subnet1_id                = module.vpc.subnet1_id
   subnet2_id                = module.vpc.subnet2_id
   vpc_id                    = module.vpc.vpc_id

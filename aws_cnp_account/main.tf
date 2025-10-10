@@ -1,3 +1,8 @@
+# Used for regions input validation.
+data "aws_regions" "regions" {
+  all_regions = true
+}
+
 # Lookup the instance profiles and roles needed for the specified RSC features.
 data "polaris_aws_cnp_artifacts" "artifacts" {
   cloud = var.cloud_type

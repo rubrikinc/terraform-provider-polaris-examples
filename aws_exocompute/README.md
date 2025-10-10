@@ -1,41 +1,48 @@
 # AWS Exocompute
 
-The configuration in this directory creates an Exocompute configuration for the already onboarded AWS account identified
-by the RSC cloud account ID.
-
-Note, the `cluster_security_group_id` and `node_security_group_id` input variables must be specified if the
-`rubrikinc/polaris-cloud-native-exocompute-networking/aws` Terraform module is used to create the VPC resources.
+This module creates an RSC Exocompute configuration for running Exocompute workloads in AWS.
 
 ## Usage
 
-To run this example you need to execute:
-```bash
-$ terraform init
-$ terraform plan
-$ terraform apply
+```terraform
+module "aws_cnp_account" {
+  source = "."
+
+  cloud_account_id          = "d7984bca-db41-40ba-98ef-c56c4aef6c23"
+  cluster_security_group_id = "sg-267288cc1f4a4be6a"
+  node_security_group_id    = "sg-03aa0f1db4fb1b816"
+  region                    = "us-east-2"
+  subnet1_id                = "subnet-2f261b5f754ab1dcb"
+  subnet2_id                = "subnet-1efb0142c8604a6ca"
+  vpc_id                    = "vpc-0e2f6d1ed6a3d8571"
+}
 ```
-Note that this example may create resources which can cost money. Run `terraform destroy` when you don't need these
-resources.
+
+Note, the `cluster_security_group_id` and `node_security_group_id` input variables must be specified if the
+`rubrikinc/polaris-cloud-native-exocompute-networking/aws` Terraform module is used to create the VPC resources.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >=5.70.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.11.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >=6.0.0 |
 | <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.0.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_polaris"></a> [polaris](#provider\_polaris) | 1.2.1 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >=6.0.0 |
+| <a name="provider_polaris"></a> [polaris](#provider\_polaris) | >=1.0.0 |
 
 ## Resources
 
 | Name | Type |
 |------|------|
 | [polaris_aws_exocompute.configuration](https://registry.terraform.io/providers/rubrikinc/polaris/latest/docs/resources/aws_exocompute) | resource |
+| [aws_regions.regions](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/regions) | data source |
 
 ## Inputs
 

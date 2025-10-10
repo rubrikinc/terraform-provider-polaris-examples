@@ -4,3 +4,4 @@ terraform-docs markdown table --hide-empty --output-file README.md --sort ./aws_
 terraform-docs markdown table --hide-empty --output-file README.md --sort ./aws_cnp_account/examples/basic
 terraform-docs markdown table --hide-empty --output-file README.md --sort ./aws_exocompute
 terraform-docs markdown table --hide-empty --output-file README.md --sort ./aws_exocompute/examples/basic
+terraform-docs markdown table --hide-empty --output-file README.md --sort ./aws_exocompute/modules/exocompute_vpc

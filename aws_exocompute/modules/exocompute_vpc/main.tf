@@ -23,7 +23,7 @@ resource "aws_vpc" "vpc" {
 
 resource "aws_vpc_endpoint" "s3" {
   vpc_id            = aws_vpc.vpc.id
-  service_name      = "com.amazonaws.${data.aws_region.current.name}.s3"
+  service_name      = "com.amazonaws.${data.aws_region.current.region}.s3"
   route_table_ids   = [aws_route_table.private.id]
   vpc_endpoint_type = "Gateway"
 
@@ -34,7 +34,7 @@ resource "aws_vpc_endpoint" "s3" {
 
 resource "aws_vpc_endpoint" "ec2" {
   vpc_id              = aws_vpc.vpc.id
-  service_name        = "com.amazonaws.${data.aws_region.current.name}.ec2"
+  service_name        = "com.amazonaws.${data.aws_region.current.region}.ec2"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
 
@@ -55,7 +55,7 @@ resource "aws_vpc_endpoint" "ec2" {
 
 resource "aws_vpc_endpoint" "eks" {
   vpc_id              = aws_vpc.vpc.id
-  service_name        = "com.amazonaws.${data.aws_region.current.name}.eks"
+  service_name        = "com.amazonaws.${data.aws_region.current.region}.eks"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
 
@@ -76,7 +76,7 @@ resource "aws_vpc_endpoint" "eks" {
 
 resource "aws_vpc_endpoint" "ecr_api" {
   vpc_id              = aws_vpc.vpc.id
-  service_name        = "com.amazonaws.${data.aws_region.current.name}.ecr.api"
+  service_name        = "com.amazonaws.${data.aws_region.current.region}.ecr.api"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
 
@@ -97,7 +97,7 @@ resource "aws_vpc_endpoint" "ecr_api" {
 
 resource "aws_vpc_endpoint" "ecr_dkr" {
   vpc_id              = aws_vpc.vpc.id
-  service_name        = "com.amazonaws.${data.aws_region.current.name}.ecr.dkr"
+  service_name        = "com.amazonaws.${data.aws_region.current.region}.ecr.dkr"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
 
@@ -118,7 +118,7 @@ resource "aws_vpc_endpoint" "ecr_dkr" {
 
 resource "aws_vpc_endpoint" "autoscaling" {
   vpc_id              = aws_vpc.vpc.id
-  service_name        = "com.amazonaws.${data.aws_region.current.name}.autoscaling"
+  service_name        = "com.amazonaws.${data.aws_region.current.region}.autoscaling"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
 
@@ -141,7 +141,7 @@ resource "aws_vpc_endpoint" "autoscaling" {
 # outside of Terraform.
 resource "aws_vpc_endpoint" "guardduty_data" {
   vpc_id              = aws_vpc.vpc.id
-  service_name        = "com.amazonaws.${data.aws_region.current.name}.guardduty-data"
+  service_name        = "com.amazonaws.${data.aws_region.current.region}.guardduty-data"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
 

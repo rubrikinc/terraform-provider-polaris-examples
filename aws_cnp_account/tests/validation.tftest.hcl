@@ -3,6 +3,14 @@ test {
 }
 
 variables {
+  account_id             = "123456789012"
+  account_name           = "test-account"
+  cloud_type             = "STANDARD"
+  ec2_recovery_role_path = "/"
+  external_id            = "Unique-External-ID"
+  role_path              = "/application/component/"
+  role_type              = "managed"
+
   features = {
     CLOUD_NATIVE_ARCHIVAL = {
       permission_groups = [
@@ -59,18 +67,83 @@ provider "aws" {
   region = "us-east-2"
 }
 
-run "cloud_type_invalid_type" {
+run "variables_are_valid" {
+  command = plan
+}
+
+run "variables_are_null" {
   command = plan
 
   variables {
-    cloud_type = "CLOUD"
+    account_id             = null
+    account_name           = null
+    cloud_type             = null
+    ec2_recovery_role_path = null
+    external_id            = null
+    features               = null
+    regions                = null
+    role_path              = null
+    role_type              = null
   }
+
   expect_failures = [
-    var.cloud_type
+    var.account_id,
+    var.account_name,
+    var.features,
+    var.regions,
+    var.role_path,
+    var.role_type,
   ]
 }
 
-run "features_invalid_feature_name" {
+run "variables_are_empty" {
+  command = plan
+
+  variables {
+    account_id             = ""
+    account_name           = ""
+    cloud_type             = ""
+    ec2_recovery_role_path = ""
+    external_id            = ""
+    features               = {}
+    regions                = []
+    role_path              = ""
+    role_type              = ""
+  }
+
+  expect_failures = [
+    var.account_id,
+    var.account_name,
+    var.cloud_type,
+    var.external_id,
+    var.features,
+    var.regions,
+    var.role_path,
+    var.role_type,
+  ]
+}
+
+run "variables_are_invalid" {
+  command = plan
+
+  variables {
+    account_id = "123456789O123"
+    cloud_type = "CLOUD"
+    regions    = ["us-east-42"]
+    role_path  = "application/component"
+    role_type  = "modern"
+  }
+
+  expect_failures = [
+    var.account_id,
+    var.cloud_type,
+    var.regions,
+    var.role_path,
+    var.role_type,
+  ]
+}
+
+run "features_invalid_name" {
   command = plan
 
   variables {
@@ -101,27 +174,5 @@ run "features_invalid_permission_group" {
   }
   expect_failures = [
     var.features
-  ]
-}
-
-run "role_path_no_slash_at_the_beginning" {
-  command = plan
-
-  variables {
-    role_path = "application/component/"
-  }
-  expect_failures = [
-    var.role_path
-  ]
-}
-
-run "role_path_no_slash_at_the_end" {
-  command = plan
-
-  variables {
-    role_path = "/application/component"
-  }
-  expect_failures = [
-    var.role_path
   ]
 }

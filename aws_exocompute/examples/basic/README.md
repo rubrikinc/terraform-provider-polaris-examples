@@ -22,14 +22,14 @@ resources.
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >=5.70.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >=6.0.0 |
 | <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.0.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >=5.70.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >=6.0.0 |
 
 ## Modules
 
@@ -37,7 +37,7 @@ resources.
 |------|--------|---------|
 | <a name="module_aws_cnp_account"></a> [aws\_cnp\_account](#module\_aws\_cnp\_account) | ../../../aws_cnp_account | n/a |
 | <a name="module_aws_exocompute"></a> [aws\_exocompute](#module\_aws\_exocompute) | ../.. | n/a |
-| <a name="module_vpc"></a> [vpc](#module\_vpc) | ../../modules/vpc | n/a |
+| <a name="module_vpc"></a> [vpc](#module\_vpc) | ../../modules/exocompute_vpc | n/a |
 
 ## Resources
 

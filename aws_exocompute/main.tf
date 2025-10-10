@@ -1,3 +1,8 @@
+# Used for region input validation.
+data "aws_regions" "regions" {
+  all_regions = true
+}
+
 # Create an Exocompute configuration.
 resource "polaris_aws_exocompute" "configuration" {
   account_id                = var.cloud_account_id
