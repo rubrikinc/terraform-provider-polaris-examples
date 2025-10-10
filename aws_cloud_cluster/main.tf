@@ -8,8 +8,11 @@ terraform {
 }
 
 # Onboard the AWS account to RSC.
-module "account" {
+module "aws_cnp_account" {
   source = "../aws_cnp_account"
+
+  account_id   = var.account_id
+  account_name = var.account_name
 
   features = {
     SERVERS_AND_APPS : {
@@ -19,9 +22,6 @@ module "account" {
     }
   }
 
-  name      = var.name
-  native_id = var.native_id
-
   regions = [
     var.region,
   ]
@@ -29,19 +29,9 @@ module "account" {
   tags = var.tags
 }
 
-# Wait 30 seconds for the RSC cloud account to be fully provisioned. 
-# Without this delay, you may see an error if onboarding CCES too quickly.
-resource "time_sleep" "wait_30_seconds" {
-  create_duration = "30s"
-
-  depends_on = [
-    module.account,
-  ]
-}
-
 # Create an AWS cloud cluster using RSC.
 resource "polaris_aws_cloud_cluster" "cces" {
-  cloud_account_id     = module.account.cloud_account_id
+  cloud_account_id     = module.aws_cnp_account.cloud_account_id
   region               = var.region
   use_placement_groups = true
 
@@ -68,8 +58,4 @@ resource "polaris_aws_cloud_cluster" "cces" {
     security_group_ids    = var.security_group_ids
     vm_type               = "EXTRA_DENSE"
   }
-
-  depends_on = [
-    time_sleep.wait_30_seconds,
-  ]
 }

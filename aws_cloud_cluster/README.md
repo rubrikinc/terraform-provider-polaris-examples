@@ -25,32 +25,30 @@ resources.
 | Name | Version |
 |------|---------|
 | <a name="provider_polaris"></a> [polaris](#provider\_polaris) | >=1.1.7 |
-| <a name="provider_time"></a> [time](#provider\_time) | n/a |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_account"></a> [account](#module\_account) | ../aws_cnp_account | n/a |
+| <a name="module_aws_cnp_account"></a> [aws\_cnp\_account](#module\_aws\_cnp\_account) | ../aws_cnp_account | n/a |
 
 ## Resources
 
 | Name | Type |
 |------|------|
 | [polaris_aws_cloud_cluster.cces](https://registry.terraform.io/providers/rubrikinc/polaris/latest/docs/resources/aws_cloud_cluster) | resource |
-| [time_sleep.wait_30_seconds](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_account_id"></a> [account\_id](#input\_account\_id) | AWS account ID. | `string` | n/a | yes |
+| <a name="input_account_name"></a> [account\_name](#input\_account\_name) | AWS account name. | `string` | n/a | yes |
 | <a name="input_admin_email"></a> [admin\_email](#input\_admin\_email) | Admin email address. | `string` | n/a | yes |
 | <a name="input_bucket_name"></a> [bucket\_name](#input\_bucket\_name) | AWS S3 bucket name. | `string` | n/a | yes |
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | Cloud cluster name. | `string` | n/a | yes |
 | <a name="input_dns_search_domains"></a> [dns\_search\_domains](#input\_dns\_search\_domains) | DNS search domains. | `set(string)` | n/a | yes |
 | <a name="input_instance_profile_name"></a> [instance\_profile\_name](#input\_instance\_profile\_name) | AWS EC2 instance profile name. | `string` | n/a | yes |
-| <a name="input_name"></a> [name](#input\_name) | AWS account name. | `string` | n/a | yes |
-| <a name="input_native_id"></a> [native\_id](#input\_native\_id) | AWS account ID. | `string` | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | AWS region. | `string` | n/a | yes |
 | <a name="input_security_group_ids"></a> [security\_group\_ids](#input\_security\_group\_ids) | AWS security group IDs. | `set(string)` | n/a | yes |
 | <a name="input_subnet_id"></a> [subnet\_id](#input\_subnet\_id) | AWS subnet ID. | `string` | n/a | yes |

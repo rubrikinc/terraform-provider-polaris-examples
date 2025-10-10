@@ -18,6 +18,10 @@ locals {
 
   # Roles refers to the AWS IAM role resources configured.
   roles = local.use_customer_inline ? aws_iam_role.customer_inline : local.use_customer_managed ? aws_iam_role.customer_managed : aws_iam_role.role
+
+  trust_policies = {
+    for policy in polaris_aws_cnp_account.account.trust_policies : policy.role_key => policy.policy
+  }
 }
 
 # Create the required IAM instance profiles.
@@ -33,7 +37,7 @@ resource "aws_iam_instance_profile" "profile" {
 # Create the required IAM roles.
 resource "aws_iam_role" "role" {
   for_each            = local.use_legacy ? data.polaris_aws_cnp_artifacts.artifacts.role_keys : []
-  assume_role_policy  = polaris_aws_cnp_account_trust_policy.trust_policy[each.key].policy
+  assume_role_policy  = local.trust_policies[each.key]
   managed_policy_arns = data.polaris_aws_cnp_permissions.permissions[each.key].managed_policies
   name_prefix         = "rubrik-${lower(each.key)}-"
   path                = var.role_path
@@ -53,7 +57,7 @@ resource "aws_iam_role" "role" {
 # Create the required IAM roles.
 resource "aws_iam_role" "customer_inline" {
   for_each           = local.use_customer_inline ? data.polaris_aws_cnp_artifacts.artifacts.role_keys : []
-  assume_role_policy = polaris_aws_cnp_account_trust_policy.trust_policy[each.key].policy
+  assume_role_policy = local.trust_policies[each.key]
   name_prefix        = "rubrik-${lower(each.key)}-"
   path               = var.role_path
   tags               = var.tags
@@ -79,7 +83,7 @@ resource "aws_iam_role_policy_attachments_exclusive" "customer_inline" {
 # Create the required IAM roles.
 resource "aws_iam_role" "customer_managed" {
   for_each           = local.use_customer_managed ? data.polaris_aws_cnp_artifacts.artifacts.role_keys : []
-  assume_role_policy = polaris_aws_cnp_account_trust_policy.trust_policy[each.key].policy
+  assume_role_policy = local.trust_policies[each.key]
   name_prefix        = "rubrik-${lower(each.key)}-"
   path               = var.role_path
   tags               = var.tags
