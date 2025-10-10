@@ -59,31 +59,27 @@ run "init" {
 
   # polaris_aws_exocompute resource.
   assert {
-    condition = polaris_aws_exocompute.configuration.account_id == var.cloud_account_id
+    condition     = polaris_aws_exocompute.configuration.account_id == var.cloud_account_id
     error_message = "The account ID does not match the expected value."
   }
   assert {
-    condition = polaris_aws_exocompute.configuration.cluster_security_group_id == var.cluster_security_group_id
+    condition     = polaris_aws_exocompute.configuration.cluster_security_group_id == var.cluster_security_group_id
     error_message = "The cluster security group ID does not match the expected value."
   }
   assert {
-    condition = polaris_aws_exocompute.configuration.node_security_group_id == var.node_security_group_id
+    condition     = polaris_aws_exocompute.configuration.node_security_group_id == var.node_security_group_id
     error_message = "The node security group ID does not match the expected value."
   }
   assert {
-    condition = polaris_aws_exocompute.configuration.region == var.region
+    condition     = polaris_aws_exocompute.configuration.region == var.region
     error_message = "The region does not match the expected value."
   }
   assert {
-    condition = polaris_aws_exocompute.configuration.subnet1_id == var.subnet1_id
-    error_message = "The subnet1 ID does not match the expected value."
+    condition     = length(setsubtract(polaris_aws_exocompute.configuration.subnets, [var.subnet1_id, var.subnet2_id])) == 0
+    error_message = "The subnets does not match the expected value."
   }
   assert {
-    condition = polaris_aws_exocompute.configuration.subnet2_id == var.subnet2_id
-    error_message = "The subnet2 ID does not match the expected value."
-  }
-  assert {
-    condition = polaris_aws_exocompute.configuration.vpc_id == var.vpc_id
+    condition     = polaris_aws_exocompute.configuration.vpc_id == var.vpc_id
     error_message = "The vpc ID does not match the expected value."
   }
 }
