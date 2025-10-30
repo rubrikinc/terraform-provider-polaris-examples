@@ -1,11 +1,11 @@
 # Variables for the AWS cloud cluster example.
 
-variable "name" {
+variable "account_name" {
   type        = string
   description = "AWS account name."
 }
 
-variable "native_id" {
+variable "account_id" {
   type        = string
   description = "AWS account ID."
 }
