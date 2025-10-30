@@ -69,6 +69,11 @@ module "aws_cnp_account" {
         "BASIC"
       ]
     },
+    SERVERS_AND_APPS = {
+      permission_groups = [
+        "CLOUD_CLUSTER_ES"
+      ]
+    },
   }
 
   regions = [
