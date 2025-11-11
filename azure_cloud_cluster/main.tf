@@ -7,7 +7,7 @@ terraform {
   }
 }
 
-# Onboard the AWS account to RSC.
+# Onboard the Azure account to RSC.
 module "azure_subscription" {
   source = "../azure"
 
