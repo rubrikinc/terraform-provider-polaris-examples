@@ -2,16 +2,45 @@
 
 The configuration in this directory onboards an Azure subscription to RSC and creates an Azure cloud cluster using RSC.
 
+The cloud account ID can be obtained by first onboarding the subscription to RSC using the `azure` module in this
+repository which provides the output ID.
+
 ## Usage
 
-To run this example you need to execute:
-```bash
-$ terraform init
-$ terraform plan
-$ terraform apply
+```terraform
+resource "polaris_azure_cloud_cluster" "cces" {
+  cloud_account_id = "00000000-0000-0000-0000-000000000000"
+
+  cluster_config {
+    cluster_name            = "my-cces-cluster"
+    admin_email             = "admin@example.com"
+    admin_password          = "RubrikGoForward!"
+    dns_name_servers        = ["8.8.8.8", "8.8.4.4"]
+    ntp_servers             = ["pool.ntp.org"]
+    num_nodes               = 3
+    keep_cluster_on_failure = false
+  }
+
+  # VM config items should already exist in Azure
+  vm_config {
+    cdm_version                         = "9.2.3-p8-29766"
+    instance_type                       = "STANDARD_D8S_V5"
+    region                              = "centralus"
+    resource_group_name                 = "my-resource-group"
+    network_resource_group              = "my-network-resource-group"
+    vnet_resource_group                 = "my-vnet-resource-group"
+    subnet                              = "my-subnet"
+    vnet                                = "my-vnet"
+    network_security_group              = "my-nsg"
+    network_security_resource_group     = "my-nsg-resource-group"
+    vm_type                             = "EXTRA_DENSE"
+    user_assigned_managed_identity_name = "terraform-mi"
+    storage_account_name                = "my-storage-account"
+    container_name                      = "rbrk"
+    enable_immutability                 = false
+  }
+}
 ```
-Note that this example may create resources which can cost money. Run `terraform destroy` when you don't need these
-resources.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
