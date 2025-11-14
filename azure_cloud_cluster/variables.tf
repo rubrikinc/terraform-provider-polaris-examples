@@ -1,108 +1,91 @@
 variable "cluster_name" {
   description = "The name of the Azure cloud cluster"
   type        = string
-  default     = "my-cces-cluster"
 }
 
 variable "admin_email" {
   description = "Admin email for the cluster"
   type        = string
-  default     = "admin@example.com"
 }
 
 variable "admin_password" {
   description = "Admin password for the cluster"
   type        = string
   sensitive   = true
-  default     = "RubrikGoForward!"
 }
 
 variable "dns_name_servers" {
-  description = "List of DNS name servers"
+  description = "List of DNS name servers for the cluster"
   type        = list(string)
-  default     = ["8.8.8.8", "8.8.4.4"]
 }
 
 variable "ntp_servers" {
-  description = "List of NTP servers"
+  description = "List of NTP servers for the cluster"
   type        = list(string)
-  default     = ["pool.ntp.org"]
 }
 
 variable "num_nodes" {
-  description = "Number of nodes in the cluster"
+  description = "Number of nodes in the cluster, this can be 1, 3, 4, 5 and so on."
   type        = number
-  default     = 3
 }
 
 variable "keep_cluster_on_failure" {
   description = "Keep cluster on failure"
   type        = bool
-  default     = true
 }
 
 variable "cdm_version" {
-  description = "CDM version for the cluster"
+  description = "CDM version for the cluster, this can be found in RSC from the upgrades portal, and will be formatted like 9.2.3-p8-29766"
   type        = string
-  default     = "9.2.3-p8-29766"
 }
 
 variable "instance_type" {
   description = "Azure instance type, Allowed values are `STANDARD_DS5_V2`, `STANDARD_D16S_V5`, `STANDARD_D8S_V5`, `STANDARD_D32S_V5`, `STANDARD_E16S_V5`, `STANDARD_D8AS_V5`, `STANDARD_D16AS_V5`, `STANDARD_D32AS_V5` and `STANDARD_E16AS_V5`"
   type        = string
-  default     = "STANDARD_D8S_V5"
 }
 
 variable "region" {
-  description = "Azure region"
+  description = "Azure region using the programmatic name as per https://learn.microsoft.com/en-us/azure/reliability/regions-list"
   type        = string
-  default     = "centralus"
 }
 
 variable "resource_group_name" {
-  description = "Azure resource group name"
+  description = "Azure resource group name for the cluster resources."
   type        = string
-  default     = "my-resource-group"
 }
 
 variable "network_resource_group" {
-  description = "Azure network resource group name"
+  description = "Azure network resource group name for the network security group."
   type        = string
-  default     = "my-network-resource-group"
 }
 
 variable "vnet_resource_group" {
   description = "Azure virtual network resource group name"
   type        = string
-  default     = "my-vnet-resource-group"
 }
 
 variable "subnet" {
   description = "Azure subnet name"
   type        = string
-  default     = "my-subnet"
 }
 
 variable "vnet" {
   description = "Azure virtual network name"
   type        = string
-  default     = "my-vnet"
 }
 
 variable "network_security_group" {
   description = "Azure network security group name"
   type        = string
-  default     = "my-nsg"
 }
 
 variable "network_security_resource_group" {
   description = "Azure network security resource group name"
   type        = string
-  default     = "my-nsg-resource-group"
 }
 
 variable "vm_type" {
-  description = "VM type for the cluster"
+  description = "VM type for the cluster, alllowed values are `STANDARD`, `EXTRA_DENSE` and `DENSE`. `EXTRA_DENSE` is the recommended value."
   type        = string
   default     = "EXTRA_DENSE"
 }
@@ -110,24 +93,20 @@ variable "vm_type" {
 variable "user_assigned_managed_identity_name" {
   description = "User assigned managed identity name"
   type        = string
-  default     = "my-managed-identity"
 }
 
 variable "storage_account_name" {
   description = "Azure storage account name"
   type        = string
-  default     = "mystorageaccount"
 }
 
 variable "container_name" {
   description = "Azure storage container name"
   type        = string
-  default     = "mycontainer"
 }
 
 variable "enable_immutability" {
   description = "Enable immutability for the cluster"
   type        = bool
-  default     = false
 }
 
