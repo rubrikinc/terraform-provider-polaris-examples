@@ -13,7 +13,7 @@ terraform {
     }
     polaris = {
       source  = "rubrikinc/polaris"
-      version = ">=1.1.0"
+      version = ">=1.3.0"
     }
   }
 }
@@ -236,6 +236,17 @@ resource "polaris_azure_subscription" "subscription" {
       permission_groups = data.polaris_azure_permissions.features["AZURE_SQL_MI_PROTECTION"].permission_groups
       permissions       = data.polaris_azure_permissions.features["AZURE_SQL_MI_PROTECTION"].id
       regions           = var.regions
+    }
+  }
+
+  dynamic "servers_and_apps" {
+    for_each = contains(keys(var.features), "SERVERS_AND_APPS") ? [1] : []
+    content {
+      permission_groups     = data.polaris_azure_permissions.features["SERVERS_AND_APPS"].permission_groups
+      permissions           = data.polaris_azure_permissions.features["SERVERS_AND_APPS"].id
+      regions               = var.regions
+      resource_group_name   = var.resource_group_name
+      resource_group_region = var.resource_group_region
     }
   }
 
