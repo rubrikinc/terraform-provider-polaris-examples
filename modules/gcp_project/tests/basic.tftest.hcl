@@ -285,6 +285,10 @@ run "gcp_project" {
     condition     = output.cloud_account_id == polaris_gcp_project.project.id
     error_message = "The cloud account ID output should match the ID of the GCP project."
   }
+  assert {
+    condition     = output.cloud_account_id != local.uuid_null && can(regex(local.uuid_regex, output.cloud_account_id))
+    error_message = "The cloud account ID output should be a valid UUID."
+  }
 }
 
 # Test add RSC feature, remove RSC feature and update the permission groups

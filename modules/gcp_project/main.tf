@@ -37,6 +37,12 @@ resource "polaris_gcp_project" "project" {
     }
   }
 
+  lifecycle {
+    ignore_changes = [
+      organization_name,
+    ]
+  }
+
   # Explicitly depend on the role memberships to make sure this resource
   # is destroyed before the roles are destroyed.
   depends_on = [

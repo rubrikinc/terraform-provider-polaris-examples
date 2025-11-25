@@ -1,4 +1,4 @@
-# Basic Example
+# GCP Project Example
 
 The configuration in this directory onboards a GCP project to RSC. As part of the onboarding, a GCP service account and
 key are created. The service account is assigned all the permissions required by RSC.
@@ -20,7 +20,7 @@ resources.
 | Name | Version |
 |------|---------|
 | <a name="requirement_google"></a> [google](#requirement\_google) | >=7.0.0 |
-| <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.2.0 |
+| <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.3.0 |
 
 ## Modules
 

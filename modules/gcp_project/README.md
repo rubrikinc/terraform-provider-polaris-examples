@@ -1,16 +1,24 @@
 # GCP Project Module
 
-This module onboards a GCP project to RSC. The module requires a GCP service account to be provided, which will be
-assigned all the permissions required by RSC.
+This module manages the onboarding of a GCP project to RSC. The module configures the necessary GCP IAM roles and
+permissions for the specified set of RSC features and permission groups. A GCP service account must be provided, it will
+be assigned all the permissions required by the selected RSC features. The service account key will be provided to RSC
+for authentication with GCP when it performs operations on the GCP project.
+
+> [!NOTE]
+> The module automatically enables the required GCP APIs for the selected features. The enabled APIs remain active even
+> after destroying the module to prevent disruption to other workloads.
+
+> [!NOTE]
+> The module validates that the specified features and permission groups are valid. If the validation fails, Terraform
+> will produce an error during the plan/apply phase.
 
 ## Usage
 
 ```terraform
 module "gcp_project" {
   source = "github.com/rubrikinc/terraform-provider-polaris-examples//modules/gcp_project"
-
   project_id = var.project_id
-
   features = {
     CLOUD_NATIVE_ARCHIVAL = {
       permission_groups = [
@@ -39,6 +47,10 @@ module "gcp_project" {
 }
 ```
 
+## Examples
+
+- [Basic Example](examples/basic)
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -46,7 +58,7 @@ module "gcp_project" {
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.11.0 |
 | <a name="requirement_google"></a> [google](#requirement\_google) | >=7.0.0 |
-| <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.2.0 |
+| <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.3.0 |
 | <a name="requirement_time"></a> [time](#requirement\_time) | >=0.13.1 |
 
 ## Providers
@@ -54,7 +66,7 @@ module "gcp_project" {
 | Name | Version |
 |------|---------|
 | <a name="provider_google"></a> [google](#provider\_google) | >=7.0.0 |
-| <a name="provider_polaris"></a> [polaris](#provider\_polaris) | >=1.2.0 |
+| <a name="provider_polaris"></a> [polaris](#provider\_polaris) | >=1.3.0 |
 | <a name="provider_time"></a> [time](#provider\_time) | >=0.13.1 |
 
 ## Resources

@@ -3,6 +3,8 @@ test {
 }
 
 variables {
+  # Note, these variables must always fail to validate, otherwise we need
+  # a valid project and service account setup.
   project_id          = null
   service_account_id  = null
   service_account_key = null
