@@ -28,16 +28,16 @@ if ! command -v terraform >/dev/null 2>&1; then
 fi
 
 # Required environment variables.
-if [ -z "$TF_VAR_account_id" ]; then
-  echo "error: the environment variable TF_VAR_account_id must be set to the ID of the AWS account used for testing"
+if [ -z "$TF_VAR_aws_account_id" ]; then
+  echo "error: the environment variable TF_VAR_aws_account_id must be set to the ID of the AWS account used for testing"
   exit 1
 fi
-if [ -z "$TF_VAR_account_name" ]; then
-  echo "error: the environment variable TF_VAR_account_name must be set to the name of the AWS account used for testing"
+if [ -z "$TF_VAR_aws_account_name" ]; then
+  echo "error: the environment variable TF_VAR_aws_account_name must be set to the name of the AWS account used for testing"
   exit 1
 fi
-if [ -z "$TF_VAR_project_id" ]; then
-  echo "error: the environment variable TF_VAR_project_id must be set to the ID of the GCP project used for testing"
+if [ -z "$TF_VAR_gcp_project_id" ]; then
+  echo "error: the environment variable TF_VAR_gcp_project_id must be set to the ID of the GCP project used for testing"
   exit 1
 fi
 

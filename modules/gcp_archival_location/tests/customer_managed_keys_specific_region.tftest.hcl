@@ -1,4 +1,4 @@
-variable "project_id" {
+variable "gcp_project_id" {
   description = "GCP project ID."
   type        = string
 }
@@ -12,7 +12,7 @@ variables {
 }
 
 provider "google" {
-  project = var.project_id
+  project = var.gcp_project_id
 }
 
 run "setup_service_account" {
@@ -27,7 +27,7 @@ run "setup_gcp_project" {
   }
 
   variables {
-    project_id          = var.project_id
+    project_id          = var.gcp_project_id
     service_account_id  = run.setup_service_account.service_account_id
     service_account_key = run.setup_service_account.service_account_key
 

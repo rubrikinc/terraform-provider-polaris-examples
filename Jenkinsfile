@@ -44,18 +44,23 @@ pipeline {
         RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS = credentials('tf-examples-polaris-service-account')
 
         // Terraform test variables.
-        TF_VAR_account_id   = credentials('tf-examples-aws-account-id')
-        TF_VAR_account_name = credentials('tf-examples-aws-account-name')
-        TF_VAR_project_id   = credentials('tf-examples-gcp-project-id')
+        TF_VAR_aws_account_id   = credentials('tf-examples-aws-account-id')
+        TF_VAR_aws_account_name = credentials('tf-examples-aws-account-name')
+        TF_VAR_gcp_project_id   = credentials('tf-examples-gcp-project-id')
 
         // Run acceptance tests with the nightly build or when triggered manually.
-        TF_ACC = "${currentBuild.getBuildCauses('hudson.triggers.TimerTrigger$TimerTriggerCause').size() > 0 ? 'true' : params.RUN_TESTS}"
+        TESTS = "${currentBuild.getBuildCauses('hudson.triggers.TimerTrigger$TimerTriggerCause').size() > 0 ? 'true' : params.RUN_TESTS}"
     }
     stages {
         stage('Test') {
             steps {
                 sh 'terraform version'
                 sh './run_tests.sh'
+            }
+            when {
+                expression {
+                    env.TESTS == "true"
+                }
             }
         }
     }

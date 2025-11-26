@@ -1,4 +1,4 @@
-variable "project_id" {
+variable "gcp_project_id" {
   type = string
 }
 
@@ -20,7 +20,7 @@ variables {
 }
 
 provider "google" {
-  project = var.project_id
+  project = var.gcp_project_id
 }
 
 run "setup_service_account" {
@@ -58,6 +58,7 @@ run "setup_random_prefix" {
 # Test GCP project onboarding.
 run "gcp_project" {
   variables {
+    project_id          = var.gcp_project_id
     role_id_prefix      = run.setup_random_prefix.result
     role_title_prefix   = "Rubrik Role"
     service_account_id  = run.setup_service_account.service_account_id
@@ -313,6 +314,7 @@ run "gcp_project" {
 # of an RSC feature.
 run "gcp_project_manage_features" {
   variables {
+    project_id          = var.gcp_project_id
     role_id_prefix      = run.setup_random_prefix.result
     role_title_prefix   = "Rubrik Role"
     service_account_id  = run.setup_service_account.service_account_id
@@ -440,6 +442,7 @@ run "rotate_service_account_key" {
 # Test updating the key of the service account onboarded to RSC.
 run "gcp_project_manage_service_account" {
   variables {
+    project_id          = var.gcp_project_id
     role_id_prefix      = run.setup_random_prefix.result
     role_title_prefix   = "Rubrik Role"
     service_account_id  = run.rotate_service_account_key.service_account_id
