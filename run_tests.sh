@@ -41,12 +41,13 @@ if [ -z "$TF_VAR_project_id" ]; then
   exit 1
 fi
 
-function run_tests {
-  local flags=""
-  if [ -n "$JENKINS_HOME" ]; then
-    flags="-no-color"
-  fi
+# Set terraform flags.
+flags=""
+if [ -n "$JENKINS_HOME" ]; then
+  flags="-no-color"
+fi
 
+run_tests() {
   find modules -mindepth 1 -maxdepth 1 -type d -not -path '*/\.*' |  while read -r dir; do
     if [ -d "$dir/tests" ]; then
       if [ "$DRY_RUN" = true ]; then
