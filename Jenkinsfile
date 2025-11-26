@@ -22,6 +22,9 @@
 
 pipeline {
     agent any
+    tools {
+        terraform 'terraform-1.13.1'
+    }
     triggers {
         cron(env.BRANCH_NAME == 'main' ? 'H 04 * * *' : '')
     }
@@ -51,6 +54,7 @@ pipeline {
     stages {
         stage('Test') {
             steps {
+                sh 'terraform version'
                 sh './run_tests.sh'
             }
         }
