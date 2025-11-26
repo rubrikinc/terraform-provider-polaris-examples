@@ -53,10 +53,10 @@ run_tests() {
       if [ "$DRY_RUN" = true ]; then
         echo "Would run tests in $dir"
       else
+        echo
         echo "Running tests in $dir:"
         terraform -chdir="$dir" init -input=false -upgrade $flags >/dev/null
         terraform -chdir="$dir" test $flags
-        echo
       fi
     fi
   done
