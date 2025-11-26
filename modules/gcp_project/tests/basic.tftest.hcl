@@ -39,9 +39,27 @@ run "setup_service_account" {
   }
 }
 
+run "setup_random_prefix" {
+  module {
+    source = "./modules/random_prefix"
+  }
+
+  variables {
+    prefix = "rubrik_role"
+  }
+
+  # Outputs.
+  assert {
+    condition     = output.result != ""
+    error_message = "The random prefix output should not be empty."
+  }
+}
+
 # Test GCP project onboarding.
 run "gcp_project" {
   variables {
+    role_id_prefix      = run.setup_random_prefix.result
+    role_title_prefix   = "Rubrik Role"
     service_account_id  = run.setup_service_account.service_account_id
     service_account_key = run.setup_service_account.service_account_key
   }
@@ -210,11 +228,11 @@ run "gcp_project" {
     error_message = "The with_conditions resource keys should match the RSC features specified having permissions with conditions."
   }
   assert {
-    condition     = alltrue([for k, v in google_project_iam_custom_role.with_conditions : (v.role_id == "rubrik_role_${lower(k)}")])
+    condition     = alltrue([for k, v in google_project_iam_custom_role.with_conditions : (v.role_id == "${var.role_id_prefix}_${lower(k)}")])
     error_message = "The role ID field should have the default prefix and the RSC feature name as a suffix."
   }
   assert {
-    condition     = alltrue([for k, v in google_project_iam_custom_role.with_conditions : (v.title == "Rubrik Role ${k}")])
+    condition     = alltrue([for k, v in google_project_iam_custom_role.with_conditions : (v.title == "${var.role_title_prefix} ${k}")])
     error_message = "The title field should have the default prefix and the RSC feature name as a suffix."
   }
   assert {
@@ -254,11 +272,11 @@ run "gcp_project" {
 
   # google_project_iam_custom_role.without_conditions.
   assert {
-    condition     = google_project_iam_custom_role.without_conditions.role_id == "rubrik_role_all"
+    condition     = google_project_iam_custom_role.without_conditions.role_id == "${var.role_id_prefix}_all"
     error_message = "The role ID field should match the default role ID."
   }
   assert {
-    condition     = google_project_iam_custom_role.without_conditions.title == "Rubrik Role ALL"
+    condition     = google_project_iam_custom_role.without_conditions.title == "${var.role_title_prefix} ALL"
     error_message = "The title field should match the default title."
   }
   assert {
@@ -295,6 +313,8 @@ run "gcp_project" {
 # of an RSC feature.
 run "gcp_project_manage_features" {
   variables {
+    role_id_prefix      = run.setup_random_prefix.result
+    role_title_prefix   = "Rubrik Role"
     service_account_id  = run.setup_service_account.service_account_id
     service_account_key = run.setup_service_account.service_account_key
 
@@ -370,7 +390,7 @@ run "gcp_project_manage_features" {
 
   # google_project_iam_custom_role.without_conditions.
   assert {
-    condition     = google_project_iam_custom_role.without_conditions.role_id == "rubrik_role_all"
+    condition     = google_project_iam_custom_role.without_conditions.role_id == "${var.role_id_prefix}_all"
     error_message = "The role ID field should match the default role ID."
   }
   assert {
@@ -420,6 +440,8 @@ run "rotate_service_account_key" {
 # Test updating the key of the service account onboarded to RSC.
 run "gcp_project_manage_service_account" {
   variables {
+    role_id_prefix      = run.setup_random_prefix.result
+    role_title_prefix   = "Rubrik Role"
     service_account_id  = run.rotate_service_account_key.service_account_id
     service_account_key = run.rotate_service_account_key.service_account_key
 
