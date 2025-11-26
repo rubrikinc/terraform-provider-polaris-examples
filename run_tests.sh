@@ -41,7 +41,7 @@ if [ -z "$TF_VAR_project_id" ]; then
   exit 1
 fi
 
-function run_tests() {
+function run_tests {
   local flags=""
   if [ -n "$JENKINS_HOME" ]; then
     flags="-no-color"
