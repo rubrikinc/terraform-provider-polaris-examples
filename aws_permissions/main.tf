@@ -1,7 +1,7 @@
 # Example showing how to onboard an AWS account to RSC and have Terraform
 # generate a diff on permissions changes. The RSC provider will create a
-# CloudFormation stack granting RSC access to the AWS account. See the
-# aws_cnp_account example for how to onboard an AWS account without using a
+# CloudFormation stack granting RSC access to the AWS account. See
+# modules/aws_iam_account for how to onboard an AWS account without using a
 # CloudFormation stack.
 
 terraform {

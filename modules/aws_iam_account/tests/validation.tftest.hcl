@@ -56,10 +56,9 @@ variables {
   ]
 
   tags = {
-    Environment = "test"
-    Example     = "aws_cnp_account"
-    Module      = "github.com/rubrikinc/terraform-provider-polaris-examples"
-    TestSuite   = "validation"
+    Test       = "validation"
+    Module     = "aws_iam_account"
+    Repository = "github.com/rubrikinc/terraform-provider-polaris-examples"
   }
 }
 

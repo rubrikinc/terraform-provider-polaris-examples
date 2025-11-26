@@ -1,4 +1,4 @@
-# Basic AWS CNP account onboarding
+# AWS IAM account onboarding
 
 The configuration in this directory adds an AWS account to RSC using the IAM roles workflow.
 
@@ -25,7 +25,7 @@ resources.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_aws_cnp_account"></a> [aws\_cnp\_account](#module\_aws\_cnp\_account) | ../.. | n/a |
+| <a name="module_aws_iam_account"></a> [aws\_iam\_account](#module\_aws\_iam\_account) | ../.. | n/a |
 
 ## Inputs
 
@@ -33,5 +33,5 @@ resources.
 |------|-------------|------|---------|:--------:|
 | <a name="input_account_id"></a> [account\_id](#input\_account\_id) | AWS account ID. | `string` | n/a | yes |
 | <a name="input_account_name"></a> [account\_name](#input\_account\_name) | AWS account name. | `string` | n/a | yes |
-| <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to AWS resources created. | `map(string)` | <pre>{<br/>  "Environment": "test",<br/>  "Example": "aws_cnp_account",<br/>  "Module": "github.com/rubrikinc/terraform-provider-polaris-examples"<br/>}</pre> | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to AWS resources created. | `map(string)` | <pre>{<br/>  "Example": "basic",<br/>  "Module": "aws_iam_account",<br/>  "Repository": "github.com/rubrikinc/terraform-provider-polaris-examples"<br/>}</pre> | no |
 <!-- END_TF_DOCS -->
