@@ -8,8 +8,8 @@ terraform {
 }
 
 # Onboard the AWS account to RSC.
-module "aws_cnp_account" {
-  source = "../aws_cnp_account"
+module "aws_iam_account" {
+  source = "../modules/aws_iam_account"
 
   account_id   = var.account_id
   account_name = var.account_name
@@ -31,7 +31,7 @@ module "aws_cnp_account" {
 
 # Create an AWS cloud cluster using RSC.
 resource "polaris_aws_cloud_cluster" "cces" {
-  cloud_account_id     = module.aws_cnp_account.cloud_account_id
+  cloud_account_id     = module.aws_iam_account.cloud_account_id
   region               = var.region
   use_placement_groups = true
 

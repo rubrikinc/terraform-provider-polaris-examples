@@ -47,8 +47,8 @@ module "vpc" {
 }
 
 # Onboard the AWS account to RSC with the Exocompute feature.
-module "aws_cnp_account" {
-  source = "../../../aws_cnp_account"
+module "aws_iam_account" {
+  source = "../../../modules/aws_iam_account"
 
   account_id   = var.account_id
   account_name = var.account_name
@@ -73,7 +73,7 @@ module "aws_cnp_account" {
 module "aws_exocompute" {
   source = "../.."
 
-  cloud_account_id          = module.aws_cnp_account.cloud_account_id
+  cloud_account_id          = module.aws_iam_account.cloud_account_id
   cluster_security_group_id = module.vpc.cluster_security_group_id
   node_security_group_id    = module.vpc.node_security_group_id
   region                    = data.aws_region.current.region

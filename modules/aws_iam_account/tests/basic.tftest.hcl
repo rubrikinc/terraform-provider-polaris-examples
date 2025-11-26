@@ -1,3 +1,11 @@
+variable "account_id" {
+  type = string
+}
+
+variable "account_name" {
+  type = string
+}
+
 variables {
   features = {
     CLOUD_NATIVE_DYNAMODB_PROTECTION = {
@@ -28,10 +36,9 @@ variables {
   ]
 
   tags = {
-    Environment = "test"
-    Example     = "aws_cnp_account"
-    Module      = "github.com/rubrikinc/terraform-provider-polaris-examples"
-    TestSuite   = "basic"
+    Test       = "basic"
+    Module     = "aws_iam_account"
+    Repository = "github.com/rubrikinc/terraform-provider-polaris-examples"
   }
 }
 
@@ -39,7 +46,7 @@ provider "aws" {
   region = "us-east-2"
 }
 
-run "init" {
+run "aws_account" {
   # polaris_aws_cnp_artifacts data source.
   assert {
     condition     = data.polaris_aws_cnp_artifacts.artifacts.cloud == "STANDARD"
@@ -200,7 +207,7 @@ run "init" {
   }
 }
 
-run "update_features" {
+run "aws_account_update_features" {
   variables {
     features = {
       EXOCOMPUTE = {
@@ -291,7 +298,7 @@ run "update_features" {
   # polaris_aws_cnp_account resource.
   assert {
     # Make sure the account resource isn't recreated.
-    condition     = polaris_aws_cnp_account.account.id == run.init.cloud_account_id
+    condition     = polaris_aws_cnp_account.account.id == run.aws_account.cloud_account_id
     error_message = "The resource ID does not match the expected value."
   }
   assert {
@@ -323,7 +330,7 @@ run "update_features" {
   }
 }
 
-run "update_name" {
+run "aws_account_update_name" {
   variables {
     account_name = "Updated Name"
   }
@@ -331,7 +338,7 @@ run "update_name" {
   # polaris_aws_cnp_account resource.
   assert {
     # Make sure the account resource isn't recreated.
-    condition     = polaris_aws_cnp_account.account.id == run.init.cloud_account_id
+    condition     = polaris_aws_cnp_account.account.id == run.aws_account.cloud_account_id
     error_message = "The resource ID does not match the expected value."
   }
   assert {
@@ -340,7 +347,7 @@ run "update_name" {
   }
 }
 
-run "update_regions" {
+run "aws_account_update_regions" {
   variables {
     regions = concat(var.regions, ["eu-north-1"])
   }
@@ -348,7 +355,7 @@ run "update_regions" {
   # polaris_aws_cnp_account resource.
   assert {
     # Make sure the account resource isn't recreated.
-    condition     = polaris_aws_cnp_account.account.id == run.init.cloud_account_id
+    condition     = polaris_aws_cnp_account.account.id == run.aws_account.cloud_account_id
     error_message = "The resource ID does not match the expected value."
   }
   assert {
