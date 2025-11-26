@@ -1,12 +1,17 @@
-variable "account_id" {
-  type = string
+variable "aws_account_id" {
+  description = "AWS account ID."
+  type        = string
 }
 
-variable "account_name" {
-  type = string
+variable "aws_account_name" {
+  description = "AWS account name."
+  type        = string
 }
 
 variables {
+  account_id   = var.aws_account_id
+  account_name = var.aws_account_name
+
   features = {
     CLOUD_NATIVE_DYNAMODB_PROTECTION = {
       permission_groups = [
@@ -332,7 +337,7 @@ run "aws_account_update_features" {
 
 run "aws_account_update_name" {
   variables {
-    account_name = "Updated Name"
+    account_name = format("%s Updated", var.aws_account_name)
   }
 
   # polaris_aws_cnp_account resource.
