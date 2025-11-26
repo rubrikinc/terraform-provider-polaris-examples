@@ -56,6 +56,7 @@ run_tests() {
         echo "Running tests in $dir:"
         terraform -chdir="$dir" init -input=false -upgrade $flags >/dev/null
         terraform -chdir="$dir" test $flags
+        echo
       fi
     fi
   done

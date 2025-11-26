@@ -91,13 +91,13 @@ run "archival_location" {
     error_message = "The ID field should match the GCP Project cloud account ID."
   }
   assert {
-    condition     = data.polaris_gcp_project.project.project_id == var.project_id
+    condition     = data.polaris_gcp_project.project.project_id == var.gcp_project_id
     error_message = "The project ID field should match the specified project ID."
   }
 
   # data.google_project.project.
   assert {
-    condition     = data.google_project.project.project_id == var.project_id
+    condition     = data.google_project.project.project_id == var.gcp_project_id
     error_message = "The project ID field should match the specified project ID."
   }
   assert {
