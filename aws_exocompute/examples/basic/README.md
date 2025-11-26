@@ -35,8 +35,8 @@ resources.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_aws_cnp_account"></a> [aws\_cnp\_account](#module\_aws\_cnp\_account) | ../../../aws_cnp_account | n/a |
 | <a name="module_aws_exocompute"></a> [aws\_exocompute](#module\_aws\_exocompute) | ../.. | n/a |
+| <a name="module_aws_iam_account"></a> [aws\_iam\_account](#module\_aws\_iam\_account) | ../../../modules/aws_iam_account | n/a |
 | <a name="module_vpc"></a> [vpc](#module\_vpc) | ../../modules/exocompute_vpc | n/a |
 
 ## Resources

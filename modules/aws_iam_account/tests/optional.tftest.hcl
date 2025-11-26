@@ -2,6 +2,10 @@ variable "account_id" {
   type = string
 }
 
+variable "account_name" {
+  type = string
+}
+
 variables {
   ec2_recovery_role_path = format("arn:aws:iam::%s:role/EC2-Recovery-Role", var.account_id)
   external_id            = "Unique-External-ID"
@@ -21,10 +25,9 @@ variables {
   ]
 
   tags = {
-    Environment = "test"
-    Example     = "aws_cnp_account"
-    Module      = "github.com/rubrikinc/terraform-provider-polaris-examples"
-    TestSuite   = "optional"
+    Test       = "optional"
+    Module     = "aws_iam_account"
+    Repository = "github.com/rubrikinc/terraform-provider-polaris-examples"
   }
 }
 
@@ -32,7 +35,7 @@ provider "aws" {
   region = "us-east-2"
 }
 
-run "init" {
+run "aws_account" {
   # polaris_aws_cnp_permissions data source.
   assert {
     condition     = length(data.polaris_aws_cnp_permissions.permissions) == 1
