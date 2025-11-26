@@ -2,6 +2,18 @@
 
 set -e
 
+show_help() {
+      echo "usage: $(basename "$0") [-h|--help] [-n|--dry-run]"
+      echo
+      echo "This script requires a recent version of Terraform CLI and the following environment variables:"
+      echo " * TF_VAR_aws_account_id   - Account ID of the AWS account used for testing"
+      echo " * TF_VAR_aws_account_name - Account name of the AWS account used for testing"
+      echo " * TF_VAR_gcp_project_id   - Project ID of GCP project used for testing"
+      echo
+      echo "In addition, Terraform requires access to each of the test accounts, including RSC."
+      echo
+}
+
 # Parse command line arguments.
 DRY_RUN=false
 while [ $# -gt 0 ]; do
@@ -10,12 +22,14 @@ while [ $# -gt 0 ]; do
       DRY_RUN=true
       shift
       ;;
+    -h|--help)
+      show_help
+      exit 1
+      ;;
     *)
-      echo "error: unknown option: $1"
+      echo error: unknown option: $1
       echo
-      echo "usage: $0 [-n | --dry-run]"
-      echo
-      echo "Note, access for Terraform to tests accounts for RSC, AWS and GCP must already be setup."
+      show_help
       exit 1
       ;;
   esac
