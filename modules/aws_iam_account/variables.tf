@@ -163,8 +163,7 @@ variable "tags" {
   description = "Tags to apply to AWS resources created."
   type        = map(string)
   default = {
-    Environment = "test"
-    Example     = "aws_cnp_account"
-    Module      = "github.com/rubrikinc/terraform-provider-polaris-examples"
+    Module     = "aws_iam_account"
+    Repository = "github.com/rubrikinc/terraform-provider-polaris-examples"
   }
 }
