@@ -47,7 +47,7 @@ function run_tests() {
     flags="-no-color"
   fi
 
-  find . -mindepth 1 -maxdepth 2 -type d -not -path '*/\.*' |  while read -r dir; do
+  find modules -mindepth 1 -maxdepth 1 -type d -not -path '*/\.*' |  while read -r dir; do
     if [ -d "$dir/tests" ]; then
       if [ "$DRY_RUN" = true ]; then
         echo "Would run tests in $dir"
