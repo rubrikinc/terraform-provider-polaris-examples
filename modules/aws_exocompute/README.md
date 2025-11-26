@@ -5,8 +5,8 @@ This module creates an RSC Exocompute configuration for running Exocompute workl
 ## Usage
 
 ```terraform
-module "aws_cnp_account" {
-  source = "."
+module "aws_exocompute" {
+  source = "github.com/rubrikinc/terraform-provider-polaris-examples//modules/aws_exocompute"
 
   cloud_account_id          = "d7984bca-db41-40ba-98ef-c56c4aef6c23"
   cluster_security_group_id = "sg-267288cc1f4a4be6a"
@@ -43,6 +43,7 @@ Note, the `cluster_security_group_id` and `node_security_group_id` input variabl
 |------|------|
 | [polaris_aws_exocompute.configuration](https://registry.terraform.io/providers/rubrikinc/polaris/latest/docs/resources/aws_exocompute) | resource |
 | [aws_regions.regions](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/regions) | data source |
+| [polaris_aws_account.account](https://registry.terraform.io/providers/rubrikinc/polaris/latest/docs/data-sources/aws_account) | data source |
 
 ## Inputs
 

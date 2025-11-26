@@ -46,7 +46,7 @@ run "setup_aws_iam_account" {
   }
 }
 
-run "init" {
+run "configure_exocompute" {
   variables {
     cloud_account_id          = run.setup_aws_iam_account.cloud_account_id
     cluster_security_group_id = run.setup_exocompute_vpc.cluster_security_group_id

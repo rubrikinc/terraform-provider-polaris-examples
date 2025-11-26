@@ -25,9 +25,9 @@ variable "tags" {
   description = "Tags to apply to AWS resources created."
   type        = map(string)
   default = {
-    Environment = "test"
-    Example     = "aws_exocompute"
-    Module      = "github.com/rubrikinc/terraform-provider-polaris-examples"
+    Example    = "basic"
+    Module     = "aws_exocompute"
+    Repository = "github.com/rubrikinc/terraform-provider-polaris-examples"
   }
 }
 
@@ -37,7 +37,7 @@ data "aws_region" "current" {}
 module "vpc" {
   source = "../../modules/exocompute_vpc"
 
-  name         = "aws_excompute"
+  name         = "aws_exocompute"
   public_cidr  = "172.22.0.0/24"
   subnet1_cidr = "172.22.1.0/24"
   subnet2_cidr = "172.22.2.0/24"
@@ -48,7 +48,7 @@ module "vpc" {
 
 # Onboard the AWS account to RSC with the Exocompute feature.
 module "aws_iam_account" {
-  source = "../../../modules/aws_iam_account"
+  source = "../../../aws_iam_account"
 
   account_id   = var.account_id
   account_name = var.account_name
