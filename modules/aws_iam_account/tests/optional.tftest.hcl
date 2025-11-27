@@ -3,14 +3,9 @@ variable "aws_account_id" {
   type        = string
 }
 
-variable "aws_account_name" {
-  description = "AWS account name."
-  type        = string
-}
-
 variables {
   account_id             = var.aws_account_id
-  account_name           = var.aws_account_name
+  account_name           = "Test Account Name"
   ec2_recovery_role_path = format("arn:aws:iam::%s:role/EC2-Recovery-Role", var.aws_account_id)
   external_id            = "Unique-External-ID"
   role_path              = "/application/component/"

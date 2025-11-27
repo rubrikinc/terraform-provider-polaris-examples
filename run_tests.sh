@@ -7,8 +7,7 @@ show_help() {
       echo
       echo "This script requires a recent version of Terraform CLI and the following environment variables:"
       echo " * TF_VAR_aws_account_id   - Account ID of the AWS account used for testing"
-      echo " * TF_VAR_aws_account_name - Account name of the AWS account used for testing"
-      echo " * TF_VAR_gcp_project_id   - Project ID of GCP project used for testing"
+      echo " * TF_VAR_gcp_project_id   - Project ID of the GCP project used for testing"
       echo
       echo "In addition, Terraform requires access to each of the test accounts, including RSC."
       echo
@@ -49,10 +48,6 @@ fi
 # Required environment variables.
 if [ -z "$TF_VAR_aws_account_id" ]; then
   echo "error: the environment variable TF_VAR_aws_account_id must be set to the ID of the AWS account used for testing"
-  exit 1
-fi
-if [ -z "$TF_VAR_aws_account_name" ]; then
-  echo "error: the environment variable TF_VAR_aws_account_name must be set to the name of the AWS account used for testing"
   exit 1
 fi
 if [ -z "$TF_VAR_gcp_project_id" ]; then
