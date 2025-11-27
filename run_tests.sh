@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -euo
+set -e
 
 show_help() {
       echo "usage: $(basename "$0") [-h|--help] [-n|--dry-run]"
@@ -16,6 +16,7 @@ show_help() {
 
 # Parse command line arguments.
 DRY_RUN=false
+VERBOSE=false
 while [ $# -gt 0 ]; do
   case "$1" in
     -n|--dry-run)
@@ -26,8 +27,12 @@ while [ $# -gt 0 ]; do
       show_help
       exit 1
       ;;
+    -v|--verbose)
+      VERBOSE=true
+      shift
+      ;;
     *)
-      echo error: unknown option: $1
+      echo "error: unknown option: $1"
       echo
       show_help
       exit 1
@@ -57,19 +62,32 @@ fi
 
 # Set Jenkins-specific Terraform flags.
 flags=""
-if [ -n "$JENKINS_HOME" ]; then
+if [ -n "${JENKINS_HOME:-}" ]; then
   flags="-no-color"
 fi
 
 run_tests() {
-  find modules -mindepth 1 -maxdepth 1 -type d -not -path '*/\.*' |  while read -r dir; do
+  if [ "$VERBOSE" = true ]; then
+    terraform version
+  fi
+
+  for dir in $(find modules -mindepth 1 -maxdepth 1 -type d -not -path '*/\.*'); do
     if [ -d "$dir/tests" ]; then
       if [ "$DRY_RUN" = true ]; then
         echo "Would run tests in $dir"
       else
         echo
         echo "Running tests in $dir:"
-        if ! (terraform -chdir="$dir" init -input=false -upgrade $flags && terraform -chdir="$dir" test $flags); then
+        if [ "$VERBOSE" = true ]; then
+          if ! terraform -chdir="$dir" init -input=false -upgrade $flags; then
+            exit_code=1
+          fi
+        else
+          if ! terraform -chdir="$dir" init -input=false -upgrade $flags >/dev/null; then
+            exit_code=1
+          fi
+        fi
+        if ! terraform -chdir="$dir" test $flags; then
           exit_code=1
         fi
       fi

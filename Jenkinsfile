@@ -29,7 +29,8 @@ pipeline {
         cron(env.BRANCH_NAME == 'main' ? 'H 04 * * *' : '')
     }
     parameters {
-        booleanParam(name: 'RUN_TESTS', defaultValue: false)
+        booleanParam(name: 'DRY_RUN', defaultValue: false)
+        booleanParam(name: 'VERBOSE', defaultValue: false)
     }
     environment {
         // AWS provider.
@@ -47,20 +48,11 @@ pipeline {
         TF_VAR_aws_account_id   = credentials('tf-examples-aws-account-id')
         TF_VAR_aws_account_name = credentials('tf-examples-aws-account-name')
         TF_VAR_gcp_project_id   = credentials('tf-examples-gcp-project-id')
-
-        // Run acceptance tests with the nightly build or when triggered manually.
-        TESTS = "${currentBuild.getBuildCauses('hudson.triggers.TimerTrigger$TimerTriggerCause').size() > 0 ? 'true' : params.RUN_TESTS}"
     }
     stages {
         stage('Test') {
             steps {
-                sh 'terraform version'
-                sh './run_tests.sh'
-            }
-            when {
-                expression {
-                    env.TESTS == "true"
-                }
+                sh './run_tests.sh ${params.DRY_RUN ? "-n" : ""} ${params.VERBOSE ? "-v" : ""}'
             }
         }
     }
