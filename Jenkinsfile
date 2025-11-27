@@ -52,7 +52,7 @@ pipeline {
     stages {
         stage('Test') {
             steps {
-                sh './run_tests.sh ${params.DRY_RUN ? "-n" : ""} ${params.VERBOSE ? "-v" : ""}'
+                sh "./run_tests.sh ${params.DRY_RUN ? '-n' : ''} ${params.VERBOSE ? '-v' : ''}"
             }
         }
     }
