@@ -335,22 +335,22 @@ run "aws_account_update_features" {
   }
 }
 
-# run "aws_account_update_name" {
-#   variables {
-#     account_name = format("%s Updated", var.aws_account_name)
-#   }
-#
-#   # polaris_aws_cnp_account resource.
-#   assert {
-#     # Make sure the account resource isn't recreated.
-#     condition     = polaris_aws_cnp_account.account.id == run.aws_account.cloud_account_id
-#     error_message = "The resource ID does not match the expected value."
-#   }
-#   assert {
-#     condition     = polaris_aws_cnp_account.account.name == var.account_name
-#     error_message = "The name does not match the expected value."
-#   }
-# }
+run "aws_account_update_name" {
+  variables {
+    account_name = format("%s Updated", var.aws_account_name)
+  }
+
+  # polaris_aws_cnp_account resource.
+  assert {
+    # Make sure the account resource isn't recreated.
+    condition     = polaris_aws_cnp_account.account.id == run.aws_account.cloud_account_id
+    error_message = "The resource ID does not match the expected value."
+  }
+  assert {
+    condition     = polaris_aws_cnp_account.account.name == var.account_name
+    error_message = "The name does not match the expected value."
+  }
+}
 
 run "aws_account_update_regions" {
   variables {
