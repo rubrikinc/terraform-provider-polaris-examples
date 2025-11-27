@@ -69,7 +69,7 @@ run_tests() {
       else
         echo
         echo "Running tests in $dir:"
-        if ! terraform -chdir="$dir" init -input=false -upgrade $flags && terraform -chdir="$dir" test $flags; then
+        if ! (terraform -chdir="$dir" init -input=false -upgrade $flags && terraform -chdir="$dir" test $flags); then
           exit_code=1
         fi
       fi
