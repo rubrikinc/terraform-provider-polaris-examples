@@ -87,7 +87,7 @@ run_tests() {
             exit_code=1
           fi
         fi
-        if ! terraform -chdir="$dir" test $flags; then
+        if ! terraform -chdir="$dir" test -verbose $flags; then
           exit_code=1
         fi
       fi
