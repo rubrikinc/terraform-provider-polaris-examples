@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e
+set -euo
 
 show_help() {
       echo "usage: $(basename "$0") [-h|--help] [-n|--dry-run]"
@@ -55,7 +55,7 @@ if [ -z "$TF_VAR_gcp_project_id" ]; then
   exit 1
 fi
 
-# Set terraform flags.
+# Set Jenkins-specific Terraform flags.
 flags=""
 if [ -n "$JENKINS_HOME" ]; then
   flags="-no-color"
@@ -69,15 +69,22 @@ run_tests() {
       else
         echo
         echo "Running tests in $dir:"
-        terraform -chdir="$dir" init -input=false -upgrade $flags >/dev/null
-        terraform -chdir="$dir" test $flags
+        if ! terraform -chdir="$dir" init -input=false -upgrade $flags && terraform -chdir="$dir" test $flags; then
+          exit_code=1
+        fi
       fi
     fi
   done
+  echo
 }
 
+# Change directory and run tests.
 dir=$(dirname "$0")
 (
   cd "$dir"
+  exit_code=0
   run_tests
+  if [ "$exit_code" -ne 0 ]; then
+    exit "$exit_code"
+  fi
 )
