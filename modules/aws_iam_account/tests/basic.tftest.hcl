@@ -91,16 +91,15 @@ run "aws_account" {
     error_message = "The role keys does not match the expected value."
   }
   assert {
-    condition     = length(data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies) == 4
+    condition     = length(data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies) == 5
     error_message = "The number of customer managed policies does not match the expected value."
   }
   assert {
-    condition     = length(setsubtract(data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies[*].feature, keys(var.features))) == 0
+    condition     = toset(data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies[*].feature) == toset(concat(["CLOUDACCOUNTS"], keys(var.features)))
     error_message = "The customer managed policies features does not match the expected values."
   }
   assert {
-    condition = length(setsubtract(data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies[*].name, [
-      "DynamoDBProtectionPolicy", "EC2ProtectionPolicy", "S3ProtectionPolicy", "RDSProtectionPolicy"])) == 0
+    condition = toset(data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies[*].name) == toset(["CloudAccountsPolicy", "DynamoDBProtectionPolicy", "EC2ProtectionPolicy", "S3ProtectionPolicy", "RDSProtectionPolicy"])
     error_message = "The customer managed policies names does not match the expected values."
   }
   assert {
@@ -253,12 +252,11 @@ run "aws_account_update_features" {
     error_message = "The role keys does not match the expected value."
   }
   assert {
-    condition     = length(data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies) == 2
+    condition     = length(data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies) == 3
     error_message = "The number of customer managed policies does not match the expected value."
   }
   assert {
-    condition = length(setsubtract(data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies[*].name, [
-      "ExocomputePolicy", "RDSProtectionPolicy"])) == 0
+    condition = toset(data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies[*].name) == toset(["CloudAccountsPolicy", "ExocomputePolicy", "RDSProtectionPolicy"])
     error_message = "The customer managed policies name does not match the expected values."
   }
   assert {

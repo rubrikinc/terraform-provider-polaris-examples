@@ -31,6 +31,7 @@ pipeline {
     parameters {
         booleanParam(name: 'DRY_RUN', defaultValue: false)
         booleanParam(name: 'VERBOSE', defaultValue: false)
+        choice(name: 'SERVICEACCOUNT_FILE', choices: ['tf-examples-polaris-dev-01', 'tf-examples-polaris-prod-01'])
     }
     environment {
         // AWS provider.
@@ -42,7 +43,7 @@ pipeline {
         GOOGLE_APPLICATION_CREDENTIALS = credentials('tf-examples-gcp-service-account')
 
         // RSC provider.
-        RUBRIK_POLARIS_SERVICEACCOUNT_CREDENTIALS = credentials('tf-examples-polaris-service-account')
+        RUBRIK_POLARIS_SERVICEACCOUNT_FILE = credentials("${params.SERVICEACCOUNT_FILE}")
 
         // Terraform test variables.
         TF_VAR_aws_account_id   = credentials('tf-examples-aws-account-id')
