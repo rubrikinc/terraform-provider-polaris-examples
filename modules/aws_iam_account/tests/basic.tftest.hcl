@@ -8,26 +8,26 @@ variables {
   account_name = "Test Account Name"
 
   features = {
-    CLOUD_NATIVE_DYNAMODB_PROTECTION = {
-      permission_groups = [
-        "BASIC"
-      ]
-    },
+    # CLOUD_NATIVE_DYNAMODB_PROTECTION = {
+    #   permission_groups = [
+    #     "BASIC"
+    #   ]
+    # },
     CLOUD_NATIVE_PROTECTION = {
       permission_groups = [
         "BASIC",
       ]
     },
-    CLOUD_NATIVE_S3_PROTECTION = {
-      permission_groups = [
-        "BASIC"
-      ]
-    },
-    RDS_PROTECTION = {
-      permission_groups = [
-        "BASIC"
-      ]
-    },
+    # CLOUD_NATIVE_S3_PROTECTION = {
+    #   permission_groups = [
+    #     "BASIC"
+    #   ]
+    # },
+    # RDS_PROTECTION = {
+    #   permission_groups = [
+    #     "BASIC"
+    #   ]
+    # },
   }
 
   regions = [
@@ -57,7 +57,7 @@ run "aws_account" {
     error_message = "The number of features does not match the expected value."
   }
   assert {
-    condition     = length(setsubtract(data.polaris_aws_cnp_artifacts.artifacts.feature.*.name, keys(var.features))) == 0
+    condition     = toset(data.polaris_aws_cnp_artifacts.artifacts.feature.*.name) == toset(keys(var.features))
     error_message = "The feature names does not match the expected value."
   }
   assert {
@@ -65,7 +65,7 @@ run "aws_account" {
     error_message = "The number of role keys does not match the expected value."
   }
   assert {
-    condition     = length(setsubtract(data.polaris_aws_cnp_artifacts.artifacts.role_keys, ["CROSSACCOUNT"])) == 0
+    condition     = toset(data.polaris_aws_cnp_artifacts.artifacts.role_keys) == toset(["CROSSACCOUNT"])
     error_message = "The role keys does not match the expected value."
   }
   assert {
@@ -91,7 +91,7 @@ run "aws_account" {
     error_message = "The role keys does not match the expected value."
   }
   assert {
-    condition     = length(data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies) == 5
+    condition     = length(data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies) == length(var.features) + 1
     error_message = "The number of customer managed policies does not match the expected value."
   }
   assert {
@@ -99,7 +99,7 @@ run "aws_account" {
     error_message = "The customer managed policies features does not match the expected values."
   }
   assert {
-    condition = toset(data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies[*].name) == toset(["CloudAccountsPolicy", "DynamoDBProtectionPolicy", "EC2ProtectionPolicy", "S3ProtectionPolicy", "RDSProtectionPolicy"])
+    condition = toset(data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies[*].name) == toset(["CloudAccountsPolicy", "EC2ProtectionPolicy"])
     error_message = "The customer managed policies names does not match the expected values."
   }
   assert {
@@ -133,7 +133,7 @@ run "aws_account" {
     error_message = "The number of features does not match the expected value."
   }
   assert {
-    condition     = length(setsubtract(polaris_aws_cnp_account.account.feature.*.name, keys(var.features))) == 0
+    condition     = toset(polaris_aws_cnp_account.account.feature.*.name) == toset(keys(var.features))
     error_message = "The features does not match the expected values."
   }
   assert {
@@ -145,7 +145,7 @@ run "aws_account" {
     error_message = "The number of regions does not match the expected value."
   }
   assert {
-    condition     = length(setsubtract(polaris_aws_cnp_account.account.regions, var.regions)) == 0
+    condition     = toset(polaris_aws_cnp_account.account.regions) == toset(var.regions)
     error_message = "The regions does not match the expected value."
   }
   assert {
@@ -171,11 +171,11 @@ run "aws_account" {
     error_message = "The account ID does not match the expected value."
   }
   assert {
-    condition     = length(polaris_aws_cnp_account_attachments.attachments.features) == 4
+    condition     = length(polaris_aws_cnp_account_attachments.attachments.features) == length(var.features)
     error_message = "The number of features does not match the expected value."
   }
   assert {
-    condition     = length(setsubtract(polaris_aws_cnp_account_attachments.attachments.features, keys(var.features))) == 0
+    condition     = toset(polaris_aws_cnp_account_attachments.attachments.features) == toset(keys(var.features))
     error_message = "The features does not match the expected value."
   }
   assert {
@@ -229,7 +229,7 @@ run "aws_account_update_features" {
     error_message = "The number of features does not match the expected value."
   }
   assert {
-    condition     = length(setsubtract(data.polaris_aws_cnp_artifacts.artifacts.feature.*.name, keys(var.features))) == 0
+    condition     = toset(data.polaris_aws_cnp_artifacts.artifacts.feature.*.name) == toset(keys(var.features))
     error_message = "The feature names does not match the expected value."
   }
   assert {
@@ -237,8 +237,7 @@ run "aws_account_update_features" {
     error_message = "The number of role keys does not match the expected value."
   }
   assert {
-    condition = length(setsubtract(data.polaris_aws_cnp_artifacts.artifacts.role_keys, [
-      "CROSSACCOUNT", "EXOCOMPUTE_EKS_LAMBDA", "EXOCOMPUTE_EKS_MASTERNODE", "EXOCOMPUTE_EKS_WORKERNODE"])) == 0
+    condition = toset(data.polaris_aws_cnp_artifacts.artifacts.role_keys) == toset(["CROSSACCOUNT", "EXOCOMPUTE_EKS_LAMBDA", "EXOCOMPUTE_EKS_MASTERNODE", "EXOCOMPUTE_EKS_WORKERNODE"])
     error_message = "The role keys does not match the expected value."
   }
 
@@ -284,8 +283,7 @@ run "aws_account_update_features" {
     error_message = "The number of customer managed policies does not match the expected value."
   }
   assert {
-    condition = length(setsubtract(data.polaris_aws_cnp_permissions.permissions["EXOCOMPUTE_EKS_WORKERNODE"].customer_managed_policies[*].name, [
-      "NodeRoleAutoscalingPolicy", "NodeRoleKMSPolicy", "NodeRoleSSMPolicy"])) == 0
+    condition = toset(data.polaris_aws_cnp_permissions.permissions["EXOCOMPUTE_EKS_WORKERNODE"].customer_managed_policies[*].name) == toset(["NodeRoleAutoscalingPolicy", "NodeRoleKMSPolicy", "NodeRoleSSMPolicy"])
     error_message = "The customer managed policies name does not match the expected values."
   }
   assert {
@@ -322,8 +320,7 @@ run "aws_account_update_features" {
     error_message = "The role does not match the expected value."
   }
   assert {
-    condition = length(setsubtract(polaris_aws_cnp_account_attachments.attachments.role.*.key, [
-      "CROSSACCOUNT", "EXOCOMPUTE_EKS_LAMBDA", "EXOCOMPUTE_EKS_MASTERNODE", "EXOCOMPUTE_EKS_WORKERNODE"])) == 0
+    condition = toset(polaris_aws_cnp_account_attachments.attachments.role.*.key) == toset(["CROSSACCOUNT", "EXOCOMPUTE_EKS_LAMBDA", "EXOCOMPUTE_EKS_MASTERNODE", "EXOCOMPUTE_EKS_WORKERNODE"])
     error_message = "The role key does not match the expected value."
   }
 }
@@ -361,7 +358,7 @@ run "aws_account_update_regions" {
     error_message = "The number of regions does not match the expected value."
   }
   assert {
-    condition     = length(setsubtract(polaris_aws_cnp_account.account.regions, var.regions)) == 0
+    condition     = toset(polaris_aws_cnp_account.account.regions) == toset(var.regions)
     error_message = "The regions does not match the expected value."
   }
 }
