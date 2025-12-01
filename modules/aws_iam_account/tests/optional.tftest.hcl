@@ -58,7 +58,7 @@ run "aws_account" {
   }
   assert {
     # Check that the recovery role path is inside the EC2 protection policy.
-    condition     = [for p in data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies : can(regex(var.ec2_recovery_role_path, p.policy)) if p.name == "EC2ProtectionPolicy"]
+    condition     = alltrue([for p in data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies : can(regex(var.ec2_recovery_role_path, p.policy)) if p.name == "EC2ProtectionPolicy"])
     error_message = "The customer managed policies policy does not match the expected value."
   }
 
@@ -96,7 +96,7 @@ run "aws_account" {
   }
   assert {
     # Make sure the JSON documents are ordered and formatted the same way.
-    condition     = [for p in data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies : (jsonencode(jsondecode(p.policy)) == jsonencode(jsondecode(aws_iam_policy.customer_managed[p.name].policy)))]
+    condition     = alltrue([for p in data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies : (jsonencode(jsondecode(p.policy)) == jsonencode(jsondecode(aws_iam_policy.customer_managed[p.name].policy)))])
     error_message = "The customer mananged policy does not match the expected value."
   }
 }
