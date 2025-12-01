@@ -3,7 +3,7 @@
 set -e
 
 show_help() {
-      echo "usage: $(basename "$0") [-h|--help] [-n|--dry-run]"
+      echo "usage: $(basename "$0") [-h|--help] [-n|--dry-run] [-v|--verbose]"
       echo
       echo "This script requires a recent version of Terraform CLI and the following environment variables:"
       echo " * TF_VAR_aws_account_id   - Account ID of the AWS account used for testing"
@@ -62,7 +62,9 @@ if [ -n "${JENKINS_HOME:-}" ]; then
 fi
 
 run_tests() {
+  verbose=""
   if [ "$VERBOSE" = true ]; then
+    verbose="-verbose"
     terraform version
   fi
 
@@ -82,7 +84,7 @@ run_tests() {
             exit_code=1
           fi
         fi
-        if ! terraform -chdir="$dir" test -verbose $flags; then
+        if ! terraform -chdir="$dir" test $flags $verbose; then
           exit_code=1
         fi
       fi
