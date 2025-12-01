@@ -45,20 +45,20 @@ run "aws_account" {
     error_message = "The ec2 recovery role path does not match the expected value."
   }
   assert {
-    condition     = length(data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies) == 1
+    condition     = length(data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies) == 2
     error_message = "The number of customer managed policies does not match the expected value."
   }
   assert {
-    condition     = data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies[0].feature == "CLOUD_NATIVE_PROTECTION"
+    condition     = toset(data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies[*].feature) == toset(["CLOUDACCOUNTS", "CLOUD_NATIVE_PROTECTION"])
     error_message = "The customer managed policies feature does not match the expected value."
   }
   assert {
-    condition     = data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies[0].name == "EC2ProtectionPolicy"
+    condition     = toset(data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies[*].name) == toset(["CloudAccountsPolicy", "EC2ProtectionPolicy"])
     error_message = "The customer managed policies name does not match the expected value."
   }
   assert {
-    # Check that the recovery role path is inside the policy.
-    condition     = can(regex(var.ec2_recovery_role_path, data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies[0].policy))
+    # Check that the recovery role path is inside the EC2 protection policy.
+    condition     = [for p in data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies : can(regex(var.ec2_recovery_role_path, p.policy)) if p.name == "EC2ProtectionPolicy"]
     error_message = "The customer managed policies policy does not match the expected value."
   }
 
@@ -91,12 +91,12 @@ run "aws_account" {
 
   # aws_iam_policy resource.
   assert {
-    condition     = length(aws_iam_policy.customer_managed) == 1
+    condition     = length(aws_iam_policy.customer_managed) == 2
     error_message = "The number of customer managed policy instances does not match the expected value."
   }
   assert {
     # Make sure the JSON documents are ordered and formatted the same way.
-    condition     = jsonencode(jsondecode(aws_iam_policy.customer_managed["EC2ProtectionPolicy"].policy)) == jsonencode(jsondecode(data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies[0].policy))
+    condition     = [for p in data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies : (jsonencode(jsondecode(p.policy)) == jsonencode(jsondecode(aws_iam_policy.customer_managed[p.name].policy)))]
     error_message = "The customer mananged policy does not match the expected value."
   }
 }
