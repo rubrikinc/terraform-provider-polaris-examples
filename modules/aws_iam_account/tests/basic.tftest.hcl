@@ -206,6 +206,44 @@ run "aws_account" {
   }
 }
 
+run "aws_account_update_name" {
+  variables {
+    account_name = "Test Account Name Updated"
+  }
+
+  # polaris_aws_cnp_account resource.
+  assert {
+    # Make sure the account resource isn't recreated.
+    condition     = polaris_aws_cnp_account.account.id == run.aws_account.cloud_account_id
+    error_message = "The resource ID does not match the expected value."
+  }
+  assert {
+    condition     = polaris_aws_cnp_account.account.name == var.account_name
+    error_message = "The name does not match the expected value."
+  }
+}
+
+run "aws_account_update_regions" {
+  variables {
+    regions = concat(var.regions, ["eu-north-1"])
+  }
+
+  # polaris_aws_cnp_account resource.
+  assert {
+    # Make sure the account resource isn't recreated.
+    condition     = polaris_aws_cnp_account.account.id == run.aws_account.cloud_account_id
+    error_message = "The resource ID does not match the expected value."
+  }
+  assert {
+    condition     = length(polaris_aws_cnp_account.account.regions) == length(var.regions)
+    error_message = "The number of regions does not match the expected value."
+  }
+  assert {
+    condition     = toset(polaris_aws_cnp_account.account.regions) == toset(var.regions)
+    error_message = "The regions does not match the expected value."
+  }
+}
+
 run "aws_account_update_features" {
   variables {
     features = {
@@ -322,43 +360,5 @@ run "aws_account_update_features" {
   assert {
     condition = toset(polaris_aws_cnp_account_attachments.attachments.role.*.key) == toset(["CROSSACCOUNT", "EXOCOMPUTE_EKS_LAMBDA", "EXOCOMPUTE_EKS_MASTERNODE", "EXOCOMPUTE_EKS_WORKERNODE"])
     error_message = "The role key does not match the expected value."
-  }
-}
-
-run "aws_account_update_name" {
-  variables {
-    account_name = "Test Account Name Updated"
-  }
-
-  # polaris_aws_cnp_account resource.
-  assert {
-    # Make sure the account resource isn't recreated.
-    condition     = polaris_aws_cnp_account.account.id == run.aws_account.cloud_account_id
-    error_message = "The resource ID does not match the expected value."
-  }
-  assert {
-    condition     = polaris_aws_cnp_account.account.name == var.account_name
-    error_message = "The name does not match the expected value."
-  }
-}
-
-run "aws_account_update_regions" {
-  variables {
-    regions = concat(var.regions, ["eu-north-1"])
-  }
-
-  # polaris_aws_cnp_account resource.
-  assert {
-    # Make sure the account resource isn't recreated.
-    condition     = polaris_aws_cnp_account.account.id == run.aws_account.cloud_account_id
-    error_message = "The resource ID does not match the expected value."
-  }
-  assert {
-    condition     = length(polaris_aws_cnp_account.account.regions) == length(var.regions)
-    error_message = "The number of regions does not match the expected value."
-  }
-  assert {
-    condition     = toset(polaris_aws_cnp_account.account.regions) == toset(var.regions)
-    error_message = "The regions does not match the expected value."
   }
 }

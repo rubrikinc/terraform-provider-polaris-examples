@@ -5,7 +5,7 @@ terraform {
       version = ">=6.0.0"
     }
     polaris = {
-      source  = "terraform.rubrik.com/rubrikinc/polaris"
+      source  = "rubrikinc/polaris"
       version = ">=1.2.0"
     }
     time = {
