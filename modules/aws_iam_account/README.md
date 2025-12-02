@@ -1,13 +1,14 @@
-# AWS CNP Account
+# AWS IAM Account Module
 
-This module onboards an AWS account to RSC using the IAM roles workflow. Sometimes this workflow is also referred to as
-the non-CFT (CloudFormation Template) workflow.
+This module onboards an AWS account to RSC using the IAM roles workflow, sometimes also referred to as the non-CFT
+(CloudFormation Template) workflow. It creates the necessary IAM roles, policies, instance profiles and adds the AWS
+account to RSC.
 
 ## Usage
 
 ```terraform
-module "aws_cnp_account" {
-  source = "../.."
+module "aws_iam_account" {
+  source = "github.com/rubrikinc/terraform-provider-polaris-examples//modules/aws_iam_account"
 
   account_name = "My Account"
   account_id   = "123456789012"
@@ -42,6 +43,11 @@ module "aws_cnp_account" {
     RDS_PROTECTION = {
       permission_groups = [
         "BASIC"
+      ]
+    },
+    SERVERS_AND_APPS = {
+      permission_groups = [
+        "CLOUD_CLUSTER_ES"
       ]
     },
   }
@@ -104,7 +110,7 @@ module "aws_cnp_account" {
 | <a name="input_regions"></a> [regions](#input\_regions) | AWS regions to onboard. | `set(string)` | n/a | yes |
 | <a name="input_role_path"></a> [role\_path](#input\_role\_path) | AWS role path. Defaults to '/'. | `string` | `"/"` | no |
 | <a name="input_role_type"></a> [role\_type](#input\_role\_type) | How the AWS policies should be attached to the IAM roles created for RSC. Possible values: `managed`, `inline` and `legacy`. `legacy` should only be used for backwards compatibility with previously onboarded AWS accounts. | `string` | `"managed"` | no |
-| <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to AWS resources created. | `map(string)` | <pre>{<br/>  "Environment": "test",<br/>  "Example": "aws_cnp_account",<br/>  "Module": "github.com/rubrikinc/terraform-provider-polaris-examples"<br/>}</pre> | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to AWS resources created. | `map(string)` | <pre>{<br/>  "Module": "aws_iam_account",<br/>  "Repository": "github.com/rubrikinc/terraform-provider-polaris-examples"<br/>}</pre> | no |
 
 ## Outputs
 

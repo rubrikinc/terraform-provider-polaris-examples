@@ -1,6 +1,6 @@
 # Example showing how to create an Exocompute configuration, for an already
 # onboarded AWS account, which uses another AWS account's Exocompute resources.
-# See the aws_cnp_account example for how to onboard an AWS account with the
+# See modules/aws_iam_account for how to onboard an AWS account with the
 # CLOUD_NATIVE_PROTECTION feature.
 
 terraform {

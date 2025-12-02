@@ -1,8 +1,10 @@
-variable "project_id" {
+variable "gcp_project_id" {
   type = string
 }
 
 variables {
+  project_id = var.gcp_project_id
+
   features = {
     CLOUD_NATIVE_PROTECTION = {
       permission_groups = [

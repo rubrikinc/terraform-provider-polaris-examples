@@ -1,4 +1,4 @@
-variable "project_id" {
+variable "gcp_project_id" {
   description = "GCP project ID."
   type        = string
 }
@@ -12,7 +12,7 @@ variables {
 }
 
 provider "google" {
-  project = var.project_id
+  project = var.gcp_project_id
 }
 
 run "setup_service_account" {
@@ -27,7 +27,7 @@ run "setup_gcp_project" {
   }
 
   variables {
-    project_id          = var.project_id
+    project_id          = var.gcp_project_id
     service_account_id  = run.setup_service_account.service_account_id
     service_account_key = run.setup_service_account.service_account_key
 
@@ -122,13 +122,13 @@ run "archival_location" {
     error_message = "The ID field should match the GCP Project cloud account ID."
   }
   assert {
-    condition     = data.polaris_gcp_project.project.project_id == var.project_id
+    condition     = data.polaris_gcp_project.project.project_id == var.gcp_project_id
     error_message = "The project ID field should match the specified project ID."
   }
 
   # data.google_project.project.
   assert {
-    condition     = data.google_project.project.project_id == var.project_id
+    condition     = data.google_project.project.project_id == var.gcp_project_id
     error_message = "The project ID field should match the specified project ID."
   }
   assert {
