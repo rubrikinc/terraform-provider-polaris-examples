@@ -7,6 +7,7 @@ locals {
     "EXOCOMPUTE",
     "RDS_PROTECTION",
     "SERVERS_AND_APPS",
+    "KUBERNETES_PROTECTION",
   ]
 
   cloud_native_archival = [
@@ -36,6 +37,10 @@ locals {
 
   servers_and_apps = [
     "CLOUD_CLUSTER_ES",
+  ]
+
+  kubernetes_protection = [
+    "BASIC",
   ]
 }
 
@@ -88,7 +93,7 @@ variable "external_id" {
 }
 
 variable "features" {
-  description = "RSC features with permission groups. Possible features are: CLOUD_NATIVE_ARCHIVAL, CLOUD_NATIVE_DYNAMODB_PROTECTION, CLOUD_NATIVE_PROTECTION, CLOUD_NATIVE_S3_PROTECTION, EXOCOMPUTE, RDS_PROTECTION and SERVERS_AND_APPS."
+  description = "RSC features with permission groups. Possible features are: CLOUD_NATIVE_ARCHIVAL, CLOUD_NATIVE_DYNAMODB_PROTECTION, CLOUD_NATIVE_PROTECTION, CLOUD_NATIVE_S3_PROTECTION, EXOCOMPUTE, KUBERNETES_PROTECTION, RDS_PROTECTION and SERVERS_AND_APPS."
   type = map(object({
     permission_groups = set(string)
   }))
@@ -124,6 +129,10 @@ variable "features" {
   validation {
     condition     = length(setsubtract(try(var.features["SERVERS_AND_APPS"].permission_groups, []), local.servers_and_apps)) == 0
     error_message = format("Invalid permission groups for RSC feature. Allowed permission groups are: %v.", join(", ", local.servers_and_apps))
+  }
+  validation {
+    condition     = length(setsubtract(try(var.features["KUBERNETES_PROTECTION"].permission_groups, []), local.kubernetes_protection)) == 0
+    error_message = format("Invalid permission groups for RSC feature. Allowed permission groups are: %v.", join(", ", local.kubernetes_protection))
   }
 }
 
