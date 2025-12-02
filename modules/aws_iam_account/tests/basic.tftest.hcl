@@ -8,24 +8,9 @@ variables {
   account_name = "Test Account Name"
 
   features = {
-    CLOUD_NATIVE_DYNAMODB_PROTECTION = {
-      permission_groups = [
-        "BASIC"
-      ]
-    },
     CLOUD_NATIVE_PROTECTION = {
       permission_groups = [
         "BASIC",
-      ]
-    },
-    CLOUD_NATIVE_S3_PROTECTION = {
-      permission_groups = [
-        "BASIC"
-      ]
-    },
-    RDS_PROTECTION = {
-      permission_groups = [
-        "BASIC"
       ]
     },
   }
@@ -206,7 +191,7 @@ run "aws_account" {
   }
 }
 
-run "aws_account_update_name" {
+run "aws_account_manage_name" {
   variables {
     account_name = "Test Account Name Updated"
   }
@@ -223,7 +208,7 @@ run "aws_account_update_name" {
   }
 }
 
-run "aws_account_update_regions" {
+run "aws_account_manage_regions" {
   variables {
     regions = concat(var.regions, ["eu-north-1"])
   }
@@ -244,7 +229,7 @@ run "aws_account_update_regions" {
   }
 }
 
-run "aws_account_update_features" {
+run "aws_account_manage_features" {
   variables {
     features = {
       EXOCOMPUTE = {
@@ -357,6 +342,86 @@ run "aws_account_update_features" {
     condition     = length(polaris_aws_cnp_account_attachments.attachments.role) == 4
     error_message = "The role does not match the expected value."
   }
+  assert {
+    condition = toset(polaris_aws_cnp_account_attachments.attachments.role.*.key) == toset(["CROSSACCOUNT", "EXOCOMPUTE_EKS_LAMBDA", "EXOCOMPUTE_EKS_MASTERNODE", "EXOCOMPUTE_EKS_WORKERNODE"])
+    error_message = "The role key does not match the expected value."
+  }
+  assert {
+    condition     = one(polaris_aws_cnp_account_attachments.attachments.instance_profile.*.key) == "EXOCOMPUTE_EKS_WORKERNODE"
+    error_message = "The instance profile key does not match the expected value."
+  }
+  assert {
+    condition     = one(polaris_aws_cnp_account_attachments.attachments.instance_profile.*.name) == aws_iam_instance_profile.profile["EXOCOMPUTE_EKS_WORKERNODE"].arn
+    error_message = "The instance profile ARN does not match the expected value."
+  }
+}
+
+run "aws_account_all_features" {
+  variables {
+    features = {
+      CLOUD_NATIVE_ARCHIVAL = {
+        permission_groups = [
+          "BASIC",
+        ]
+      }
+      CLOUD_NATIVE_DYNAMODB_PROTECTION = {
+        permission_groups = [
+          "BASIC",
+        ]
+      },
+      CLOUD_NATIVE_PROTECTION = {
+        permission_groups = [
+          "BASIC",
+        ]
+      },
+      CLOUD_NATIVE_S3_PROTECTION = {
+        permission_groups = [
+          "BASIC",
+        ]
+      },
+      RDS_PROTECTION = {
+        permission_groups = [
+          "BASIC",
+        ]
+      },
+      EXOCOMPUTE = {
+        permission_groups = [
+          "BASIC",
+          "RSC_MANAGED_CLUSTER",
+        ]
+      },
+      KUBERNETES_PROTECTION = {
+        permission_groups = [
+          "BASIC",
+        ]
+      },
+      SERVERS_AND_APPS = {
+        permission_groups = [
+          "CLOUD_CLUSTER_ES",
+        ]
+      },
+    }
+  }
+
+  # polaris_aws_cnp_artifacts data source.
+  assert {
+    condition = toset(data.polaris_aws_cnp_artifacts.artifacts.role_keys) == toset(["CROSSACCOUNT", "EXOCOMPUTE_EKS_LAMBDA", "EXOCOMPUTE_EKS_MASTERNODE", "EXOCOMPUTE_EKS_WORKERNODE"])
+    error_message = "The role keys does not match the expected value."
+  }
+
+  # polaris_aws_cnp_permissions data source.
+  assert {
+    condition = toset(data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies[*].name) == toset(["CloudAccountsPolicy", "ExocomputePolicy", "RDSProtectionPolicy"])
+    error_message = "The customer managed policies name does not match the expected values."
+  }
+
+  # polaris_aws_cnp_account resource.
+  assert {
+    condition     = length(setsubtract(polaris_aws_cnp_account.account.feature.*.name, keys(var.features))) == 0
+    error_message = "The feature names does not match the expected value."
+  }
+
+  # polaris_aws_cnp_account_attachments resource.
   assert {
     condition = toset(polaris_aws_cnp_account_attachments.attachments.role.*.key) == toset(["CROSSACCOUNT", "EXOCOMPUTE_EKS_LAMBDA", "EXOCOMPUTE_EKS_MASTERNODE", "EXOCOMPUTE_EKS_WORKERNODE"])
     error_message = "The role key does not match the expected value."
