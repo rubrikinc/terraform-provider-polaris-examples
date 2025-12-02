@@ -8,26 +8,26 @@ variables {
   account_name = "Test Account Name"
 
   features = {
-    # CLOUD_NATIVE_DYNAMODB_PROTECTION = {
-    #   permission_groups = [
-    #     "BASIC"
-    #   ]
-    # },
+    CLOUD_NATIVE_DYNAMODB_PROTECTION = {
+      permission_groups = [
+        "BASIC"
+      ]
+    },
     CLOUD_NATIVE_PROTECTION = {
       permission_groups = [
         "BASIC",
       ]
     },
-    # CLOUD_NATIVE_S3_PROTECTION = {
-    #   permission_groups = [
-    #     "BASIC"
-    #   ]
-    # },
-    # RDS_PROTECTION = {
-    #   permission_groups = [
-    #     "BASIC"
-    #   ]
-    # },
+    CLOUD_NATIVE_S3_PROTECTION = {
+      permission_groups = [
+        "BASIC"
+      ]
+    },
+    RDS_PROTECTION = {
+      permission_groups = [
+        "BASIC"
+      ]
+    },
   }
 
   regions = [
