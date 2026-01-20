@@ -93,7 +93,7 @@ run "init" {
   }
   assert {
     condition = length(setsubtract(data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies[*].name, [
-      "DynamoDBProtectionPolicy", "EC2ProtectionPolicy", "S3ProtectionPolicy", "RDSProtectionPolicy"])) == 0
+    "DynamoDBProtectionPolicy", "EC2ProtectionPolicy", "S3ProtectionPolicy", "RDSProtectionPolicy"])) == 0
     error_message = "The customer managed policies names does not match the expected values."
   }
   assert {
@@ -232,7 +232,7 @@ run "update_features" {
   }
   assert {
     condition = length(setsubtract(data.polaris_aws_cnp_artifacts.artifacts.role_keys, [
-      "CROSSACCOUNT", "EXOCOMPUTE_EKS_LAMBDA", "EXOCOMPUTE_EKS_MASTERNODE", "EXOCOMPUTE_EKS_WORKERNODE"])) == 0
+    "CROSSACCOUNT", "EXOCOMPUTE_EKS_LAMBDA", "EXOCOMPUTE_EKS_MASTERNODE", "EXOCOMPUTE_EKS_WORKERNODE"])) == 0
     error_message = "The role keys does not match the expected value."
   }
 
@@ -251,7 +251,7 @@ run "update_features" {
   }
   assert {
     condition = length(setsubtract(data.polaris_aws_cnp_permissions.permissions["CROSSACCOUNT"].customer_managed_policies[*].name, [
-      "ExocomputePolicy", "RDSProtectionPolicy"])) == 0
+    "ExocomputePolicy", "RDSProtectionPolicy"])) == 0
     error_message = "The customer managed policies name does not match the expected values."
   }
   assert {
@@ -280,7 +280,7 @@ run "update_features" {
   }
   assert {
     condition = length(setsubtract(data.polaris_aws_cnp_permissions.permissions["EXOCOMPUTE_EKS_WORKERNODE"].customer_managed_policies[*].name, [
-      "NodeRoleAutoscalingPolicy", "NodeRoleKMSPolicy", "NodeRoleSSMPolicy"])) == 0
+    "NodeRoleAutoscalingPolicy", "NodeRoleKMSPolicy", "NodeRoleSSMPolicy"])) == 0
     error_message = "The customer managed policies name does not match the expected values."
   }
   assert {
@@ -318,7 +318,7 @@ run "update_features" {
   }
   assert {
     condition = length(setsubtract(polaris_aws_cnp_account_attachments.attachments.role.*.key, [
-      "CROSSACCOUNT", "EXOCOMPUTE_EKS_LAMBDA", "EXOCOMPUTE_EKS_MASTERNODE", "EXOCOMPUTE_EKS_WORKERNODE"])) == 0
+    "CROSSACCOUNT", "EXOCOMPUTE_EKS_LAMBDA", "EXOCOMPUTE_EKS_MASTERNODE", "EXOCOMPUTE_EKS_WORKERNODE"])) == 0
     error_message = "The role key does not match the expected value."
   }
 }
