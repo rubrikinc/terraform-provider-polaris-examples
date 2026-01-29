@@ -4,6 +4,14 @@ This module onboards an AWS account to RSC using the IAM roles workflow, sometim
 (CloudFormation Template) workflow. It creates the necessary IAM roles, policies, instance profiles and adds the AWS
 account to RSC.
 
+To use Exocompute resources hosted by another RSC cloud account, set the `exocompute_host_id` field to the RSC cloud
+account ID (UUID) of the host account:
+```terraform
+exocompute_host_id = "01234567-89ab-cdef-0123-456789abcdef"
+```
+Note, the `EXOCOMPUTE` feature does not need to be enabled on the account when using Exocompute resources hosted by
+another account.
+
 ## Usage
 
 ```terraform
@@ -97,6 +105,7 @@ module "aws_iam_account" {
 | [aws_iam_role_policy_attachments_exclusive.customer_managed](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachments_exclusive) | resource |
 | [polaris_aws_cnp_account.account](https://registry.terraform.io/providers/rubrikinc/polaris/latest/docs/resources/aws_cnp_account) | resource |
 | [polaris_aws_cnp_account_attachments.attachments](https://registry.terraform.io/providers/rubrikinc/polaris/latest/docs/resources/aws_cnp_account_attachments) | resource |
+| [polaris_aws_exocompute.exocompute](https://registry.terraform.io/providers/rubrikinc/polaris/latest/docs/resources/aws_exocompute) | resource |
 | [time_sleep.wait_for_rsc](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
 | [aws_regions.regions](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/regions) | data source |
 | [polaris_aws_cnp_artifacts.artifacts](https://registry.terraform.io/providers/rubrikinc/polaris/latest/docs/data-sources/aws_cnp_artifacts) | data source |
@@ -110,6 +119,7 @@ module "aws_iam_account" {
 | <a name="input_account_name"></a> [account\_name](#input\_account\_name) | AWS account name. | `string` | n/a | yes |
 | <a name="input_cloud_type"></a> [cloud\_type](#input\_cloud\_type) | AWS cloud type. Possible values are: STANDARD, GOV. Defaults to STANDARD. | `string` | `null` | no |
 | <a name="input_ec2_recovery_role_path"></a> [ec2\_recovery\_role\_path](#input\_ec2\_recovery\_role\_path) | AWS EC2 recovery role path. | `string` | `null` | no |
+| <a name="input_exocompute_host_id"></a> [exocompute\_host\_id](#input\_exocompute\_host\_id) | RSC cloud account ID (UUID) of the AWS account hosting Exocompute. | `string` | `null` | no |
 | <a name="input_external_id"></a> [external\_id](#input\_external\_id) | AWS external ID. If empty, RSC will automatically generate an external ID. | `string` | `null` | no |
 | <a name="input_features"></a> [features](#input\_features) | RSC features with permission groups. Possible features are: CLOUD\_NATIVE\_ARCHIVAL, CLOUD\_NATIVE\_DYNAMODB\_PROTECTION, CLOUD\_NATIVE\_PROTECTION, CLOUD\_NATIVE\_S3\_PROTECTION, EXOCOMPUTE, RDS\_PROTECTION and SERVERS\_AND\_APPS. | <pre>map(object({<br/>    permission_groups = set(string)<br/>  }))</pre> | n/a | yes |
 | <a name="input_regions"></a> [regions](#input\_regions) | AWS regions to onboard. | `set(string)` | n/a | yes |
