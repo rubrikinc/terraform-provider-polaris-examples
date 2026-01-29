@@ -1,6 +1,6 @@
 # Example showing how to create an AWS cloud native archival location for an
-# onboarded AWS account. See the aws_cnp_account example for how to onboard an
-# AWS account with the CLOUD_NATIVE_ARCHIVAL feature.
+# onboarded AWS account. See modules/aws_iam_account for how to onboard an AWS
+# account with the CLOUD_NATIVE_ARCHIVAL feature.
 
 terraform {
   required_providers {
