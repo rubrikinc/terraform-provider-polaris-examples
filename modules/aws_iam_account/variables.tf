@@ -1,10 +1,11 @@
 locals {
   features = [
     "CLOUD_NATIVE_ARCHIVAL",
-    "CLOUD_NATIVE_PROTECTION",
     "CLOUD_NATIVE_DYNAMODB_PROTECTION",
+    "CLOUD_NATIVE_PROTECTION",
     "CLOUD_NATIVE_S3_PROTECTION",
     "EXOCOMPUTE",
+    "KUBERNETES_PROTECTION",
     "RDS_PROTECTION",
     "SERVERS_AND_APPS",
   ]
@@ -13,11 +14,11 @@ locals {
     "BASIC",
   ]
 
-  cloud_native_protection = [
+  cloud_native_dynamodb_protection = [
     "BASIC",
   ]
 
-  cloud_native_dynamodb_protection = [
+  cloud_native_protection = [
     "BASIC",
   ]
 
@@ -28,6 +29,10 @@ locals {
   exocompute = [
     "BASIC",
     "RSC_MANAGED_CLUSTER"
+  ]
+
+  kubernetes_protection = [
+    "BASIC",
   ]
 
   rds_protection = [
@@ -102,12 +107,12 @@ variable "features" {
     error_message = format("Invalid permission groups for RSC feature. Allowed permission groups are: %v.", join(", ", local.cloud_native_archival))
   }
   validation {
-    condition     = length(setsubtract(try(var.features["CLOUD_NATIVE_PROTECTION"].permission_groups, []), local.cloud_native_protection)) == 0
-    error_message = format("Invalid permission groups for RSC feature. Allowed permission groups are: %v.", join(", ", local.cloud_native_protection))
-  }
-  validation {
     condition     = length(setsubtract(try(var.features["CLOUD_NATIVE_DYNAMODB_PROTECTION"].permission_groups, []), local.cloud_native_dynamodb_protection)) == 0
     error_message = format("Invalid permission groups for RSC feature. Allowed permission groups are: %v.", join(", ", local.cloud_native_dynamodb_protection))
+  }
+  validation {
+    condition     = length(setsubtract(try(var.features["CLOUD_NATIVE_PROTECTION"].permission_groups, []), local.cloud_native_protection)) == 0
+    error_message = format("Invalid permission groups for RSC feature. Allowed permission groups are: %v.", join(", ", local.cloud_native_protection))
   }
   validation {
     condition     = length(setsubtract(try(var.features["CLOUD_NATIVE_S3_PROTECTION"].permission_groups, []), local.cloud_native_s3_protection)) == 0
@@ -116,6 +121,10 @@ variable "features" {
   validation {
     condition     = length(setsubtract(try(var.features["EXOCOMPUTE"].permission_groups, []), local.exocompute)) == 0
     error_message = format("Invalid permission groups for RSC feature. Allowed permission groups are: %v.", join(", ", local.exocompute))
+  }
+  validation {
+    condition     = length(setsubtract(try(var.features["KUBERNETES_PROTECTION"].permission_groups, []), local.kubernetes_protection)) == 0
+    error_message = format("Invalid permission groups for RSC feature. Allowed permission groups are: %v.", join(", ", local.kubernetes_protection))
   }
   validation {
     condition     = length(setsubtract(try(var.features["RDS_PROTECTION"].permission_groups, []), local.rds_protection)) == 0

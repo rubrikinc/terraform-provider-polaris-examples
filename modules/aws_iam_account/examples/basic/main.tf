@@ -43,7 +43,17 @@ module "aws_iam_account" {
         "BASIC"
       ]
     },
+    CLOUD_NATIVE_DYNAMODB_PROTECTION = {
+      permission_groups = [
+        "BASIC"
+      ]
+    },
     CLOUD_NATIVE_PROTECTION = {
+      permission_groups = [
+        "BASIC"
+      ]
+    },
+    CLOUD_NATIVE_S3_PROTECTION = {
       permission_groups = [
         "BASIC"
       ]
@@ -54,12 +64,7 @@ module "aws_iam_account" {
         "RSC_MANAGED_CLUSTER"
       ]
     },
-    CLOUD_NATIVE_DYNAMODB_PROTECTION = {
-      permission_groups = [
-        "BASIC"
-      ]
-    },
-    CLOUD_NATIVE_S3_PROTECTION = {
+    KUBERNETES_PROTECTION = {
       permission_groups = [
         "BASIC"
       ]
