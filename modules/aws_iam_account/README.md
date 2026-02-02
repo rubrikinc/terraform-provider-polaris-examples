@@ -40,6 +40,11 @@ module "aws_iam_account" {
         "RSC_MANAGED_CLUSTER"
       ]
     },
+    KUBERNETES_PROTECTION = {
+      permission_groups = [
+        "BASIC"
+      ]
+    },
     RDS_PROTECTION = {
       permission_groups = [
         "BASIC"
