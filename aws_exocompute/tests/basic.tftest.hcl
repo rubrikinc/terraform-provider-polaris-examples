@@ -25,7 +25,7 @@ run "setup_exocompute_vpc" {
   }
 }
 
-run "setup_aws_cnp_account" {
+run "setup_aws_iam_account" {
   variables {
     features = {
       EXOCOMPUTE = {
@@ -42,13 +42,13 @@ run "setup_aws_cnp_account" {
   }
 
   module {
-    source = "../aws_cnp_account"
+    source = "../modules/aws_iam_account"
   }
 }
 
 run "init" {
   variables {
-    cloud_account_id          = run.setup_aws_cnp_account.cloud_account_id
+    cloud_account_id          = run.setup_aws_iam_account.cloud_account_id
     cluster_security_group_id = run.setup_exocompute_vpc.cluster_security_group_id
     node_security_group_id    = run.setup_exocompute_vpc.node_security_group_id
     region                    = "us-east-2"
