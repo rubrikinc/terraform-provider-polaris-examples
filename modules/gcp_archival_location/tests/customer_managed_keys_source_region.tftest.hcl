@@ -48,9 +48,9 @@ run "setup_crypto_key1" {
   }
 
   variables {
-    key_name        = "terraform-module-test-key1"
-    key_ring_name   = "terraform-module-test-key-ring1"
-    region          = "us-east1"
+    key_name      = "terraform-module-test-key1"
+    key_ring_name = "terraform-module-test-key-ring1"
+    region        = "us-east1"
   }
 
   # Outputs.
@@ -74,9 +74,9 @@ run "setup_crypto_key2" {
   }
 
   variables {
-    key_name        = "terraform-module-test-key2"
-    key_ring_name   = "terraform-module-test-key-ring2"
-    region          = "us-west1"
+    key_name      = "terraform-module-test-key2"
+    key_ring_name = "terraform-module-test-key-ring2"
+    region        = "us-west1"
   }
 
   # Outputs.
