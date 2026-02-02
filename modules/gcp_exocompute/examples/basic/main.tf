@@ -49,7 +49,6 @@ module "gcp_project" {
   source = "../../../gcp_project"
 
   project_id          = var.project_id
-  role_id_prefix      = "ja_test_role3"
   service_account_id  = module.service_account.service_account_id
   service_account_key = module.service_account.service_account_key
 
