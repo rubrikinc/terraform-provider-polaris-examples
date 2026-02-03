@@ -41,12 +41,12 @@ run "variables_are_empty" {
   command = plan
 
   variables {
-    bucket_labels         = {}
-    bucket_prefix         = ""
-    cloud_account_id      = ""
-    name                  = ""
-    region                = ""
-    storage_class         = ""
+    bucket_labels    = {}
+    bucket_prefix    = ""
+    cloud_account_id = ""
+    name             = ""
+    region           = ""
+    storage_class    = ""
   }
 
   expect_failures = [
