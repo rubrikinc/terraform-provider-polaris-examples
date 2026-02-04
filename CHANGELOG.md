@@ -8,3 +8,4 @@
 * Update the `aws_exocompute` tests to use the `aws_iam_account` module.
 * Add support for the `KUBERNETES_PROTECTION` feature to the `aws_iam_account` module.
 * Add `gcp_exocompute` Terraform  module.
+* Add support for shared Exocompute to the `aws_iam_account` module.
