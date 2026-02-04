@@ -88,7 +88,7 @@ variable "exocompute_host_id" {
 
   validation {
     condition     = var.exocompute_host_id == null || (var.exocompute_host_id != local.uuid_null && can(regex(local.uuid_regex, var.exocompute_host_id)))
-    error_message = "Invalid AWS Exocompute host ID. The Exocompute host ID should be the RSC cloud account ID (UUID) of the AWS account hosting Exocompute. The ID must be all lower case."
+    error_message = "Invalid AWS Exocompute host ID. The Exocompute host ID should be the RSC cloud account ID (UUID) of the AWS account hosting Exocompute. The ID must be lower case."
   }
 }
 
