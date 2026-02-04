@@ -7,3 +7,4 @@
 * Rename `aws_cnp_account` to `aws_iam_account` and move it to the `modules/` directory.
 * Update the `aws_exocompute` tests to use the `aws_iam_account` module.
 * Add support for the `KUBERNETES_PROTECTION` feature to the `aws_iam_account` module.
+* Add `gcp_exocompute` Terraform  module.
