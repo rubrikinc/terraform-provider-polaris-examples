@@ -38,7 +38,6 @@ resources.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_labels"></a> [labels](#input\_labels) | Labels to apply to GCP resources created which supports labels. | `map(string)` | <pre>{<br/>  "example": "basic",<br/>  "module": "gcp_execompute",<br/>  "repository": "terraform-provider-polaris-examples"<br/>}</pre> | no |
 | <a name="input_project_id"></a> [project\_id](#input\_project\_id) | GCP project ID. | `string` | n/a | yes |
 | <a name="input_regional_configs"></a> [regional\_configs](#input\_regional\_configs) | Regional exocompute configuration. | <pre>set(object({<br/>    region      = string<br/>    subnet_name = string<br/>    vpc_name    = string<br/>  }))</pre> | n/a | yes |
 <!-- END_TF_DOCS -->

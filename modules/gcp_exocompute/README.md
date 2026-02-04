@@ -30,11 +30,11 @@ module "gcp_exocompute" {
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
-| Name | Version  |
-|------|----------|
+| Name | Version |
+|------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.11.0 |
-| <a name="requirement_google"></a> [google](#requirement\_google) | >=7.0.0  |
-| <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.4.0  |
+| <a name="requirement_google"></a> [google](#requirement\_google) | >=7.0.0 |
+| <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.4.0 |
 
 ## Providers
 
@@ -46,8 +46,8 @@ module "gcp_exocompute" {
 
 | Name | Type |
 |------|------|
-| polaris_gcp_exocompute.exocompute | resource |
-| polaris_gcp_project.project | data source |
+| [polaris_gcp_exocompute.exocompute](https://registry.terraform.io/providers/rubrikinc/polaris/latest/docs/resources/gcp_exocompute) | resource |
+| [polaris_gcp_project.project](https://registry.terraform.io/providers/rubrikinc/polaris/latest/docs/data-sources/gcp_project) | data source |
 
 ## Inputs
 

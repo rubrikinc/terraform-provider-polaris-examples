@@ -11,16 +11,6 @@ terraform {
   }
 }
 
-variable "labels" {
-  description = "Labels to apply to GCP resources created which supports labels."
-  type        = map(string)
-  default = {
-    example    = "basic"
-    module     = "gcp_execompute"
-    repository = "terraform-provider-polaris-examples"
-  }
-}
-
 variable "project_id" {
   description = "GCP project ID."
   type        = string
