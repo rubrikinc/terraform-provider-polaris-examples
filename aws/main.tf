@@ -1,28 +1,36 @@
-# Example showing how to onboard an AWS account to RSC. The RSC provider will
-# create a CloudFormation stack granting RSC access to the AWS account. See
-# modules/aws_iam_account for how to onboard an AWS account without using a
-# CloudFormation stack.
-
 terraform {
   required_providers {
     polaris = {
       source  = "rubrikinc/polaris"
-      version = ">=1.0.0"
+      version = ">=1.5.0"
     }
   }
 }
 
-variable "profile" {
+variable "outpost_profile" {
   type        = string
-  description = "AWS profile."
+  description = "Outpost account AWS profile."
 }
 
-provider "polaris" {}
+variable "account_profile" {
+  type        = string
+  description = "Account AWS profile."
+}
+
+resource "polaris_aws_account" "outpost" {
+  profile = var.outpost_profile
+
+  outpost {
+    permission_groups = [
+      "BASIC",
+    ]
+  }
+}
 
 resource "polaris_aws_account" "account" {
-  profile = var.profile
+  profile = var.account_profile
 
-  cloud_native_protection {
+  cyber_recovery_data_scanning {
     permission_groups = [
       "BASIC",
     ]
@@ -31,4 +39,28 @@ resource "polaris_aws_account" "account" {
       "us-east-2",
     ]
   }
+
+  data_scanning {
+    permission_groups = [
+      "BASIC",
+    ]
+
+    regions = [
+      "us-east-2",
+    ]
+  }
+
+  dspm {
+    permission_groups = [
+      "BASIC",
+    ]
+
+    regions = [
+      "us-east-2",
+    ]
+  }
+
+  depends_on = [
+    polaris_aws_account.outpost,
+  ]
 }
