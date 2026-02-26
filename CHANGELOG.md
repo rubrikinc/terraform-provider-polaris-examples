@@ -9,3 +9,5 @@
 * Add support for the `KUBERNETES_PROTECTION` feature to the `aws_iam_account` module.
 * Add `gcp_exocompute` Terraform  module.
 * Add support for shared Exocompute to the `aws_iam_account` module.
+* Update the `polaris_aws_account` example with `outpost`, `cyber_recovery_data_scanning`, `data_scanning`, and `dspm`
+  features.
