@@ -38,6 +38,11 @@ module "aws_iam_account" {
   account_name = var.account_name
 
   features = {
+    CLOUD_DISCOVERY = {
+      permission_groups = [
+        "BASIC"
+      ]
+    },
     CLOUD_NATIVE_ARCHIVAL = {
       permission_groups = [
         "BASIC"
