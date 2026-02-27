@@ -42,7 +42,7 @@ run "setup_aws_iam_account" {
   }
 
   module {
-    source = "../modules/aws_iam_account"
+    source = "../aws_iam_account"
   }
 }
 

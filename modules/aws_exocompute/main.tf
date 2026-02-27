@@ -3,17 +3,6 @@ data "aws_regions" "regions" {
   all_regions = true
 }
 
-data "polaris_aws_account" "account" {
-  cloud_account_id = var.cloud_account_id
-
-  lifecycle {
-    postcondition {
-      condition     = contains([for f in self.feature : f.name], "EXOCOMPUTE")
-      error_message = "The cloud account must have the EXOCOMPUTE RSC feature enabled."
-    }
-  }
-}
-
 # Create an Exocompute configuration.
 resource "polaris_aws_exocompute" "configuration" {
   account_id                = var.cloud_account_id
