@@ -45,7 +45,7 @@ resource "aws_vpc_endpoint" "ec2" {
 
   subnet_ids = [
     aws_subnet.subnet1.id,
-    aws_subnet.subnet2.id
+    aws_subnet.subnet2.id,
   ]
 
   tags = merge(var.tags, {
@@ -66,7 +66,7 @@ resource "aws_vpc_endpoint" "eks" {
 
   subnet_ids = [
     aws_subnet.subnet1.id,
-    aws_subnet.subnet2.id
+    aws_subnet.subnet2.id,
   ]
 
   tags = merge(var.tags, {
@@ -87,7 +87,7 @@ resource "aws_vpc_endpoint" "ecr_api" {
 
   subnet_ids = [
     aws_subnet.subnet1.id,
-    aws_subnet.subnet2.id
+    aws_subnet.subnet2.id,
   ]
 
   tags = merge(var.tags, {
@@ -108,7 +108,7 @@ resource "aws_vpc_endpoint" "ecr_dkr" {
 
   subnet_ids = [
     aws_subnet.subnet1.id,
-    aws_subnet.subnet2.id
+    aws_subnet.subnet2.id,
   ]
 
   tags = merge(var.tags, {
@@ -129,7 +129,7 @@ resource "aws_vpc_endpoint" "autoscaling" {
 
   subnet_ids = [
     aws_subnet.subnet1.id,
-    aws_subnet.subnet2.id
+    aws_subnet.subnet2.id,
   ]
 
   tags = merge(var.tags, {
@@ -152,13 +152,12 @@ resource "aws_vpc_endpoint" "guardduty_data" {
 
   subnet_ids = [
     aws_subnet.subnet1.id,
-    aws_subnet.subnet2.id
+    aws_subnet.subnet2.id,
   ]
 
   tags = merge(var.tags, {
     Name = "${var.name}-guardduty-data-endpoint"
   })
-
 }
 
 resource "aws_subnet" "public" {
@@ -192,6 +191,32 @@ resource "aws_subnet" "subnet2" {
 
   tags = merge(var.tags, {
     Name                                = "${var.name}-subnet2"
+    "kubernetes.io/cluster/${var.name}" = "shared"
+  })
+}
+
+resource "aws_subnet" "pod_subnet1" {
+  count                   = var.pod_subnet1_cidr != null ? 1 : 0
+  vpc_id                  = aws_vpc.vpc.id
+  cidr_block              = var.pod_subnet1_cidr
+  availability_zone       = data.aws_availability_zones.current.names[0]
+  map_public_ip_on_launch = false
+
+  tags = merge(var.tags, {
+    Name                                = "${var.name}-pod-subnet1"
+    "kubernetes.io/cluster/${var.name}" = "shared"
+  })
+}
+
+resource "aws_subnet" "pod_subnet2" {
+  count                   = var.pod_subnet2_cidr != null ? 1 : 0
+  vpc_id                  = aws_vpc.vpc.id
+  cidr_block              = var.pod_subnet2_cidr
+  availability_zone       = data.aws_availability_zones.current.names[1]
+  map_public_ip_on_launch = false
+
+  tags = merge(var.tags, {
+    Name                                = "${var.name}-pod-subnet2"
     "kubernetes.io/cluster/${var.name}" = "shared"
   })
 }

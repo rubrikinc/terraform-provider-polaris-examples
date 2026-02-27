@@ -13,6 +13,17 @@ variable "cloud_account_id" {
   }
 }
 
+variable "cluster_access" {
+  description = "EKS cluster access type."
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.cluster_access == null || contains(["EKS_CLUSTER_ACCESS_TYPE_PUBLIC", "EKS_CLUSTER_ACCESS_TYPE_PRIVATE"], var.cluster_access)
+    error_message = "Cluster access must be EKS_CLUSTER_ACCESS_TYPE_PUBLIC or EKS_CLUSTER_ACCESS_TYPE_PRIVATE."
+  }
+}
+
 variable "region" {
   description = "AWS region to run Exocompute in."
   type        = string
@@ -40,6 +51,32 @@ variable "subnet2_id" {
   validation {
     condition     = can(regex("^subnet-[a-f0-9]{17}$", var.subnet2_id))
     error_message = "Subnet2 ID must be a valid AWS subnet ID."
+  }
+}
+
+variable "pod_subnet1_id" {
+  description = "AWS pod subnet 1 ID."
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.pod_subnet1_id == null || can(regex("^subnet-[a-f0-9]{17}$", var.pod_subnet1_id))
+    error_message = "Pod subnet1 ID must be a valid AWS subnet ID."
+  }
+}
+
+variable "pod_subnet2_id" {
+  description = "AWS pod subnet 2 ID."
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.pod_subnet2_id == null || can(regex("^subnet-[a-f0-9]{17}$", var.pod_subnet2_id))
+    error_message = "Pod subnet2 ID must be a valid AWS subnet ID."
+  }
+  validation {
+    condition     = (var.pod_subnet2_id == null) == (var.pod_subnet1_id == null)
+    error_message = "Pod subnet1 ID and pod subnet2 ID must be specified together."
   }
 }
 
@@ -76,16 +113,5 @@ variable "node_security_group_id" {
   validation {
     condition     = var.node_security_group_id == null || can(regex("^sg-[a-f0-9]{17}$", var.node_security_group_id))
     error_message = "Node security group ID must be a valid AWS security group ID."
-  }
-}
-
-variable "cluster_access" {
-  description = "EKS cluster access type."
-  type        = string
-  default     = null
-
-  validation {
-    condition     = var.cluster_access == null || contains(["EKS_CLUSTER_ACCESS_TYPE_PUBLIC", "EKS_CLUSTER_ACCESS_TYPE_PRIVATE"], var.cluster_access)
-    error_message = "Cluster access must be EKS_CLUSTER_ACCESS_TYPE_PUBLIC or EKS_CLUSTER_ACCESS_TYPE_PRIVATE."
   }
 }
