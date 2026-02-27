@@ -9,6 +9,7 @@ module "aws_exocompute" {
   source = "github.com/rubrikinc/terraform-provider-polaris-examples//modules/aws_exocompute"
 
   cloud_account_id          = "d7984bca-db41-40ba-98ef-c56c4aef6c23"
+  cluster_access            = "EKS_CLUSTER_ACCESS_TYPE_PRIVATE"
   cluster_security_group_id = "sg-267288cc1f4a4be6a"
   node_security_group_id    = "sg-03aa0f1db4fb1b816"
   region                    = "us-east-2"
@@ -50,6 +51,7 @@ Note, the `cluster_security_group_id` and `node_security_group_id` input variabl
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_cloud_account_id"></a> [cloud\_account\_id](#input\_cloud\_account\_id) | RSC cloud account ID of the AWS account hosting Exocompute. | `string` | n/a | yes |
+| <a name="input_cluster_access"></a> [cluster\_access](#input\_cluster\_access) | EKS cluster access type. | `string` | `null` | no |
 | <a name="input_cluster_security_group_id"></a> [cluster\_security\_group\_id](#input\_cluster\_security\_group\_id) | AWS cluster / control plane security group ID. | `string` | `null` | no |
 | <a name="input_node_security_group_id"></a> [node\_security\_group\_id](#input\_node\_security\_group\_id) | AWS node / worker security group ID. | `string` | `null` | no |
 | <a name="input_region"></a> [region](#input\_region) | AWS region to run Exocompute in. | `string` | n/a | yes |

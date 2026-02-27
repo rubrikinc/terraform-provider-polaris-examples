@@ -13,3 +13,4 @@
 * Update the `polaris_aws_account` example with `outpost`, `cyber_recovery_data_scanning`, `data_scanning`, and `dspm`
   features.
 * Add support for the `CLOUD_DISCOVERY` feature to the `aws_iam_account` module.
+* Add support for private Exocompute to the `aws_exocompute` module.

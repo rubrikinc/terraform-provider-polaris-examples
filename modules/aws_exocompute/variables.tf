@@ -78,3 +78,14 @@ variable "node_security_group_id" {
     error_message = "Node security group ID must be a valid AWS security group ID."
   }
 }
+
+variable "cluster_access" {
+  description = "EKS cluster access type."
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.cluster_access == null || contains(["EKS_CLUSTER_ACCESS_TYPE_PUBLIC", "EKS_CLUSTER_ACCESS_TYPE_PRIVATE"], var.cluster_access)
+    error_message = "Cluster access must be EKS_CLUSTER_ACCESS_TYPE_PUBLIC or EKS_CLUSTER_ACCESS_TYPE_PRIVATE."
+  }
+}

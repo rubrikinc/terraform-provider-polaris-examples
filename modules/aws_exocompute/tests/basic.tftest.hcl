@@ -79,6 +79,10 @@ run "configure_exocompute" {
     error_message = "The subnets does not match the expected value."
   }
   assert {
+    condition     = polaris_aws_exocompute.configuration.cluster_access == ""
+    error_message = "The cluster access does not match the expected value."
+  }
+  assert {
     condition     = polaris_aws_exocompute.configuration.vpc_id == var.vpc_id
     error_message = "The vpc ID does not match the expected value."
   }
