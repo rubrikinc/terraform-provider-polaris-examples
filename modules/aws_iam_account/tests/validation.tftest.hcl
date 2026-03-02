@@ -12,6 +12,11 @@ variables {
   role_type              = "managed"
 
   features = {
+    CLOUD_DISCOVERY = {
+      permission_groups = [
+        "BASIC"
+      ]
+    },
     CLOUD_NATIVE_ARCHIVAL = {
       permission_groups = [
         "BASIC"
@@ -36,6 +41,11 @@ variables {
       permission_groups = [
         "BASIC",
         "RSC_MANAGED_CLUSTER"
+      ]
+    },
+    KUBERNETES_PROTECTION = {
+      permission_groups = [
+        "BASIC"
       ]
     },
     RDS_PROTECTION = {
