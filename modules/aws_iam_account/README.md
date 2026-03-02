@@ -79,7 +79,7 @@ module "aws_iam_account" {
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.11.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >=6.0.0 |
-| <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.2.0 |
+| <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.5.0 |
 | <a name="requirement_time"></a> [time](#requirement\_time) | >=0.13.1 |
 
 ## Providers
@@ -87,7 +87,7 @@ module "aws_iam_account" {
 | Name | Version |
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >=6.0.0 |
-| <a name="provider_polaris"></a> [polaris](#provider\_polaris) | >=1.2.0 |
+| <a name="provider_polaris"></a> [polaris](#provider\_polaris) | >=1.5.0 |
 | <a name="provider_time"></a> [time](#provider\_time) | >=0.13.1 |
 
 ## Resources
