@@ -282,16 +282,16 @@ run "aws_account_update_features" {
     error_message = "The role keys does not match the expected value."
   }
   assert {
-    condition     = length(data.polaris_aws_cnp_permissions.permissions["EXOCOMPUTE_EKS_WORKERNODE"].customer_managed_policies) == 3
+    condition     = length(data.polaris_aws_cnp_permissions.permissions["EXOCOMPUTE_EKS_WORKERNODE"].customer_managed_policies) == 5
     error_message = "The number of customer managed policies does not match the expected value."
   }
   assert {
     condition = length(setsubtract(data.polaris_aws_cnp_permissions.permissions["EXOCOMPUTE_EKS_WORKERNODE"].customer_managed_policies[*].name, [
-    "NodeRoleAutoscalingPolicy", "NodeRoleKMSPolicy", "NodeRoleSSMPolicy"])) == 0
+    "EBSCSIDriverPolicy", "EKSWorkerNodePolicy", "NodeRoleAutoscalingPolicy", "NodeRoleKMSPolicy", "NodeRoleSSMPolicy"])) == 0
     error_message = "The customer managed policies name does not match the expected values."
   }
   assert {
-    condition     = length(data.polaris_aws_cnp_permissions.permissions["EXOCOMPUTE_EKS_WORKERNODE"].managed_policies) == 4
+    condition     = length(data.polaris_aws_cnp_permissions.permissions["EXOCOMPUTE_EKS_WORKERNODE"].managed_policies) == 2
     error_message = "The number of managed policies does not match the expected value."
   }
 

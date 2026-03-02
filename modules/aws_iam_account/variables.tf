@@ -1,5 +1,6 @@
 locals {
   features = [
+    "CLOUD_DISCOVERY",
     "CLOUD_NATIVE_ARCHIVAL",
     "CLOUD_NATIVE_DYNAMODB_PROTECTION",
     "CLOUD_NATIVE_PROTECTION",
@@ -8,6 +9,10 @@ locals {
     "KUBERNETES_PROTECTION",
     "RDS_PROTECTION",
     "SERVERS_AND_APPS",
+  ]
+
+  cloud_discovery = [
+    "BASIC",
   ]
 
   cloud_native_archival = [
@@ -104,7 +109,7 @@ variable "external_id" {
 }
 
 variable "features" {
-  description = "RSC features with permission groups. Possible features are: CLOUD_NATIVE_ARCHIVAL, CLOUD_NATIVE_DYNAMODB_PROTECTION, CLOUD_NATIVE_PROTECTION, CLOUD_NATIVE_S3_PROTECTION, EXOCOMPUTE, RDS_PROTECTION and SERVERS_AND_APPS."
+  description = "RSC features with permission groups. Possible features are: CLOUD_DISCOVERY, CLOUD_NATIVE_ARCHIVAL, CLOUD_NATIVE_DYNAMODB_PROTECTION, CLOUD_NATIVE_PROTECTION, CLOUD_NATIVE_S3_PROTECTION, EXOCOMPUTE, KUBERNETES_PROTECTION, RDS_PROTECTION and SERVERS_AND_APPS."
   type = map(object({
     permission_groups = set(string)
   }))
@@ -112,6 +117,10 @@ variable "features" {
   validation {
     condition     = var.features != null && length(var.features) > 0 && length(setsubtract(keys(var.features), local.features)) == 0
     error_message = format("Invalid RSC feature. Allowed features are: %v.", join(", ", local.features))
+  }
+  validation {
+    condition     = length(setsubtract(try(var.features["CLOUD_DISCOVERY"].permission_groups, []), local.cloud_discovery)) == 0
+    error_message = format("Invalid permission groups for RSC feature. Allowed permission groups are: %v.", join(", ", local.cloud_discovery))
   }
   validation {
     condition     = length(setsubtract(try(var.features["CLOUD_NATIVE_ARCHIVAL"].permission_groups, []), local.cloud_native_archival)) == 0

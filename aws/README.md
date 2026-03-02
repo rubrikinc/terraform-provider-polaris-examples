@@ -20,19 +20,25 @@ resources.
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.0.0 |
+| <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.5.0 |
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_polaris"></a> [polaris](#provider\_polaris) | >=1.5.0 |
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| [polaris_aws_account.outpost](https://registry.terraform.io/providers/rubrikinc/polaris/latest/docs/resources/aws_account) | resource |
 | [polaris_aws_account.account](https://registry.terraform.io/providers/rubrikinc/polaris/latest/docs/resources/aws_account) | resource |
+| [polaris_aws_account.outpost](https://registry.terraform.io/providers/rubrikinc/polaris/latest/docs/resources/aws_account) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_outpost_profile"></a> [outpost\_profile](#input\_outpost\_profile) | Outpost account AWS profile. | `string` | n/a | yes |
 | <a name="input_account_profile"></a> [account\_profile](#input\_account\_profile) | Account AWS profile. | `string` | n/a | yes |
+| <a name="input_outpost_profile"></a> [outpost\_profile](#input\_outpost\_profile) | Outpost account AWS profile. | `string` | n/a | yes |
 <!-- END_TF_DOCS -->
