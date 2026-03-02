@@ -36,7 +36,7 @@ resources.
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_aws_exocompute"></a> [aws\_exocompute](#module\_aws\_exocompute) | ../.. | n/a |
-| <a name="module_aws_iam_account"></a> [aws\_iam\_account](#module\_aws\_iam\_account) | ../../../modules/aws_iam_account | n/a |
+| <a name="module_aws_iam_account"></a> [aws\_iam\_account](#module\_aws\_iam\_account) | ../../../aws_iam_account | n/a |
 | <a name="module_vpc"></a> [vpc](#module\_vpc) | ../../modules/exocompute_vpc | n/a |
 
 ## Resources
@@ -51,5 +51,5 @@ resources.
 |------|-------------|------|---------|:--------:|
 | <a name="input_account_id"></a> [account\_id](#input\_account\_id) | AWS account ID. | `string` | n/a | yes |
 | <a name="input_account_name"></a> [account\_name](#input\_account\_name) | AWS account name. | `string` | n/a | yes |
-| <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to AWS resources created. | `map(string)` | <pre>{<br/>  "Environment": "test",<br/>  "Example": "aws_exocompute",<br/>  "Module": "github.com/rubrikinc/terraform-provider-polaris-examples"<br/>}</pre> | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to AWS resources created. | `map(string)` | <pre>{<br/>  "Example": "basic",<br/>  "Module": "aws_exocompute",<br/>  "Repository": "github.com/rubrikinc/terraform-provider-polaris-examples"<br/>}</pre> | no |
 <!-- END_TF_DOCS -->

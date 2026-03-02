@@ -6,7 +6,7 @@ This module creates an AWS VPC for RSC Exocompute workloads.
 
 ```terraform
 module "vpc" {
-  source = "."
+  source = "github.com/rubrikinc/terraform-provider-polaris-examples//modules/aws_exocompute/modules/exocompute_vpc"
 
   name         = "exocompute-vpc"
   public_cidr  = "172.22.0.0/24"

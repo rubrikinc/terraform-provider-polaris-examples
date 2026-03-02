@@ -9,7 +9,7 @@ variable "cloud_account_id" {
 
   validation {
     condition     = var.cloud_account_id != local.uuid_null && can(regex(local.uuid_regex, var.cloud_account_id))
-    error_message = "Cloud account ID must be a valid, lower case, UUID."
+    error_message = "RSC cloud account ID must be a valid, lower case, UUID."
   }
 }
 

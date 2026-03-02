@@ -5,8 +5,8 @@ This module creates an RSC Exocompute configuration for running Exocompute workl
 ## Usage
 
 ```terraform
-module "aws_cnp_account" {
-  source = "."
+module "aws_exocompute" {
+  source = "github.com/rubrikinc/terraform-provider-polaris-examples//modules/aws_exocompute"
 
   cloud_account_id          = "d7984bca-db41-40ba-98ef-c56c4aef6c23"
   cluster_security_group_id = "sg-267288cc1f4a4be6a"
