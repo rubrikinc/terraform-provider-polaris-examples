@@ -29,14 +29,14 @@ Note, the `cluster_security_group_id` and `node_security_group_id` input variabl
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.11.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >=6.0.0 |
-| <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.0.0 |
+| <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.5.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >=6.0.0 |
-| <a name="provider_polaris"></a> [polaris](#provider\_polaris) | >=1.0.0 |
+| <a name="provider_polaris"></a> [polaris](#provider\_polaris) | >=1.5.0 |
 
 ## Resources
 
@@ -44,7 +44,6 @@ Note, the `cluster_security_group_id` and `node_security_group_id` input variabl
 |------|------|
 | [polaris_aws_exocompute.configuration](https://registry.terraform.io/providers/rubrikinc/polaris/latest/docs/resources/aws_exocompute) | resource |
 | [aws_regions.regions](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/regions) | data source |
-| [polaris_aws_account.account](https://registry.terraform.io/providers/rubrikinc/polaris/latest/docs/data-sources/aws_account) | data source |
 
 ## Inputs
 
