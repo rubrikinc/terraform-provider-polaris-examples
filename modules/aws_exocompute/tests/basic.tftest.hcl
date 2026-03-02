@@ -1,3 +1,11 @@
+variable "account_id" {
+  type = string
+}
+
+variable "account_name" {
+  type = string
+}
+
 variables {
   tags = {
     Environment = "test"
@@ -49,6 +57,7 @@ run "setup_aws_iam_account" {
 run "configure_exocompute" {
   variables {
     cloud_account_id          = run.setup_aws_iam_account.cloud_account_id
+    cluster_access            = "EKS_CLUSTER_ACCESS_TYPE_PRIVATE"
     cluster_security_group_id = run.setup_exocompute_vpc.cluster_security_group_id
     node_security_group_id    = run.setup_exocompute_vpc.node_security_group_id
     region                    = "us-east-2"
@@ -77,6 +86,10 @@ run "configure_exocompute" {
   assert {
     condition     = length(setsubtract(polaris_aws_exocompute.configuration.subnets, [var.subnet1_id, var.subnet2_id])) == 0
     error_message = "The subnets does not match the expected value."
+  }
+  assert {
+    condition     = polaris_aws_exocompute.configuration.cluster_access == "EKS_CLUSTER_ACCESS_TYPE_PRIVATE"
+    error_message = "The cluster access does not match the expected value."
   }
   assert {
     condition     = polaris_aws_exocompute.configuration.vpc_id == var.vpc_id
