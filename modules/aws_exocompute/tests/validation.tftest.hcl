@@ -4,7 +4,7 @@ test {
 
 variables {
   cloud_account_id          = "d7984bca-db40-40b9-98ef-c56c4aff6c23"
-  cluster_access            = null
+  cluster_access            = "EKS_CLUSTER_ACCESS_TYPE_PRIVATE"
   cluster_security_group_id = "sg-066288cc1e4a4be6a"
   node_security_group_id    = "sg-039a0f1da4fb1b806"
   region                    = "us-east-2"

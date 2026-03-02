@@ -74,6 +74,7 @@ module "aws_exocompute" {
   source = "../.."
 
   cloud_account_id          = module.aws_iam_account.cloud_account_id
+  cluster_access            = "EKS_CLUSTER_ACCESS_TYPE_PRIVATE"
   cluster_security_group_id = module.vpc.cluster_security_group_id
   node_security_group_id    = module.vpc.node_security_group_id
   region                    = data.aws_region.current.region
