@@ -5,13 +5,11 @@ data "polaris_account" "all" {}
 variable "aws_account_name" {
   description = "Name of the AWS account in RSC for EC2 and EBS workloads."
   type        = string
-  default     = "aws-rubrikinc-intergrations-qa-dev"
 }
 
 variable "azure_subscription_name" {
   description = "Name of the Azure subscription in RSC."
   type        = string
-  default     = "TrinityFDSE"
 }
 
 data "polaris_aws_account" "account" {
