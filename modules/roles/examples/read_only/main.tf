@@ -1,21 +1,10 @@
-terraform {
-  required_providers {
-    polaris = {
-      source  = "terraform.rubrik.com/rubrikinc/polaris"
-      version = ">=9.0.0"
-    }
-  }
-}
-
 provider "polaris" {}
 
-data "polaris_operations" "all" {}
-
-data "polaris_workloads" "all" {}
+data "polaris_account" "all" {}
 
 locals {
   # Filter operations to only include VIEW operations.
-  view_operations = [for op in data.polaris_operations.all.operations : op if startswith(op, "VIEW")]
+  view_operations = [for op in data.polaris_account.all.operations : op if startswith(op, "VIEW")]
 }
 
 module "viewer_role" {

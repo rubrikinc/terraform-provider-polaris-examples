@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    polaris = {
-      source  = "terraform.rubrik.com/rubrikinc/polaris"
-      version = ">=9.0.0"
-    }
-  }
-}
-
 provider "polaris" {}
 
 variable "sso_group_name" {
