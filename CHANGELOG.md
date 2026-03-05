@@ -14,3 +14,4 @@
   features.
 * Add support for the `CLOUD_DISCOVERY` feature to the `aws_iam_account` module.
 * Add support for private Exocompute to the `aws_exocompute` module.
+* Add support for pod subnets to the `aws_exocompute` module.

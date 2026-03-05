@@ -19,8 +19,28 @@ module "aws_exocompute" {
 }
 ```
 
+To use pod subnets, specify the `pod_subnet1_id` and `pod_subnet2_id` input variables:
+
+```terraform
+module "aws_exocompute" {
+  source = "github.com/rubrikinc/terraform-provider-polaris-examples//modules/aws_exocompute"
+
+  cloud_account_id          = "d7984bca-db41-40ba-98ef-c56c4aef6c23"
+  cluster_access            = "EKS_CLUSTER_ACCESS_TYPE_PRIVATE"
+  cluster_security_group_id = "sg-267288cc1f4a4be6a"
+  node_security_group_id    = "sg-03aa0f1db4fb1b816"
+  pod_subnet1_id            = "subnet-8a361b5f754ab1dca"
+  pod_subnet2_id            = "subnet-6bfb0142c8604a6cb"
+  region                    = "us-east-2"
+  subnet1_id                = "subnet-2f261b5f754ab1dcb"
+  subnet2_id                = "subnet-1efb0142c8604a6ca"
+  vpc_id                    = "vpc-0e2f6d1ed6a3d8571"
+}
+```
+
 Note, the `cluster_security_group_id` and `node_security_group_id` input variables must be specified if the
-`rubrikinc/polaris-cloud-native-exocompute-networking/aws` Terraform module is used to create the VPC resources.
+`exocompute_vpc` submodule or the `rubrikinc/polaris-cloud-native-exocompute-networking/aws` Terraform module is
+used to create the VPC resources.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
@@ -53,6 +73,8 @@ Note, the `cluster_security_group_id` and `node_security_group_id` input variabl
 | <a name="input_cluster_access"></a> [cluster\_access](#input\_cluster\_access) | EKS cluster access type. | `string` | `null` | no |
 | <a name="input_cluster_security_group_id"></a> [cluster\_security\_group\_id](#input\_cluster\_security\_group\_id) | AWS cluster / control plane security group ID. | `string` | `null` | no |
 | <a name="input_node_security_group_id"></a> [node\_security\_group\_id](#input\_node\_security\_group\_id) | AWS node / worker security group ID. | `string` | `null` | no |
+| <a name="input_pod_subnet1_id"></a> [pod\_subnet1\_id](#input\_pod\_subnet1\_id) | AWS pod subnet 1 ID. | `string` | `null` | no |
+| <a name="input_pod_subnet2_id"></a> [pod\_subnet2\_id](#input\_pod\_subnet2\_id) | AWS pod subnet 2 ID. | `string` | `null` | no |
 | <a name="input_region"></a> [region](#input\_region) | AWS region to run Exocompute in. | `string` | n/a | yes |
 | <a name="input_subnet1_id"></a> [subnet1\_id](#input\_subnet1\_id) | AWS subnet 1 ID. | `string` | n/a | yes |
 | <a name="input_subnet2_id"></a> [subnet2\_id](#input\_subnet2\_id) | AWS subnet 2 ID. | `string` | n/a | yes |

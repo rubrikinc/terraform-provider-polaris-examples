@@ -37,11 +37,13 @@ data "aws_region" "current" {}
 module "vpc" {
   source = "../../modules/exocompute_vpc"
 
-  name         = "aws_exocompute"
-  public_cidr  = "172.22.0.0/24"
-  subnet1_cidr = "172.22.1.0/24"
-  subnet2_cidr = "172.22.2.0/24"
-  vpc_cidr     = "172.22.0.0/16"
+  name             = "aws_exocompute"
+  public_cidr      = "172.22.0.0/24"
+  subnet1_cidr     = "172.22.1.0/24"
+  subnet2_cidr     = "172.22.2.0/24"
+  pod_subnet1_cidr = "172.22.10.0/24"
+  pod_subnet2_cidr = "172.22.11.0/24"
+  vpc_cidr         = "172.22.0.0/16"
 
   tags = var.tags
 }
@@ -80,5 +82,7 @@ module "aws_exocompute" {
   region                    = data.aws_region.current.region
   subnet1_id                = module.vpc.subnet1_id
   subnet2_id                = module.vpc.subnet2_id
+  pod_subnet1_id            = module.vpc.pod_subnet1_id
+  pod_subnet2_id            = module.vpc.pod_subnet2_id
   vpc_id                    = module.vpc.vpc_id
 }
