@@ -16,6 +16,22 @@ module "vpc" {
 }
 ```
 
+To use pod subnets, specify the `pod_subnet1_cidr` and `pod_subnet2_cidr` input variables:
+
+```terraform
+module "vpc" {
+  source = "github.com/rubrikinc/terraform-provider-polaris-examples//modules/aws_exocompute/modules/exocompute_vpc"
+
+  name             = "exocompute-vpc"
+  public_cidr      = "172.22.0.0/24"
+  subnet1_cidr     = "172.22.1.0/24"
+  subnet2_cidr     = "172.22.2.0/24"
+  pod_subnet1_cidr = "172.22.10.0/24"
+  pod_subnet2_cidr = "172.22.11.0/24"
+  vpc_cidr         = "172.22.0.0/16"
+}
+```
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -45,6 +61,8 @@ module "vpc" {
 | [aws_route_table_association.subnet2](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table_association) | resource |
 | [aws_security_group.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_security_group.node](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
+| [aws_subnet.pod_subnet1](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
+| [aws_subnet.pod_subnet2](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
 | [aws_subnet.public](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
 | [aws_subnet.subnet1](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
 | [aws_subnet.subnet2](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
@@ -71,6 +89,8 @@ module "vpc" {
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_name"></a> [name](#input\_name) | Name for the VPC. | `string` | n/a | yes |
+| <a name="input_pod_subnet1_cidr"></a> [pod\_subnet1\_cidr](#input\_pod\_subnet1\_cidr) | CIDR for pod subnet 1. | `string` | `null` | no |
+| <a name="input_pod_subnet2_cidr"></a> [pod\_subnet2\_cidr](#input\_pod\_subnet2\_cidr) | CIDR for pod subnet 2. | `string` | `null` | no |
 | <a name="input_public_cidr"></a> [public\_cidr](#input\_public\_cidr) | CIDR for the public subnet. | `string` | n/a | yes |
 | <a name="input_subnet1_cidr"></a> [subnet1\_cidr](#input\_subnet1\_cidr) | CIDR for subnet 1. | `string` | n/a | yes |
 | <a name="input_subnet2_cidr"></a> [subnet2\_cidr](#input\_subnet2\_cidr) | CIDR for subnet 2. | `string` | n/a | yes |
@@ -81,9 +101,11 @@ module "vpc" {
 
 | Name | Description |
 |------|-------------|
-| <a name="output_cluster_security_group_id"></a> [cluster\_security\_group\_id](#output\_cluster\_security\_group\_id) | n/a |
-| <a name="output_node_security_group_id"></a> [node\_security\_group\_id](#output\_node\_security\_group\_id) | n/a |
-| <a name="output_subnet1_id"></a> [subnet1\_id](#output\_subnet1\_id) | n/a |
-| <a name="output_subnet2_id"></a> [subnet2\_id](#output\_subnet2\_id) | n/a |
-| <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | n/a |
+| <a name="output_cluster_security_group_id"></a> [cluster\_security\_group\_id](#output\_cluster\_security\_group\_id) | AWS cluster / control plane security group ID. |
+| <a name="output_node_security_group_id"></a> [node\_security\_group\_id](#output\_node\_security\_group\_id) | AWS node / worker security group ID. |
+| <a name="output_pod_subnet1_id"></a> [pod\_subnet1\_id](#output\_pod\_subnet1\_id) | AWS pod subnet 1 ID. |
+| <a name="output_pod_subnet2_id"></a> [pod\_subnet2\_id](#output\_pod\_subnet2\_id) | AWS pod subnet 2 ID. |
+| <a name="output_subnet1_id"></a> [subnet1\_id](#output\_subnet1\_id) | AWS subnet 1 ID. |
+| <a name="output_subnet2_id"></a> [subnet2\_id](#output\_subnet2\_id) | AWS subnet 2 ID. |
+| <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | AWS VPC ID. |
 <!-- END_TF_DOCS -->
