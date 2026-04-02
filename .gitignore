@@ -1,10 +1,4 @@
-# Prevent accidental commit of service accounts or service principals
 *.json
-
-.terraform
-.terraform.lock.hcl
-.terraform.tfstate.lock.info
-terraform.tfstate
-terraform.tfstate.backup
-terraform.tfstate*
 *.tfvars
+.terraform*
+terraform.tfstate*
