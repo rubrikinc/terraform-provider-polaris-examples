@@ -1,7 +1,7 @@
-# Basic AWS Exocompute
+# Private AWS Exocompute
 
-The configuration in this directory onboards an AWS account to RSC and creates an Exocompute configuration for the
-account.
+The configuration in this directory onboards an AWS account to RSC and creates an Exocompute configuration with private
+cluster access for the account.
 
 Note, the `cluster_security_group_id` and `node_security_group_id` input variables must be specified if the
 `exocompute_vpc` submodule or the `rubrikinc/polaris-cloud-native-exocompute-networking/aws` Terraform module is used to
@@ -52,5 +52,5 @@ resources.
 |------|-------------|------|---------|:--------:|
 | <a name="input_account_id"></a> [account\_id](#input\_account\_id) | AWS account ID. | `string` | n/a | yes |
 | <a name="input_account_name"></a> [account\_name](#input\_account\_name) | AWS account name. | `string` | n/a | yes |
-| <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to AWS resources created. | `map(string)` | <pre>{<br/>  "Example": "basic",<br/>  "Module": "aws_exocompute",<br/>  "Repository": "github.com/rubrikinc/terraform-provider-polaris-examples"<br/>}</pre> | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to AWS resources created. | `map(string)` | <pre>{<br/>  "Example": "private",<br/>  "Module": "aws_exocompute",<br/>  "Repository": "github.com/rubrikinc/terraform-provider-polaris-examples"<br/>}</pre> | no |
 <!-- END_TF_DOCS -->

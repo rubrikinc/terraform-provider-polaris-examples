@@ -25,7 +25,7 @@ variable "tags" {
   description = "Tags to apply to AWS resources created."
   type        = map(string)
   default = {
-    Example    = "basic"
+    Example    = "pod_subnet"
     Module     = "aws_exocompute"
     Repository = "github.com/rubrikinc/terraform-provider-polaris-examples"
   }
@@ -33,15 +33,17 @@ variable "tags" {
 
 data "aws_region" "current" {}
 
-# Create the VPC and subnets in AWS.
+# Create the VPC and subnets in AWS, including dedicated pod subnets.
 module "vpc" {
   source = "../../modules/exocompute_vpc"
 
-  name         = "aws_exocompute"
-  public_cidr  = "172.22.0.0/24"
-  subnet1_cidr = "172.22.1.0/24"
-  subnet2_cidr = "172.22.2.0/24"
-  vpc_cidr     = "172.22.0.0/16"
+  name             = "aws_exocompute"
+  public_cidr      = "172.22.0.0/24"
+  subnet1_cidr     = "172.22.1.0/24"
+  subnet2_cidr     = "172.22.2.0/24"
+  pod_subnet1_cidr = "172.22.10.0/24"
+  pod_subnet2_cidr = "172.22.11.0/24"
+  vpc_cidr         = "172.22.0.0/16"
 
   tags = var.tags
 }
@@ -69,15 +71,19 @@ module "aws_iam_account" {
   tags = var.tags
 }
 
-# Create the exocompute configuration.
+# Create the exocompute configuration with dedicated pod subnets and private
+# cluster access.
 module "aws_exocompute" {
   source = "../.."
 
   cloud_account_id          = module.aws_iam_account.cloud_account_id
+  cluster_access            = "EKS_CLUSTER_ACCESS_TYPE_PRIVATE"
   cluster_security_group_id = module.vpc.cluster_security_group_id
   node_security_group_id    = module.vpc.node_security_group_id
   region                    = data.aws_region.current.region
   subnet1_id                = module.vpc.subnet1_id
   subnet2_id                = module.vpc.subnet2_id
+  pod_subnet1_id            = module.vpc.pod_subnet1_id
+  pod_subnet2_id            = module.vpc.pod_subnet2_id
   vpc_id                    = module.vpc.vpc_id
 }
