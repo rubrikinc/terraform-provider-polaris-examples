@@ -119,7 +119,7 @@ module "sso_viewer_role" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_polaris"></a> [polaris](#provider\_polaris) | 1.5.0 |
+| <a name="provider_polaris"></a> [polaris](#provider\_polaris) | >=1.5.0 |
 
 ## Resources
 
