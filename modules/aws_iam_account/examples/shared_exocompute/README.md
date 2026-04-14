@@ -18,20 +18,20 @@ resources.
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >=6.0.0 |
 | <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.5.0 |
 
 ## Modules
 
 | Name | Source | Version |
-|------|--------|---------|
+| ---- | ------ | ------- |
 | <a name="module_aws_iam_account"></a> [aws\_iam\_account](#module\_aws\_iam\_account) | ../.. | n/a |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_account_id"></a> [account\_id](#input\_account\_id) | AWS account ID. | `string` | n/a | yes |
 | <a name="input_account_name"></a> [account\_name](#input\_account\_name) | AWS account name. | `string` | n/a | yes |
 | <a name="input_exocompute_host_id"></a> [exocompute\_host\_id](#input\_exocompute\_host\_id) | RSC cloud account ID (UUID) of the AWS account hosting Exocompute. | `string` | n/a | yes |

@@ -76,24 +76,24 @@ module "aws_iam_account" {
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.11.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >=6.0.0 |
-| <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.5.0 |
+| <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.6.3 |
 | <a name="requirement_time"></a> [time](#requirement\_time) | >=0.13.1 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >=6.0.0 |
-| <a name="provider_polaris"></a> [polaris](#provider\_polaris) | >=1.5.0 |
+| <a name="provider_polaris"></a> [polaris](#provider\_polaris) | >=1.6.3 |
 | <a name="provider_time"></a> [time](#provider\_time) | >=0.13.1 |
 
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [aws_iam_instance_profile.profile](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile) | resource |
 | [aws_iam_policy.customer_managed](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_role.customer_inline](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
@@ -114,15 +114,16 @@ module "aws_iam_account" {
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_account_id"></a> [account\_id](#input\_account\_id) | AWS account ID. | `string` | n/a | yes |
 | <a name="input_account_name"></a> [account\_name](#input\_account\_name) | AWS account name. | `string` | n/a | yes |
 | <a name="input_cloud_type"></a> [cloud\_type](#input\_cloud\_type) | AWS cloud type. Possible values are: STANDARD, GOV. Defaults to STANDARD. | `string` | `null` | no |
 | <a name="input_ec2_recovery_role_path"></a> [ec2\_recovery\_role\_path](#input\_ec2\_recovery\_role\_path) | AWS EC2 recovery role path. | `string` | `null` | no |
 | <a name="input_exocompute_host_id"></a> [exocompute\_host\_id](#input\_exocompute\_host\_id) | RSC cloud account ID (UUID) of the AWS account hosting Exocompute. | `string` | `null` | no |
 | <a name="input_external_id"></a> [external\_id](#input\_external\_id) | AWS external ID. If empty, RSC will automatically generate an external ID. | `string` | `null` | no |
-| <a name="input_features"></a> [features](#input\_features) | RSC features with permission groups. Possible features are: CLOUD\_DISCOVERY, CLOUD\_NATIVE\_ARCHIVAL, CLOUD\_NATIVE\_DYNAMODB\_PROTECTION, CLOUD\_NATIVE\_PROTECTION, CLOUD\_NATIVE\_S3\_PROTECTION, EXOCOMPUTE, KUBERNETES\_PROTECTION, RDS\_PROTECTION and SERVERS\_AND\_APPS. | <pre>map(object({<br/>    permission_groups = set(string)<br/>  }))</pre> | n/a | yes |
+| <a name="input_features"></a> [features](#input\_features) | RSC features with permission groups. Possible features are: CLOUD\_DISCOVERY, CLOUD\_NATIVE\_ARCHIVAL, CLOUD\_NATIVE\_DYNAMODB\_PROTECTION, CLOUD\_NATIVE\_PROTECTION, CLOUD\_NATIVE\_S3\_PROTECTION, EXOCOMPUTE, KUBERNETES\_PROTECTION, RDS\_PROTECTION, ROLE\_CHAINING and SERVERS\_AND\_APPS. | <pre>map(object({<br/>    permission_groups = set(string)<br/>  }))</pre> | n/a | yes |
 | <a name="input_regions"></a> [regions](#input\_regions) | AWS regions to onboard. | `set(string)` | n/a | yes |
+| <a name="input_role_chaining_account_id"></a> [role\_chaining\_account\_id](#input\_role\_chaining\_account\_id) | RSC cloud account ID (UUID) of the role chaining account. When specified, the account will use cross-account role chaining. | `string` | `null` | no |
 | <a name="input_role_path"></a> [role\_path](#input\_role\_path) | AWS role path. Defaults to '/'. | `string` | `"/"` | no |
 | <a name="input_role_type"></a> [role\_type](#input\_role\_type) | How the AWS policies should be attached to the IAM roles created for RSC. Possible values: `managed`, `inline` and `legacy`. `legacy` should only be used for backwards compatibility with previously onboarded AWS accounts. | `string` | `"managed"` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to AWS resources created. | `map(string)` | <pre>{<br/>  "Module": "aws_iam_account",<br/>  "Repository": "github.com/rubrikinc/terraform-provider-polaris-examples"<br/>}</pre> | no |
@@ -130,6 +131,6 @@ module "aws_iam_account" {
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_cloud_account_id"></a> [cloud\_account\_id](#output\_cloud\_account\_id) | RSC cloud account ID for the AWS account. |
 <!-- END_TF_DOCS -->
