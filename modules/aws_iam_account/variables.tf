@@ -8,6 +8,7 @@ locals {
     "EXOCOMPUTE",
     "KUBERNETES_PROTECTION",
     "RDS_PROTECTION",
+    "ROLE_CHAINING",
     "SERVERS_AND_APPS",
   ]
 
@@ -41,6 +42,10 @@ locals {
   ]
 
   rds_protection = [
+    "BASIC",
+  ]
+
+  role_chaining = [
     "BASIC",
   ]
 
@@ -108,8 +113,19 @@ variable "external_id" {
   }
 }
 
+variable "role_chaining_account_id" {
+  description = "RSC cloud account ID (UUID) of the role chaining account. When specified, the account will use cross-account role chaining."
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.role_chaining_account_id == null || can(regex(local.uuid_regex, var.role_chaining_account_id))
+    error_message = "Invalid role chaining account ID. Must be a valid UUID."
+  }
+}
+
 variable "features" {
-  description = "RSC features with permission groups. Possible features are: CLOUD_DISCOVERY, CLOUD_NATIVE_ARCHIVAL, CLOUD_NATIVE_DYNAMODB_PROTECTION, CLOUD_NATIVE_PROTECTION, CLOUD_NATIVE_S3_PROTECTION, EXOCOMPUTE, KUBERNETES_PROTECTION, RDS_PROTECTION and SERVERS_AND_APPS."
+  description = "RSC features with permission groups. Possible features are: CLOUD_DISCOVERY, CLOUD_NATIVE_ARCHIVAL, CLOUD_NATIVE_DYNAMODB_PROTECTION, CLOUD_NATIVE_PROTECTION, CLOUD_NATIVE_S3_PROTECTION, EXOCOMPUTE, KUBERNETES_PROTECTION, RDS_PROTECTION, ROLE_CHAINING and SERVERS_AND_APPS."
   type = map(object({
     permission_groups = set(string)
   }))
@@ -149,6 +165,10 @@ variable "features" {
   validation {
     condition     = length(setsubtract(try(var.features["RDS_PROTECTION"].permission_groups, []), local.rds_protection)) == 0
     error_message = format("Invalid permission groups for RSC feature. Allowed permission groups are: %v.", join(", ", local.rds_protection))
+  }
+  validation {
+    condition     = length(setsubtract(try(var.features["ROLE_CHAINING"].permission_groups, []), local.role_chaining)) == 0
+    error_message = format("Invalid permission groups for RSC feature. Allowed permission groups are: %v.", join(", ", local.role_chaining))
   }
   validation {
     condition     = length(setsubtract(try(var.features["SERVERS_AND_APPS"].permission_groups, []), local.servers_and_apps)) == 0

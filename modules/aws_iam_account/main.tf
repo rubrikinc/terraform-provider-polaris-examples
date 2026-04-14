@@ -35,11 +35,12 @@ data "polaris_aws_cnp_permissions" "permissions" {
 
 # Create the RSC AWS cloud account.
 resource "polaris_aws_cnp_account" "account" {
-  cloud       = var.cloud_type
-  external_id = var.external_id
-  name        = var.account_name
-  native_id   = var.account_id
-  regions     = var.regions
+  cloud                    = var.cloud_type
+  external_id              = var.external_id
+  name                     = var.account_name
+  native_id                = var.account_id
+  regions                  = var.regions
+  role_chaining_account_id = var.role_chaining_account_id
 
   dynamic "feature" {
     for_each = var.features
@@ -52,8 +53,9 @@ resource "polaris_aws_cnp_account" "account" {
 
 # Attach the instance profiles and the roles to the RSC cloud account.
 resource "polaris_aws_cnp_account_attachments" "attachments" {
-  account_id = polaris_aws_cnp_account.account.id
-  features   = keys(var.features)
+  account_id               = polaris_aws_cnp_account.account.id
+  features                 = keys(var.features)
+  role_chaining_account_id = var.role_chaining_account_id
 
   dynamic "instance_profile" {
     for_each = aws_iam_instance_profile.profile
