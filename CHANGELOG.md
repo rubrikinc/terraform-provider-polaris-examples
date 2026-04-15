@@ -3,6 +3,7 @@
 ## v1.2.0
 * Add support for AWS role chaining to the `aws_iam_account` module.
 * Add CIDR format validation to the `aws_exocompute` module's `exocompute_vpc` submodule.
+* Add role chaining example to the `aws_iam_account` module.
 
 ## v1.1.0
 * Add `gcp_project` Terraform module.
@@ -19,3 +20,4 @@
 * Add support for the `CLOUD_DISCOVERY` feature to the `aws_iam_account` module.
 * Add support for private Exocompute to the `aws_exocompute` module.
 * Add support for pod subnets to the `aws_exocompute` module.
+
