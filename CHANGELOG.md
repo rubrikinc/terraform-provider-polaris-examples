@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.2.1
+* Fix a bug in the `aws_iam_account` module where two RSC policies sharing a name within the same role artifact
+  caused a Terraform duplicate-key error. Colliding policies are now suffixed with a short hash of the policy body.
+
 ## v1.2.0
 * Add support for AWS role chaining to the `aws_iam_account` module.
 * Add CIDR format validation to the `aws_exocompute` module's `exocompute_vpc` submodule.

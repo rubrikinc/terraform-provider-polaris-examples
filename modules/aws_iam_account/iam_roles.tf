@@ -1,9 +1,14 @@
 locals {
+  # When two policies in the same RSC role artifact share a name, suffix the
+  # colliding entries with a short hash of the policy body to keep map keys
+  # unique. Names that don't collide pass through unchanged.
   customer_managed_policies = merge([
     for key, value in data.polaris_aws_cnp_permissions.permissions : {
-      for policy in value.customer_managed_policies : policy.name => {
-        role_key = key,
-        policy   = policy.policy,
+      for p in value.customer_managed_policies : (
+        length([for v in value.customer_managed_policies : v if v.name == p.name]) == 1 ? p.name : "${p.name}-${substr(sha256(p.policy), 0, 8)}"
+      ) => {
+        role_key = key
+        policy   = p.policy
       }
     }
   ]...)
@@ -113,6 +118,6 @@ resource "aws_iam_role_policy_attachments_exclusive" "customer_managed" {
 
   policy_arns = concat(
     each.value.managed_policies,
-    [for policy in each.value.customer_managed_policies : aws_iam_policy.customer_managed[policy.name].arn]
+    [for k, v in local.customer_managed_policies : aws_iam_policy.customer_managed[k].arn if v.role_key == each.key]
   )
 }
