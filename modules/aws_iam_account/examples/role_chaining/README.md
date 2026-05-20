@@ -37,8 +37,10 @@ resources.
 
 | Name | Description | Type | Default | Required |
 | ---- | ----------- | ---- | ------- | :------: |
+| <a name="input_role_chained_account_external_id"></a> [role\_chained\_account\_external\_id](#input\_role\_chained\_account\_external\_id) | External ID for the role-chained account. | `string` | `null` | no |
 | <a name="input_role_chained_account_id"></a> [role\_chained\_account\_id](#input\_role\_chained\_account\_id) | AWS account ID for the role-chained account. | `string` | n/a | yes |
 | <a name="input_role_chained_account_name"></a> [role\_chained\_account\_name](#input\_role\_chained\_account\_name) | AWS account name for the role-chained account. | `string` | n/a | yes |
+| <a name="input_role_chaining_account_external_id"></a> [role\_chaining\_account\_external\_id](#input\_role\_chaining\_account\_external\_id) | External ID for the role-chaining account. | `string` | `null` | no |
 | <a name="input_role_chaining_account_id"></a> [role\_chaining\_account\_id](#input\_role\_chaining\_account\_id) | AWS account ID for the role-chaining account. | `string` | n/a | yes |
 | <a name="input_role_chaining_account_name"></a> [role\_chaining\_account\_name](#input\_role\_chaining\_account\_name) | AWS account name for the role-chaining account. | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to AWS resources created. | `map(string)` | <pre>{<br/>  "Example": "role_chaining",<br/>  "Module": "aws_iam_account",<br/>  "Repository": "github.com/rubrikinc/terraform-provider-polaris-examples"<br/>}</pre> | no |

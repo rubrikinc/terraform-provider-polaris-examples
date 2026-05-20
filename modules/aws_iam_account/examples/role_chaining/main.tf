@@ -21,6 +21,12 @@ variable "role_chaining_account_name" {
   description = "AWS account name for the role-chaining account."
 }
 
+variable "role_chaining_account_external_id" {
+  type        = string
+  description = "External ID for the role-chaining account."
+  default     = null
+}
+
 variable "role_chained_account_id" {
   type        = string
   description = "AWS account ID for the role-chained account."
@@ -29,6 +35,12 @@ variable "role_chained_account_id" {
 variable "role_chained_account_name" {
   type        = string
   description = "AWS account name for the role-chained account."
+}
+
+variable "role_chained_account_external_id" {
+  type        = string
+  description = "External ID for the role-chained account."
+  default     = null
 }
 
 variable "tags" {
@@ -59,6 +71,7 @@ module "role_chaining_account" {
 
   account_id   = var.role_chaining_account_id
   account_name = var.role_chaining_account_name
+  external_id  = var.role_chaining_account_external_id
 
   features = {
     ROLE_CHAINING = {
@@ -83,6 +96,7 @@ module "role_chained_account" {
 
   account_id               = var.role_chained_account_id
   account_name             = var.role_chained_account_name
+  external_id              = var.role_chained_account_external_id
   role_chaining_account_id = module.role_chaining_account.cloud_account_id
 
   features = {
