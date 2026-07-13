@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.3.0
+* Add `azure_tenant` Terraform module.
+* Add `azure_subscription` Terraform module.
+* Add `azure_exocompute` Terraform module.
+* Add `azure_archival_location` Terraform module.
+* Add `azure_devops` Terraform module for onboarding an Azure DevOps organization to RSC.
+
 ## v1.2.1
 * Fix a bug in the `aws_iam_account` module where two RSC policies sharing a name within the same role artifact
   caused a Terraform duplicate-key error. Colliding policies are now suffixed with a short hash of the policy body.
