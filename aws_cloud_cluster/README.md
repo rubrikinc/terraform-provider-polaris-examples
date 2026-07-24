@@ -17,31 +17,31 @@ resources.
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.1.7 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_polaris"></a> [polaris](#provider\_polaris) | >=1.1.7 |
 
 ## Modules
 
 | Name | Source | Version |
-|------|--------|---------|
+| ---- | ------ | ------- |
 | <a name="module_aws_iam_account"></a> [aws\_iam\_account](#module\_aws\_iam\_account) | ../modules/aws_iam_account | n/a |
 
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [polaris_aws_cloud_cluster.cces](https://registry.terraform.io/providers/rubrikinc/polaris/latest/docs/resources/aws_cloud_cluster) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_account_id"></a> [account\_id](#input\_account\_id) | AWS account ID. | `string` | n/a | yes |
 | <a name="input_account_name"></a> [account\_name](#input\_account\_name) | AWS account name. | `string` | n/a | yes |
 | <a name="input_admin_email"></a> [admin\_email](#input\_admin\_email) | Admin email address. | `string` | n/a | yes |
@@ -58,6 +58,6 @@ resources.
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_cloud_cluster_id"></a> [cloud\_cluster\_id](#output\_cloud\_cluster\_id) | n/a |
 <!-- END_TF_DOCS -->

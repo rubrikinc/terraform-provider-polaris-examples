@@ -56,19 +56,19 @@ resource "null_resource" "prevent_destroy" {
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_google"></a> [google](#requirement\_google) | >=7.0.0 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_google"></a> [google](#provider\_google) | >=7.0.0 |
 
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [google_kms_crypto_key.key](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/kms_crypto_key) | resource |
 | [google_kms_key_ring.key_ring](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/kms_key_ring) | resource |
 | [google_kms_crypto_keys.keys](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/kms_crypto_keys) | data source |
@@ -77,7 +77,7 @@ resource "null_resource" "prevent_destroy" {
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_key_name"></a> [key\_name](#input\_key\_name) | The name of the KMS crypto key. If a crypto key with this name already exists in the key ring, it will be used; otherwise, a new one will be created. | `string` | n/a | yes |
 | <a name="input_key_ring_name"></a> [key\_ring\_name](#input\_key\_ring\_name) | The name of the KMS key ring that will contain the crypto key. If a key ring with this name already exists in the region, it will be used; otherwise, a new one will be created. | `string` | n/a | yes |
 | <a name="input_key_rotation_period"></a> [key\_rotation\_period](#input\_key\_rotation\_period) | The rotation period for the crypto key in seconds. The key will be automatically rotated at this interval. Only applies when creating a new crypto key. Default is 2592000s (30 days). | `string` | `"2592000s"` | no |
@@ -87,7 +87,7 @@ resource "null_resource" "prevent_destroy" {
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_key_id"></a> [key\_id](#output\_key\_id) | The GCP crypto key ID. |
 | <a name="output_key_name"></a> [key\_name](#output\_key\_name) | The GCP crypto key name. |
 | <a name="output_key_ring_name"></a> [key\_ring\_name](#output\_key\_ring\_name) | The GCP key ring name. |

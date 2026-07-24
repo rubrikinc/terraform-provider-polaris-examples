@@ -21,31 +21,31 @@ module "random_prefix" {
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_random"></a> [random](#requirement\_random) | >=3.7.0 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_random"></a> [random](#provider\_random) | >=3.7.0 |
 
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [random_string.suffix](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_length"></a> [length](#input\_length) | Length of the generated random suffix of the random prefix. | `number` | `8` | no |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Fixed prefix for the random prefix. | `string` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_result"></a> [result](#output\_result) | Result of the random prefix. |
 <!-- END_TF_DOCS -->

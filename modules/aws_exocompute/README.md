@@ -46,26 +46,26 @@ used to create the VPC resources.
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.11.0 |
 | <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.5.0 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_polaris"></a> [polaris](#provider\_polaris) | >=1.5.0 |
 
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [polaris_aws_exocompute.configuration](https://registry.terraform.io/providers/rubrikinc/polaris/latest/docs/resources/aws_exocompute) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_cloud_account_id"></a> [cloud\_account\_id](#input\_cloud\_account\_id) | RSC cloud account ID of the AWS account hosting Exocompute. | `string` | n/a | yes |
 | <a name="input_cluster_access"></a> [cluster\_access](#input\_cluster\_access) | EKS cluster access type. | `string` | `null` | no |
 | <a name="input_cluster_security_group_id"></a> [cluster\_security\_group\_id](#input\_cluster\_security\_group\_id) | AWS cluster / control plane security group ID. | `string` | `null` | no |
@@ -80,6 +80,6 @@ used to create the VPC resources.
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_configuration_id"></a> [configuration\_id](#output\_configuration\_id) | RSC Exocompute configuration ID. |
 <!-- END_TF_DOCS -->

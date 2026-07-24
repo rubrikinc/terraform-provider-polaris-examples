@@ -55,7 +55,7 @@ module "gcp_project" {
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.11.0 |
 | <a name="requirement_google"></a> [google](#requirement\_google) | >=7.0.0 |
 | <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.3.0 |
@@ -64,7 +64,7 @@ module "gcp_project" {
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_google"></a> [google](#provider\_google) | >=7.0.0 |
 | <a name="provider_polaris"></a> [polaris](#provider\_polaris) | >=1.3.0 |
 | <a name="provider_time"></a> [time](#provider\_time) | >=0.13.1 |
@@ -72,7 +72,7 @@ module "gcp_project" {
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [google_project_iam_custom_role.with_conditions](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_iam_custom_role) | resource |
 | [google_project_iam_custom_role.without_conditions](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_iam_custom_role) | resource |
 | [google_project_iam_member.with_conditions](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_iam_member) | resource |
@@ -87,7 +87,7 @@ module "gcp_project" {
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_features"></a> [features](#input\_features) | RSC features with permission groups. Possible features are: CLOUD\_NATIVE\_ARCHIVAL, CLOUD\_NATIVE\_PROTECTION, EXOCOMPUTE and GCP\_SHARED\_VPC\_HOST. | <pre>map(object({<br/>    permission_groups = set(string)<br/>  }))</pre> | n/a | yes |
 | <a name="input_organization_name"></a> [organization\_name](#input\_organization\_name) | GCP organization name. | `string` | `null` | no |
 | <a name="input_project_id"></a> [project\_id](#input\_project\_id) | GCP project ID. | `string` | n/a | yes |
@@ -99,6 +99,6 @@ module "gcp_project" {
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_cloud_account_id"></a> [cloud\_account\_id](#output\_cloud\_account\_id) | RSC cloud account ID for the GCP project. |
 <!-- END_TF_DOCS -->
