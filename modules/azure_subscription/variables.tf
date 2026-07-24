@@ -46,6 +46,23 @@ variable "default_user_assigned_identity" {
   }
 }
 
+variable "exocompute_group_id" {
+  description = "Object ID of the Entra ID group for Entra ID authentication in Exocompute AKS clusters. Only required for Exocompute host accounts (subscriptions with the EXOCOMPUTE feature), not by application accounts. This is a tenant-level setting shared across all subscriptions in the tenant."
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.exocompute_group_id == null || (var.exocompute_group_id != local.uuid_null && can(regex(local.uuid_regex, var.exocompute_group_id)))
+    error_message = "The exocompute group ID must be a valid Entra ID group object ID (UUID, lower case)."
+  }
+  validation {
+    # A subscription is either an Exocompute host account (exocompute_group_id) or an application account borrowing a
+    # host's capacity (exocompute_host_id), never both.
+    condition     = var.exocompute_group_id == null || var.exocompute_host_id == null
+    error_message = "Set either exocompute_group_id (for an Exocompute host account) or exocompute_host_id (for an Exocompute application account), but not both."
+  }
+}
+
 variable "exocompute_host_id" {
   description = "RSC cloud account ID (UUID) of the Azure subscription hosting exocompute. When set, this subscription is registered as a shared exocompute application account, using the exocompute resources deployed by the host subscription."
   type        = string

@@ -22,7 +22,7 @@ out of band, set `grant_creator_key_permissions` to `false`.
 
 ```terraform
 module "key_vault" {
-  source = "github.com/rubrikinc/terraform-provider-polaris-examples//azure-devops-support/modules/azure_archival_location/modules/key_vault"
+  source = "github.com/rubrikinc/terraform-provider-polaris-examples//modules/azure_archival_location/modules/key_vault"
 
   key_vault_name      = "my-key-vault"
   key_name            = "my-key"
@@ -35,7 +35,7 @@ module "key_vault" {
 
 ```terraform
 module "key_vault" {
-  source = "github.com/rubrikinc/terraform-provider-polaris-examples//azure-devops-support/modules/azure_archival_location/modules/key_vault"
+  source = "github.com/rubrikinc/terraform-provider-polaris-examples//modules/azure_archival_location/modules/key_vault"
 
   key_vault_name      = "my-key-vault"
   key_name            = "my-key"
@@ -59,6 +59,7 @@ resource "null_resource" "prevent_destroy" {
 
 | Name | Version |
 | ---- | ------- |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >=4.0.0 |
 | <a name="requirement_time"></a> [time](#requirement\_time) | >=0.13.1 |
 
@@ -68,10 +69,6 @@ resource "null_resource" "prevent_destroy" {
 | ---- | ------- |
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >=4.0.0 |
 | <a name="provider_time"></a> [time](#provider\_time) | >=0.13.1 |
-
-## Modules
-
-No modules.
 
 ## Resources
 

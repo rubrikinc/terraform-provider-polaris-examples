@@ -9,8 +9,8 @@ terraform {
       version = ">=3.99.0"
     }
     polaris = {
-      source  = rubrikinc/polaris
-      version = ">=1.9.0"
+      source  = "rubrikinc/polaris"
+      version = ">=1.9.1"
     }
   }
 }
@@ -44,8 +44,8 @@ variable "resource_group_name" {
   default     = "rubrik-azure-devops-example"
 }
 
-variable "run_onboarding_script" {
-  description = "Onboarding script variant to run during the apply. One of `bash` (default) or `powershell`. Set to `powershell` on Windows."
+variable "onboarding_shell" {
+  description = "Shell used to run the onboarding script during the apply. One of `bash` (default) or `powershell`."
   type        = string
   default     = "bash"
 }
@@ -65,7 +65,7 @@ variable "tags" {
   description = "Tags to apply to Azure resources which support tags."
   type        = map(string)
   default = {
-    Example    = "basic"
+    Example    = "customer_hosted"
     Module     = "azure_devops"
     Repository = "github.com/rubrikinc/terraform-provider-polaris-examples"
   }
@@ -77,31 +77,15 @@ provider "azurerm" {
   features {}
 }
 
-locals {
-  # Cloud native features onboarded on the Azure subscription that hosts the
-  # exocompute cluster and the archival location.
-  features = {
-    CLOUD_NATIVE_ARCHIVAL = {
-      permission_groups = [
-        "BASIC",
-      ]
-    }
-    EXOCOMPUTE = {
-      permission_groups = [
-        "BASIC",
-      ]
-    }
-  }
-}
-
 # Register the service principal used to onboard the Azure subscription hosting
 # exocompute and archival. Credentials are stored separately per use case, so
 # this cloud native protection principal is distinct from the Azure DevOps one
 # registered below, even though both live in the same tenant.
 module "azure_tenant_cnp" {
-  source       = "../../../azure_tenant"
-  use_case     = "CLOUD_NATIVE_PROTECTION"
-  display_name = "${var.application_name_prefix} - CNP"
+  source                  = "../../../azure_tenant"
+  use_case                = "CLOUD_NATIVE_PROTECTION"
+  display_name            = "${var.application_name_prefix} - CNP"
+  create_exocompute_group = true
 }
 
 # Register the service principal for the Azure DevOps use case.
@@ -123,13 +107,26 @@ resource "azurerm_resource_group" "resource_group" {
 module "azure_subscription" {
   source = "../../../azure_subscription"
 
-  features      = local.features
-  principal_id  = module.azure_tenant_cnp.object_id
-  tenant_domain = module.azure_tenant_cnp.tenant_domain
+  exocompute_group_id = module.azure_tenant_cnp.exocompute_group_id
+  principal_id        = module.azure_tenant_cnp.object_id
+  tenant_domain       = module.azure_tenant_cnp.tenant_domain
 
   default_resource_group = {
     name = var.resource_group_name
     tags = var.tags
+  }
+
+  features = {
+    CLOUD_NATIVE_ARCHIVAL = {
+      permission_groups = [
+        "BASIC",
+      ]
+    }
+    EXOCOMPUTE = {
+      permission_groups = [
+        "BASIC",
+      ]
+    }
   }
 
   regions = [
@@ -169,23 +166,29 @@ module "azure_archival_location" {
 module "azure_devops" {
   source = "../.."
 
-  native_id             = var.native_id
-  tenant_domain         = module.azure_tenant_devops.tenant_domain
-  run_onboarding_script = var.run_onboarding_script
+  # Organization settings.
+  native_id        = var.native_id
+  tenant_domain    = module.azure_tenant_devops.tenant_domain
+  onboarding_shell = var.onboarding_shell
 
+  features = {
+    AZURE_DEVOPS_REPOSITORY_PROTECTION = {
+      permission_groups = [
+        "BASIC",
+        "RECOVERY"
+      ]
+    },
+  }
+
+  # Exocompute settings.
   exocompute_host_type = "CUSTOMER_HOST"
   exocompute_host_id   = module.azure_subscription.cloud_account_id
 
+  # Storage settings.
   archival_location_id = module.azure_archival_location.archival_location_id
   storage_type         = "BYOS"
 
-  features = {
-    AZURE_DEVOPS_PROTECTION            = {}
-    AZURE_DEVOPS_REPOSITORY_PROTECTION = {}
-  }
-
   depends_on = [
-    module.azure_exocompute,
-    module.azure_tenant_devops,
+    module.azure_tenant_devops.app_id,
   ]
 }

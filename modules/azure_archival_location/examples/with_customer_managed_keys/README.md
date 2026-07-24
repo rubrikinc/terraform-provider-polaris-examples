@@ -71,8 +71,4 @@ resources.
 | <a name="input_storage_account_name_prefix"></a> [storage\_account\_name\_prefix](#input\_storage\_account\_name\_prefix) | Azure storage account name prefix. Can only consist of lower case letters and numbers. | `string` | `"rubrikarchival"` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to Azure resources which support tags. | `map(string)` | <pre>{<br/>  "Example": "with_customer_managed_keys",<br/>  "Module": "azure_archival_location",<br/>  "Repository": "github.com/rubrikinc/terraform-provider-polaris-examples"<br/>}</pre> | no |
 | <a name="input_user_assigned_identity_name"></a> [user\_assigned\_identity\_name](#input\_user\_assigned\_identity\_name) | Name of the user assigned identity used by the archival encryption feature. | `string` | `"rubrik-azure-archival-example"` | no |
-
-## Outputs
-
-No outputs.
 <!-- END_TF_DOCS -->

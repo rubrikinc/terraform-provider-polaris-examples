@@ -58,8 +58,4 @@ resources.
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | Resource group name for the cloud native protection and exocompute features. | `string` | `"rubrik-azure-exocompute-example"` | no |
 | <a name="input_subnet_id"></a> [subnet\_id](#input\_subnet\_id) | Azure subnet ID for the exocompute cluster. | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to Azure resources which support tags. | `map(string)` | <pre>{<br/>  "Example": "basic",<br/>  "Module": "azure_exocompute",<br/>  "Repository": "github.com/rubrikinc/terraform-provider-polaris-examples"<br/>}</pre> | no |
-
-## Outputs
-
-No outputs.
 <!-- END_TF_DOCS -->

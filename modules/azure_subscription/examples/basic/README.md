@@ -50,8 +50,4 @@ resources.
 | ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_features"></a> [features](#input\_features) | n/a | <pre>map(object({<br/>    permission_groups = set(string)<br/><br/>    resource_group = optional(object({<br/>      name = string<br/>      tags = optional(map(string), {<br/>        Example    = "basic"<br/>        Module     = "azure_subscription"<br/>        Repository = "github.com/rubrikinc/terraform-provider-polaris-examples"<br/>      })<br/>    }))<br/><br/>    user_assigned_identity = optional(object({<br/>      name                = string<br/>      resource_group_name = string<br/>      tags = optional(map(string), {<br/>        Example    = "basic"<br/>        Module     = "azure_subscription"<br/>        Repository = "github.com/rubrikinc/terraform-provider-polaris-examples"<br/>      })<br/>    }))<br/>  }))</pre> | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | Azure region for the subscription, resource groups and user assigned identities. | `string` | `"eastus2"` | no |
-
-## Outputs
-
-No outputs.
 <!-- END_TF_DOCS -->

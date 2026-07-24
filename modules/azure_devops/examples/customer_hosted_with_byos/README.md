@@ -14,16 +14,17 @@ The example authenticates to Azure AD through the `azuread` provider, so the env
 credentials that can register an application (e.g. via the Azure CLI or `ARM_*` environment variables). The exocompute
 cluster is deployed into an existing subnet, whose ID is supplied through the `subnet_id` input.
 
-The `run_onboarding_script` input selects which onboarding script variant the apply runs against the Azure DevOps
+The `onboarding_shell` input selects which onboarding script variant the apply runs against the Azure DevOps
 organization. It defaults to `bash`, which requires `bash`, `curl`, `jq` and the Azure CLI (`az`) on the machine
-running Terraform. On Windows, set `run_onboarding_script = "powershell"` to run the PowerShell variant, which requires
+running Terraform. On Windows, set `onboarding_shell = "powershell"` to run the PowerShell variant, which requires
 Windows PowerShell and the Azure CLI. Either variant must be run signed in with `az login` as a Project Collection
 Administrator in the organization; the script mints a short-lived Azure DevOps token from the `az login` session, so no
 personal access token is needed.
 
 > [!NOTE]
-> To run the onboarding script out of band instead, leave `run_onboarding_script` unset (`null`) and use the module's
-> `onboarding_bash_script` or `onboarding_powershell_script` output.
+> This example runs the onboarding script inline during the apply, so Terraform must run on a host signed in as a
+> Project Collection Administrator. To run the script out of band instead (for example in CI or under separation of
+> duties), see the `azure_devops` module README.
 
 ## Usage
 
@@ -43,13 +44,13 @@ resources.
 | ---- | ------- |
 | <a name="requirement_azuread"></a> [azuread](#requirement\_azuread) | >=2.48.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >=3.99.0 |
-| <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.9.0 |
+| <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.9.1 |
 
 ## Providers
 
 | Name | Version |
 | ---- | ------- |
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 4.80.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >=3.99.0 |
 
 ## Modules
 
@@ -75,10 +76,10 @@ resources.
 | <a name="input_application_name_prefix"></a> [application\_name\_prefix](#input\_application\_name\_prefix) | Name prefix for the Azure AD applications. The cloud native protection and Azure DevOps applications append ` - CNP` and ` - DevOps` to it. | `string` | `"Rubrik Security Cloud"` | no |
 | <a name="input_archival_name"></a> [archival\_name](#input\_archival\_name) | Name of the RSC archival location. | `string` | `"archival-location"` | no |
 | <a name="input_native_id"></a> [native\_id](#input\_native\_id) | Azure DevOps organization native ID, i.e. the organization name in the Azure DevOps URL (e.g. my-org from https://dev.azure.com/my-org). | `string` | n/a | yes |
+| <a name="input_onboarding_shell"></a> [onboarding\_shell](#input\_onboarding\_shell) | Shell used to run the onboarding script during the apply. One of `bash` (default) or `powershell`. | `string` | `"bash"` | no |
 | <a name="input_region"></a> [region](#input\_region) | Azure region for the subscription, resource group, exocompute cluster and archival location. | `string` | `"eastus2"` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | Resource group name for the cloud native archival and exocompute features. | `string` | `"rubrik-azure-devops-example"` | no |
-| <a name="input_run_onboarding_script"></a> [run\_onboarding\_script](#input\_run\_onboarding\_script) | Onboarding script variant to run during the apply. One of `bash` (default) or `powershell`. Set to `powershell` on Windows. | `string` | `"bash"` | no |
 | <a name="input_storage_account_name_prefix"></a> [storage\_account\_name\_prefix](#input\_storage\_account\_name\_prefix) | Azure storage account name prefix. Can only consist of lower case letters and numbers. | `string` | `"rubrikarchival"` | no |
 | <a name="input_subnet_id"></a> [subnet\_id](#input\_subnet\_id) | Azure subnet ID for the exocompute cluster. | `string` | n/a | yes |
-| <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to Azure resources which support tags. | `map(string)` | <pre>{<br/>  "Example": "basic",<br/>  "Module": "azure_devops",<br/>  "Repository": "github.com/rubrikinc/terraform-provider-polaris-examples"<br/>}</pre> | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to Azure resources which support tags. | `map(string)` | <pre>{<br/>  "Example": "customer_hosted",<br/>  "Module": "azure_devops",<br/>  "Repository": "github.com/rubrikinc/terraform-provider-polaris-examples"<br/>}</pre> | no |
 <!-- END_TF_DOCS -->

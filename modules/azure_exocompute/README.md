@@ -7,7 +7,7 @@ exocompute configuration to an existing RSC cloud account, targeting a specific 
 
 ```terraform
 module "azure_exocompute" {
-  source = "github.com/rubrikinc/terraform-provider-polaris-examples//azure-devops-support/modules/azure_exocompute"
+  source = "github.com/rubrikinc/terraform-provider-polaris-examples//modules/azure_exocompute"
 
   cloud_account_id         = "<rsc-cloud-account-id>"
   pod_overlay_network_cidr = "10.244.0.0/16"
@@ -46,6 +46,7 @@ Changing any of these fields forces the exocompute configuration to be recreated
 
 | Name | Version |
 | ---- | ------- |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0 |
 | <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.7.0 |
 
 ## Providers
@@ -53,10 +54,6 @@ Changing any of these fields forces the exocompute configuration to be recreated
 | Name | Version |
 | ---- | ------- |
 | <a name="provider_polaris"></a> [polaris](#provider\_polaris) | >=1.7.0 |
-
-## Modules
-
-No modules.
 
 ## Resources
 
@@ -69,9 +66,9 @@ No modules.
 | Name | Description | Type | Default | Required |
 | ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_cloud_account_id"></a> [cloud\_account\_id](#input\_cloud\_account\_id) | RSC cloud account ID of the Azure subscription. | `string` | n/a | yes |
-| <a name="input_optional_config"></a> [optional\_config](#input\_optional\_config) | Optional exocompute configuration. See the module README for a description of each field. When not specified, RSC uses its defaults. | <pre>object({<br/>    allowlist_additional_ips            = optional(set(string))<br/>    allowlist_rubrik_ips                = optional(bool)<br/>    cluster_access                      = optional(string)<br/>    cluster_tier                        = optional(string)<br/>    disk_encryption_at_host             = optional(bool)<br/>    max_node_count                      = optional(string)<br/>    private_exocompute_dns_zone_id      = optional(string)<br/>    resource_group_prefix               = optional(string)<br/>    snapshot_private_access_dns_zone_id = optional(string)<br/>    user_defined_routing                = optional(bool)<br/>  })</pre> | `null` | no |
+| <a name="input_optional_config"></a> [optional\_config](#input\_optional\_config) | Optional exocompute configuration. See the module README for a description of each field and the default value. | <pre>object({<br/>    allowlist_additional_ips            = optional(set(string))<br/>    allowlist_rubrik_ips                = optional(bool)<br/>    cluster_access                      = optional(string)<br/>    cluster_tier                        = optional(string)<br/>    disk_encryption_at_host             = optional(bool)<br/>    max_node_count                      = optional(string)<br/>    private_exocompute_dns_zone_id      = optional(string)<br/>    resource_group_prefix               = optional(string)<br/>    snapshot_private_access_dns_zone_id = optional(string)<br/>    user_defined_routing                = optional(bool)<br/>  })</pre> | `null` | no |
 | <a name="input_pod_overlay_network_cidr"></a> [pod\_overlay\_network\_cidr](#input\_pod\_overlay\_network\_cidr) | CIDR block for the exocompute pod overlay network. | `string` | n/a | yes |
-| <a name="input_region"></a> [region](#input\_region) | Azure exocompute region. | `string` | `"eastus2"` | no |
+| <a name="input_region"></a> [region](#input\_region) | Azure exocompute region. | `string` | n/a | yes |
 | <a name="input_subnet_id"></a> [subnet\_id](#input\_subnet\_id) | Azure subnet ID. | `string` | n/a | yes |
 
 ## Outputs

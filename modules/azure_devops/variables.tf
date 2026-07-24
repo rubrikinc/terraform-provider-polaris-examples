@@ -1,9 +1,10 @@
 locals {
-  features = [
-    "AZURE_DEVOPS_PROTECTION",
-    "AZURE_DEVOPS_REPOSITORY_PROTECTION",
-    "AZURE_DEVOPS_DEVELOPER_COLLABORATION_PROTECTION",
-  ]
+  features = {
+    AZURE_DEVOPS_REPOSITORY_PROTECTION = [
+      "BASIC",
+      "RECOVERY",
+    ],
+  }
 
   uuid_null  = "00000000-0000-0000-0000-000000000000"
   uuid_regex = "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
@@ -24,14 +25,14 @@ variable "archival_location_id" {
   }
 }
 
-variable "cloud_type" {
-  description = "Azure cloud type. One of `PUBLIC` (default), `CHINA` or `USGOV`."
+variable "cloud" {
+  description = "Azure cloud type. Only `PUBLIC` is supported."
   type        = string
   default     = "PUBLIC"
 
   validation {
-    condition     = contains(["PUBLIC", "CHINA", "USGOV"], var.cloud_type)
-    error_message = "Cloud type must be one of PUBLIC, CHINA or USGOV."
+    condition     = var.cloud == "PUBLIC"
+    error_message = "Cloud type must be PUBLIC."
   }
 }
 
@@ -79,14 +80,22 @@ variable "exocompute_region" {
 }
 
 variable "features" {
-  description = "RSC features with permission groups. Possible features are: AZURE_DEVOPS_PROTECTION, AZURE_DEVOPS_REPOSITORY_PROTECTION and AZURE_DEVOPS_DEVELOPER_COLLABORATION_PROTECTION. An empty set of permission groups enables all groups for the feature."
+  description = "RSC features with permission groups. Only AZURE_DEVOPS_REPOSITORY_PROTECTION is supported. At least one permission group is required per feature."
   type = map(object({
-    permission_groups = optional(set(string), [])
+    permission_groups = set(string)
   }))
 
   validation {
-    condition     = length(var.features) > 0 && length(setsubtract(keys(var.features), local.features)) == 0
-    error_message = format("Invalid RSC feature. Allowed features are: %s.", join(", ", local.features))
+    condition     = length(var.features) > 0 && length(setsubtract(keys(var.features), keys(local.features))) == 0
+    error_message = format("Invalid RSC feature. Allowed features are: %s.", join(", ", keys(local.features)))
+  }
+  validation {
+    condition = length(setsubtract(try(var.features["AZURE_DEVOPS_REPOSITORY_PROTECTION"].permission_groups, []), local.features["AZURE_DEVOPS_REPOSITORY_PROTECTION"])) == 0
+    error_message = format("Invalid permission groups for AZURE_DEVOPS_REPOSITORY_PROTECTION. Allowed permission groups are: %s.", join(", ", local.features["AZURE_DEVOPS_REPOSITORY_PROTECTION"]))
+  }
+  validation {
+    condition     = alltrue([for f in var.features : (length(f.permission_groups) > 0)])
+    error_message = "At least one permission group is required per feature."
   }
 }
 
@@ -100,14 +109,14 @@ variable "native_id" {
   }
 }
 
-variable "run_onboarding_script" {
-  description = "Run the generated onboarding script during the apply. One of `bash` or `powershell`, selecting which script variant to run. When `null` (default), the script is not run. See the module README for prerequisites and how to run the script out of band."
+variable "onboarding_shell" {
+  description = "Shell used to run the onboarding script during the apply. One of `bash` (default) or `powershell`. The script runs before the organization is onboarded. See the module README for prerequisites."
   type        = string
-  default     = null
+  default     = "bash"
 
   validation {
-    condition     = var.run_onboarding_script == null || contains(["bash", "powershell"], var.run_onboarding_script)
-    error_message = "run_onboarding_script must be null, bash or powershell."
+    condition     = contains(["bash", "powershell"], var.onboarding_shell)
+    error_message = "onboarding_shell must be bash or powershell."
   }
 }
 

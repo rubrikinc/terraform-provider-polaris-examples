@@ -25,6 +25,7 @@ data "polaris_azure_permissions" "feature" {
 resource "polaris_azure_subscription" "subscription" {
   subscription_id   = data.azurerm_subscription.current.subscription_id
   subscription_name = data.azurerm_subscription.current.display_name
+  entra_group_id    = var.exocompute_group_id
   tenant_domain     = var.tenant_domain
 
   dynamic "cloud_discovery" {

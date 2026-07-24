@@ -20,7 +20,7 @@ setup that creates the application, resource groups and user assigned identities
 
 ```terraform
 module "azure_subscription" {
-  source = "github.com/rubrikinc/terraform-provider-polaris-examples//azure-devops-support/modules/azure_subscription"
+  source = "github.com/rubrikinc/terraform-provider-polaris-examples//modules/azure_subscription"
 
   principal_id  = "<service-principal-object-id>"
   tenant_domain = "my-domain.onmicrosoft.com"
@@ -54,6 +54,7 @@ module "azure_subscription" {
 
 | Name | Version |
 | ---- | ------- |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >=3.99.0 |
 | <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.7.0 |
 | <a name="requirement_time"></a> [time](#requirement\_time) | >=0.13.1 |
@@ -62,13 +63,9 @@ module "azure_subscription" {
 
 | Name | Version |
 | ---- | ------- |
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 4.80.0 |
-| <a name="provider_polaris"></a> [polaris](#provider\_polaris) | 1.8.2 |
-| <a name="provider_time"></a> [time](#provider\_time) | 0.14.0 |
-
-## Modules
-
-No modules.
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >=3.99.0 |
+| <a name="provider_polaris"></a> [polaris](#provider\_polaris) | >=1.7.0 |
+| <a name="provider_time"></a> [time](#provider\_time) | >=0.13.1 |
 
 ## Resources
 
@@ -94,6 +91,7 @@ No modules.
 | ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_default_resource_group"></a> [default\_resource\_group](#input\_default\_resource\_group) | Default Azure resource group. The default is used when a feature specific one isn't specified and it is required by RSC. | <pre>object({<br/>    name = string<br/>    tags = optional(map(string))<br/>  })</pre> | `null` | no |
 | <a name="input_default_user_assigned_identity"></a> [default\_user\_assigned\_identity](#input\_default\_user\_assigned\_identity) | Default Azure user assigned identity. The default is used when a feature specific one isn't specified and it is required by RSC. | <pre>object({<br/>    name                = string<br/>    resource_group_name = string<br/>    tags                = optional(map(string))<br/>  })</pre> | `null` | no |
+| <a name="input_exocompute_group_id"></a> [exocompute\_group\_id](#input\_exocompute\_group\_id) | Object ID of the Entra ID group for Entra ID authentication in Exocompute AKS clusters. Only required for Exocompute host accounts (subscriptions with the EXOCOMPUTE feature), not by application accounts. This is a tenant-level setting shared across all subscriptions in the tenant. | `string` | `null` | no |
 | <a name="input_exocompute_host_id"></a> [exocompute\_host\_id](#input\_exocompute\_host\_id) | RSC cloud account ID (UUID) of the Azure subscription hosting exocompute. When set, this subscription is registered as a shared exocompute application account, using the exocompute resources deployed by the host subscription. | `string` | `null` | no |
 | <a name="input_features"></a> [features](#input\_features) | RSC features with permission groups, resource groups and user assigned identities. | <pre>map(object({<br/>    permission_groups = set(string)<br/>    resource_group = optional(object({<br/>      name = string<br/>      tags = optional(map(string))<br/>    }))<br/>    user_assigned_identity = optional(object({<br/>      name                = string<br/>      resource_group_name = string<br/>      tags                = optional(map(string))<br/>    }))<br/>  }))</pre> | n/a | yes |
 | <a name="input_principal_id"></a> [principal\_id](#input\_principal\_id) | Object ID of the Azure AD service principal used by RSC. This is the same ID used as principal\_id in Azure RBAC role assignments. | `string` | n/a | yes |
@@ -106,5 +104,4 @@ No modules.
 | Name | Description |
 | ---- | ----------- |
 | <a name="output_cloud_account_id"></a> [cloud\_account\_id](#output\_cloud\_account\_id) | RSC cloud account ID of the onboarded Azure subscription. |
-| <a name="output_exocompute_configuration_id"></a> [exocompute\_configuration\_id](#output\_exocompute\_configuration\_id) | RSC ID of the shared exocompute application configuration, or null when exocompute\_host\_id is not set. |
 <!-- END_TF_DOCS -->

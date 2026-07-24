@@ -54,8 +54,4 @@ resources.
 | <a name="input_region"></a> [region](#input\_region) | Azure region for the subscription and resource group. | `string` | `"eastus2"` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | Resource group name for the cloud native protection feature. | `string` | `"rubrik-azure-subscription-example"` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to Azure resources which support tags. | `map(string)` | <pre>{<br/>  "Example": "shared_exocompute",<br/>  "Module": "azure_subscription",<br/>  "Repository": "github.com/rubrikinc/terraform-provider-polaris-examples"<br/>}</pre> | no |
-
-## Outputs
-
-No outputs.
 <!-- END_TF_DOCS -->

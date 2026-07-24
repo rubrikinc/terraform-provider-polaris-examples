@@ -16,6 +16,12 @@ variable "app_secret" {
   sensitive   = true
 }
 
+variable "create_exocompute_group" {
+  type        = bool
+  description = "Create an Entra ID group for the RSC Exocompute feature and add the service principal as a member."
+  default     = false
+}
+
 variable "display_name" {
   description = "Display name for the Azure AD application. Cannot be set together with `app_id`. When neither `app_id` nor `display_name` is specified, the application is created with the default name 'Rubrik Security Cloud - Azure Protection'."
   type        = string

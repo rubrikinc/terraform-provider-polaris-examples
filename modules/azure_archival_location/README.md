@@ -30,7 +30,7 @@ encrypted with platform managed keys.
 
 ```terraform
 module "azure_archival_location" {
-  source = "github.com/rubrikinc/terraform-provider-polaris-examples//azure-devops-support/modules/azure_archival_location"
+  source = "github.com/rubrikinc/terraform-provider-polaris-examples//modules/azure_archival_location"
 
   cloud_account_id            = module.azure_subscription.cloud_account_id
   name                        = "my-archival-location"
@@ -44,7 +44,7 @@ module "azure_archival_location" {
 
 ```terraform
 module "azure_archival_location" {
-  source = "github.com/rubrikinc/terraform-provider-polaris-examples//azure-devops-support/modules/azure_archival_location"
+  source = "github.com/rubrikinc/terraform-provider-polaris-examples//modules/azure_archival_location"
 
   cloud_account_id            = module.azure_subscription.cloud_account_id
   name                        = "my-archival-location"
@@ -67,7 +67,7 @@ module "azure_archival_location" {
 
 ```terraform
 module "azure_archival_location" {
-  source = "github.com/rubrikinc/terraform-provider-polaris-examples//azure-devops-support/modules/azure_archival_location"
+  source = "github.com/rubrikinc/terraform-provider-polaris-examples//modules/azure_archival_location"
 
   cloud_account_id            = module.azure_subscription.cloud_account_id
   name                        = "my-archival-location"
@@ -101,6 +101,7 @@ module "azure_archival_location" {
 
 | Name | Version |
 | ---- | ------- |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >=4.0.0 |
 | <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.7.0 |
 
@@ -108,12 +109,8 @@ module "azure_archival_location" {
 
 | Name | Version |
 | ---- | ------- |
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 4.80.0 |
-| <a name="provider_polaris"></a> [polaris](#provider\_polaris) | 1.8.2 |
-
-## Modules
-
-No modules.
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >=4.0.0 |
+| <a name="provider_polaris"></a> [polaris](#provider\_polaris) | >=1.7.0 |
 
 ## Resources
 
