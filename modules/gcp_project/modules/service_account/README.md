@@ -43,26 +43,26 @@ module "service_account" {
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_google"></a> [google](#requirement\_google) | >=7.0.0 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_google"></a> [google](#provider\_google) | >=7.0.0 |
 
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [google_service_account.service_account](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account) | resource |
 | [google_service_account_key.service_account](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account_key) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_account_id"></a> [account\_id](#input\_account\_id) | The unique identifier for the service account within the project. Must be between 6 and 30 characters and can contain lowercase letters, numbers, and hyphens. | `string` | `"rubrik-service-account"` | no |
 | <a name="input_display_name"></a> [display\_name](#input\_display\_name) | A human-readable name for the service account. If not specified, the module will automatically generate a display name from the `account_id`. | `string` | `null` | no |
 | <a name="input_rotation_trigger"></a> [rotation\_trigger](#input\_rotation\_trigger) | A trigger to rotate the service account key. The trigger can be any string. When the trigger changes, the service account key will be rotated. | `string` | `null` | no |
@@ -70,7 +70,7 @@ module "service_account" {
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_service_account_id"></a> [service\_account\_id](#output\_service\_account\_id) | The fully qualified GCP service account ID. |
 | <a name="output_service_account_key"></a> [service\_account\_key](#output\_service\_account\_key) | The base64-encoded private key for the GCP service account. |
 <!-- END_TF_DOCS -->

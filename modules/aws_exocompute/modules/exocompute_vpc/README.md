@@ -36,19 +36,19 @@ module "vpc" {
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >=6.0.0 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >=6.0.0 |
 
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [aws_eip.eip](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eip) | resource |
 | [aws_internet_gateway.gateway](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/internet_gateway) | resource |
 | [aws_nat_gateway.gateway](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/nat_gateway) | resource |
@@ -87,7 +87,7 @@ module "vpc" {
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_name"></a> [name](#input\_name) | Name for the VPC. | `string` | n/a | yes |
 | <a name="input_pod_subnet1_cidr"></a> [pod\_subnet1\_cidr](#input\_pod\_subnet1\_cidr) | CIDR for pod subnet 1. | `string` | `null` | no |
 | <a name="input_pod_subnet2_cidr"></a> [pod\_subnet2\_cidr](#input\_pod\_subnet2\_cidr) | CIDR for pod subnet 2. | `string` | `null` | no |
@@ -100,7 +100,7 @@ module "vpc" {
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_cluster_security_group_id"></a> [cluster\_security\_group\_id](#output\_cluster\_security\_group\_id) | AWS cluster / control plane security group ID. |
 | <a name="output_node_security_group_id"></a> [node\_security\_group\_id](#output\_node\_security\_group\_id) | AWS node / worker security group ID. |
 | <a name="output_pod_subnet1_id"></a> [pod\_subnet1\_id](#output\_pod\_subnet1\_id) | AWS pod subnet 1 ID. |

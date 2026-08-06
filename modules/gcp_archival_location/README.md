@@ -102,7 +102,7 @@ module "gcp_archival_location" {
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.11.0 |
 | <a name="requirement_google"></a> [google](#requirement\_google) | >=7.0.0 |
 | <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.3.0 |
@@ -110,14 +110,14 @@ module "gcp_archival_location" {
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_google"></a> [google](#provider\_google) | >=7.0.0 |
 | <a name="provider_polaris"></a> [polaris](#provider\_polaris) | >=1.3.0 |
 
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [google_kms_crypto_key_iam_member.key](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/kms_crypto_key_iam_member) | resource |
 | [polaris_gcp_archival_location.archival_location](https://registry.terraform.io/providers/rubrikinc/polaris/latest/docs/resources/gcp_archival_location) | resource |
 | [google_kms_crypto_key.key](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/kms_crypto_key) | data source |
@@ -128,7 +128,7 @@ module "gcp_archival_location" {
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_bucket_labels"></a> [bucket\_labels](#input\_bucket\_labels) | GCP bucket labels. Each label will be added to the GCP bucket created by RSC. | `map(string)` | `{}` | no |
 | <a name="input_bucket_prefix"></a> [bucket\_prefix](#input\_bucket\_prefix) | GCP bucket prefix. The prefix cannot be longer than 19 characters. Note that `rubrik-` will always be prepended to the prefix. | `string` | n/a | yes |
 | <a name="input_cloud_account_id"></a> [cloud\_account\_id](#input\_cloud\_account\_id) | RSC cloud account ID of the GCP project hosting the archival location. | `string` | n/a | yes |
@@ -140,6 +140,6 @@ module "gcp_archival_location" {
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_archival_location_id"></a> [archival\_location\_id](#output\_archival\_location\_id) | RSC archival location ID. |
 <!-- END_TF_DOCS -->

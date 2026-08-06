@@ -288,20 +288,20 @@ module "sla_domain" {
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.11.0 |
 | <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | =1.4.0-beta.5 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_polaris"></a> [polaris](#provider\_polaris) | =1.4.0-beta.5 |
 
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [polaris_sla_domain.sla_domain](https://registry.terraform.io/providers/rubrikinc/polaris/1.4.0-beta.5/docs/resources/sla_domain) | resource |
 | [polaris_sla_domain_assignment.tag_rule_assignment](https://registry.terraform.io/providers/rubrikinc/polaris/1.4.0-beta.5/docs/resources/sla_domain_assignment) | resource |
 | [polaris_tag_rule.tag_rule](https://registry.terraform.io/providers/rubrikinc/polaris/1.4.0-beta.5/docs/resources/tag_rule) | resource |
@@ -309,7 +309,7 @@ module "sla_domain" {
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_archival"></a> [archival](#input\_archival) | Archival configuration for the SLA domain. Each archival entry specifies where to archive<br/>snapshots and when archival should occur.<br/><br/>- archival\_location\_id: UUID of the archival location (use polaris\_*\_archival\_location data sources)<br/>- threshold: Number of time units after which snapshots are archived (0 for instant archival)<br/>- threshold\_unit: Unit of the threshold (DAYS, WEEKS, MONTHS, YEARS)<br/>- archival\_tiering: Optional tiering configuration for cold storage | <pre>list(object({<br/>    archival_location_id = string<br/>    threshold            = optional(number, 0)<br/>    threshold_unit       = optional(string, "DAYS")<br/>    archival_tiering = optional(object({<br/>      instant_tiering                    = optional(bool, false)<br/>      cold_storage_class                 = optional(string)<br/>      min_accessible_duration_in_seconds = optional(number, 0)<br/>      tier_existing_snapshots            = optional(bool, false)<br/>    }))<br/>  }))</pre> | `[]` | no |
 | <a name="input_daily_schedule"></a> [daily\_schedule](#input\_daily\_schedule) | Daily snapshot schedule configuration. | <pre>object({<br/>    frequency      = number<br/>    retention      = number<br/>    retention_unit = optional(string, "DAYS")<br/>  })</pre> | `null` | no |
 | <a name="input_description"></a> [description](#input\_description) | SLA domain description. | `string` | `null` | no |
@@ -324,7 +324,7 @@ module "sla_domain" {
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_sla_domain_id"></a> [sla\_domain\_id](#output\_sla\_domain\_id) | RSC SLA domain ID (UUID). |
 | <a name="output_sla_domain_name"></a> [sla\_domain\_name](#output\_sla\_domain\_name) | RSC SLA domain name. |
 | <a name="output_tag_rule_ids"></a> [tag\_rule\_ids](#output\_tag\_rule\_ids) | Map of tag rule names to their IDs (UUID). |

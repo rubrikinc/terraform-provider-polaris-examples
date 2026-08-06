@@ -27,7 +27,7 @@ resources.
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_google"></a> [google](#requirement\_google) | >=7.0.0 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | >=3.2.0 |
 | <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.3.0 |
@@ -35,13 +35,13 @@ resources.
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_null"></a> [null](#provider\_null) | >=3.2.0 |
 
 ## Modules
 
 | Name | Source | Version |
-|------|--------|---------|
+| ---- | ------ | ------- |
 | <a name="module_crypto_key"></a> [crypto\_key](#module\_crypto\_key) | ../../../gcp_archival_location/modules/crypto_key | n/a |
 | <a name="module_gcp_archival_location"></a> [gcp\_archival\_location](#module\_gcp\_archival\_location) | ../../../gcp_archival_location | n/a |
 | <a name="module_gcp_project"></a> [gcp\_project](#module\_gcp\_project) | ../../../gcp_project | n/a |
@@ -50,13 +50,13 @@ resources.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [null_resource.prevent_destroy](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_labels"></a> [labels](#input\_labels) | Labels to apply to GCP resources created which supports labels. | `map(string)` | <pre>{<br/>  "example": "basic",<br/>  "module": "gcp_archival_location",<br/>  "repository": "terraform-provider-polaris-examples"<br/>}</pre> | no |
 | <a name="input_project_id"></a> [project\_id](#input\_project\_id) | GCP project ID. | `string` | n/a | yes |
 <!-- END_TF_DOCS -->

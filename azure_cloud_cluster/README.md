@@ -46,31 +46,31 @@ resource "polaris_azure_cloud_cluster" "cces" {
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.3.0 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_polaris"></a> [polaris](#provider\_polaris) | >=1.3.0 |
 
 ## Modules
 
 | Name | Source | Version |
-|------|--------|---------|
+| ---- | ------ | ------- |
 | <a name="module_azure_subscription"></a> [azure\_subscription](#module\_azure\_subscription) | ../azure | n/a |
 
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [polaris_azure_cloud_cluster.cces](https://registry.terraform.io/providers/rubrikinc/polaris/latest/docs/resources/azure_cloud_cluster) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_admin_email"></a> [admin\_email](#input\_admin\_email) | Admin email for the cluster | `string` | n/a | yes |
 | <a name="input_admin_password"></a> [admin\_password](#input\_admin\_password) | Admin password for the cluster | `string` | n/a | yes |
 | <a name="input_cdm_version"></a> [cdm\_version](#input\_cdm\_version) | CDM version for the cluster, this can be found in RSC from the upgrades portal, and will be formatted like 9.2.3-p8-29766 | `string` | n/a | yes |

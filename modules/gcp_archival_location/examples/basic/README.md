@@ -22,14 +22,14 @@ resources.
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_google"></a> [google](#requirement\_google) | >=7.0.0 |
 | <a name="requirement_polaris"></a> [polaris](#requirement\_polaris) | >=1.3.0 |
 
 ## Modules
 
 | Name | Source | Version |
-|------|--------|---------|
+| ---- | ------ | ------- |
 | <a name="module_gcp_archival_location"></a> [gcp\_archival\_location](#module\_gcp\_archival\_location) | ../.. | n/a |
 | <a name="module_gcp_project"></a> [gcp\_project](#module\_gcp\_project) | ../../../gcp_project | n/a |
 | <a name="module_service_account"></a> [service\_account](#module\_service\_account) | ../../../gcp_project/modules/service_account | n/a |
@@ -37,7 +37,7 @@ resources.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_labels"></a> [labels](#input\_labels) | Labels to apply to GCP resources created which supports labels. | `map(string)` | <pre>{<br/>  "example": "basic",<br/>  "module": "gcp_archival_location",<br/>  "repository": "terraform-provider-polaris-examples"<br/>}</pre> | no |
 | <a name="input_project_id"></a> [project\_id](#input\_project\_id) | GCP project ID. | `string` | n/a | yes |
 <!-- END_TF_DOCS -->
