@@ -25,7 +25,7 @@ locals {
   ]
 
   cloud_native_protection = [
-    "BASIC",
+    "BASIC", "EXPORT_POWER_ON", "EXPORT_POWER_OFF", "RESTORE", "DOWNLOAD_FILE",
   ]
 
   cloud_native_s3_protection = [

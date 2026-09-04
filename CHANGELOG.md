@@ -6,6 +6,7 @@
 * Add `azure_exocompute` Terraform module.
 * Add `azure_archival_location` Terraform module.
 * Add `azure_devops` Terraform module for onboarding an Azure DevOps organization to RSC.
+* Add the `EXPORT_POWER_ON`, `EXPORT_POWER_OFF`, `RESTORE` and `DOWNLOAD_FILE` to the `aws_iam_account` module.
 
 ## v1.2.1
 * Fix a bug in the `aws_iam_account` module where two RSC policies sharing a name within the same role artifact
