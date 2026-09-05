@@ -13,7 +13,7 @@ terraform {
     }
     polaris = {
       source  = "rubrikinc/polaris"
-      version = ">=1.3.0"
+      version = ">=1.7.0"
     }
   }
 }
@@ -29,6 +29,18 @@ variable "managed_identity_name" {
   type        = string
   description = "Azure user assigned managed identity name."
   default     = "terraform-managed-identity"
+}
+
+variable "sql_db_protection_managed_identity_name" {
+  type        = string
+  description = "Azure user assigned managed identity name."
+  default     = "terraform-managed-identity-sql"
+}
+
+variable "postgres_flexible_server_protection_managed_identity_name" {
+  type        = string
+  description = "Azure user assigned managed identity name for the Postgres Flexible Server Protection feature."
+  default     = "terraform-managed-identity-postgres"
 }
 
 variable "regions" {
@@ -65,6 +77,10 @@ data "azurerm_subscription" "subscription" {}
 
 data "polaris_account" "account" {}
 
+data "polaris_feature_flag" "azure_sql_tde_cmk" {
+  name = "CNP_AZURE_SQL_DB_TDE_CMK_SUPPORT"
+}
+
 data "polaris_azure_permissions" "features" {
   for_each          = var.features
   feature           = each.key
@@ -98,6 +114,26 @@ resource "azurerm_resource_group" "resource_group" {
 resource "azurerm_user_assigned_identity" "managed_identity" {
   location            = azurerm_resource_group.resource_group.location
   name                = var.managed_identity_name
+  resource_group_name = azurerm_resource_group.resource_group.name
+}
+
+resource "azurerm_user_assigned_identity" "sql_managed_identity" {
+  count = contains(keys(var.features), "AZURE_SQL_DB_PROTECTION") && data.polaris_feature_flag.azure_sql_tde_cmk.enabled ? 1 : 0
+
+  location            = azurerm_resource_group.resource_group.location
+  name                = var.sql_db_protection_managed_identity_name
+  resource_group_name = azurerm_resource_group.resource_group.name
+}
+
+# The Postgres Flexible Server Protection feature always requires a
+# user-assigned managed identity, unlike SQL DB where it depends on a feature
+# flag. RSC also requires the identity to be in the same resource group as the
+# feature, which is why this is created in the feature's resource group.
+resource "azurerm_user_assigned_identity" "postgres_managed_identity" {
+  count = contains(keys(var.features), "AZURE_POSTGRES_FLEXIBLE_SERVER_PROTECTION") ? 1 : 0
+
+  location            = azurerm_resource_group.resource_group.location
+  name                = var.postgres_flexible_server_protection_managed_identity_name
   resource_group_name = azurerm_resource_group.resource_group.name
 }
 
@@ -221,12 +257,35 @@ resource "polaris_azure_subscription" "subscription" {
     }
   }
 
+  # Unlike the other features, RSC requires both a resource group and a
+  # user-assigned managed identity here, and requires the identity to be in the
+  # feature's resource group. Note that the feature is also gated in RSC behind
+  # the REL_ENABLE_AZURE_POSTGRES_FLEXIBLE_SERVER feature flag.
+  dynamic "postgres_flexible_server_protection" {
+    for_each = contains(keys(var.features), "AZURE_POSTGRES_FLEXIBLE_SERVER_PROTECTION") ? [1] : []
+    content {
+      permission_groups                                  = data.polaris_azure_permissions.features["AZURE_POSTGRES_FLEXIBLE_SERVER_PROTECTION"].permission_groups
+      permissions                                        = data.polaris_azure_permissions.features["AZURE_POSTGRES_FLEXIBLE_SERVER_PROTECTION"].id
+      regions                                            = var.regions
+      resource_group_name                                = var.resource_group_name
+      resource_group_region                              = var.resource_group_region
+      user_assigned_managed_identity_name                = azurerm_user_assigned_identity.postgres_managed_identity[0].name
+      user_assigned_managed_identity_principal_id        = azurerm_user_assigned_identity.postgres_managed_identity[0].principal_id
+      user_assigned_managed_identity_region              = azurerm_user_assigned_identity.postgres_managed_identity[0].location
+      user_assigned_managed_identity_resource_group_name = azurerm_user_assigned_identity.postgres_managed_identity[0].resource_group_name
+    }
+  }
+
   dynamic "sql_db_protection" {
     for_each = contains(keys(var.features), "AZURE_SQL_DB_PROTECTION") ? [1] : []
     content {
-      permission_groups = data.polaris_azure_permissions.features["AZURE_SQL_DB_PROTECTION"].permission_groups
-      permissions       = data.polaris_azure_permissions.features["AZURE_SQL_DB_PROTECTION"].id
-      regions           = var.regions
+      permission_groups                                  = data.polaris_azure_permissions.features["AZURE_SQL_DB_PROTECTION"].permission_groups
+      permissions                                        = data.polaris_azure_permissions.features["AZURE_SQL_DB_PROTECTION"].id
+      regions                                            = var.regions
+      user_assigned_managed_identity_name                = data.polaris_feature_flag.azure_sql_tde_cmk.enabled ? azurerm_user_assigned_identity.sql_managed_identity[0].name : null
+      user_assigned_managed_identity_principal_id        = data.polaris_feature_flag.azure_sql_tde_cmk.enabled ? azurerm_user_assigned_identity.sql_managed_identity[0].principal_id : null
+      user_assigned_managed_identity_region              = data.polaris_feature_flag.azure_sql_tde_cmk.enabled ? azurerm_user_assigned_identity.sql_managed_identity[0].location : null
+      user_assigned_managed_identity_resource_group_name = data.polaris_feature_flag.azure_sql_tde_cmk.enabled ? azurerm_user_assigned_identity.sql_managed_identity[0].resource_group_name : null
     }
   }
 

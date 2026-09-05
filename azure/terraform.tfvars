@@ -1,4 +1,10 @@
 features = {
+  AZURE_POSTGRES_FLEXIBLE_SERVER_PROTECTION = {
+    permission_groups = [
+      "BASIC",
+      "RECOVERY",
+    ]
+  },
   CLOUD_NATIVE_BLOB_PROTECTION = {
     permission_groups = [
       "BASIC",
